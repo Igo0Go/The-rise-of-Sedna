@@ -118,6 +118,24 @@ public partial class @FPC: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""f74943ba-6c13-4102-aad1-06a56fa7e9d4"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""f8120e44-7af9-42e5-bb09-a8e1d39aecd2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -197,6 +215,28 @@ public partial class @FPC: IInputActionCollection2, IDisposable
                     ""action"": ""View"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""64c57112-9f7c-4c0a-a9b0-fbcc77419881"",
+                    ""path"": ""<Keyboard>/leftShift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""17e1d38e-f277-42fb-9c14-633b5daaa6e1"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -208,6 +248,8 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         m_GroundMovement_HoriozontalMovement = m_GroundMovement.FindAction("HoriozontalMovement", throwIfNotFound: true);
         m_GroundMovement_Jump = m_GroundMovement.FindAction("Jump", throwIfNotFound: true);
         m_GroundMovement_View = m_GroundMovement.FindAction("View", throwIfNotFound: true);
+        m_GroundMovement_Sprint = m_GroundMovement.FindAction("Sprint", throwIfNotFound: true);
+        m_GroundMovement_Crouch = m_GroundMovement.FindAction("Crouch", throwIfNotFound: true);
     }
 
     ~@FPC()
@@ -291,6 +333,8 @@ public partial class @FPC: IInputActionCollection2, IDisposable
     private readonly InputAction m_GroundMovement_HoriozontalMovement;
     private readonly InputAction m_GroundMovement_Jump;
     private readonly InputAction m_GroundMovement_View;
+    private readonly InputAction m_GroundMovement_Sprint;
+    private readonly InputAction m_GroundMovement_Crouch;
     /// <summary>
     /// Provides access to input actions defined in input action map "GroundMovement".
     /// </summary>
@@ -314,6 +358,14 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "GroundMovement/View".
         /// </summary>
         public InputAction @View => m_Wrapper.m_GroundMovement_View;
+        /// <summary>
+        /// Provides access to the underlying input action "GroundMovement/Sprint".
+        /// </summary>
+        public InputAction @Sprint => m_Wrapper.m_GroundMovement_Sprint;
+        /// <summary>
+        /// Provides access to the underlying input action "GroundMovement/Crouch".
+        /// </summary>
+        public InputAction @Crouch => m_Wrapper.m_GroundMovement_Crouch;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -349,6 +401,12 @@ public partial class @FPC: IInputActionCollection2, IDisposable
             @View.started += instance.OnView;
             @View.performed += instance.OnView;
             @View.canceled += instance.OnView;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
+            @Crouch.started += instance.OnCrouch;
+            @Crouch.performed += instance.OnCrouch;
+            @Crouch.canceled += instance.OnCrouch;
         }
 
         /// <summary>
@@ -369,6 +427,12 @@ public partial class @FPC: IInputActionCollection2, IDisposable
             @View.started -= instance.OnView;
             @View.performed -= instance.OnView;
             @View.canceled -= instance.OnView;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
+            @Crouch.started -= instance.OnCrouch;
+            @Crouch.performed -= instance.OnCrouch;
+            @Crouch.canceled -= instance.OnCrouch;
         }
 
         /// <summary>
@@ -430,5 +494,19 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnView(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Sprint" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSprint(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Crouch" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnCrouch(InputAction.CallbackContext context);
     }
 }

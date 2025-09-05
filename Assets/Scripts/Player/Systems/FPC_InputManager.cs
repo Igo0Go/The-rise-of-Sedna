@@ -22,6 +22,9 @@ public class FPC_InputManager : MonoBehaviour
         groundMovement.View.performed += ctx => viewInput = ctx.ReadValue<Vector2>();
         groundMovement.Jump.performed += _ => fPC_Movement.OnJumpPressed();
         groundMovement.Sprint.performed += _ => fPC_Movement.SprintToggle();
+        groundMovement.Crouch.performed += _ => fPC_Movement.CrouchToggle();
+
+        Application.targetFrameRate = 60;
     }
 
     private void OnEnable()
@@ -38,18 +41,5 @@ public class FPC_InputManager : MonoBehaviour
     {
         fPC_Movement.ReceiveInput(horizontalInput);
         fPC_Veiew.ReceiveInput(viewInput);
-
-        if(Input.GetMouseButtonDown(0))
-        {
-            Application.targetFrameRate = 30;
-        }
-        if (Input.GetMouseButtonDown(1))
-        {
-            Application.targetFrameRate = 60;
-        }
-        if (Input.GetMouseButtonDown(2))
-        {
-            Application.targetFrameRate = 120;
-        }
     }
 }

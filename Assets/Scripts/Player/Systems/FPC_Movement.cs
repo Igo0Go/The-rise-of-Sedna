@@ -31,7 +31,8 @@ public class FPC_Movement : MonoBehaviour
     private Transform crouchCameraPoint;
     [SerializeField]
     private Transform standCameraPoint;
-
+    [SerializeField]
+    private FPC_HeadbobSystem fPC_HeadbobSystem;
 
     private CharacterController characterController;
     private Vector2 horizontalInput;
@@ -49,7 +50,6 @@ public class FPC_Movement : MonoBehaviour
     private Vector3 cameraStandPosition;
     private Vector3 cameraCrouchPosition;
 
-
     public event Action<float, float, bool> SprintStatusChanged;
 
     private void Awake()
@@ -65,6 +65,19 @@ public class FPC_Movement : MonoBehaviour
     public void ReceiveInput(Vector2 _horizontalInput)
     {
         horizontalInput = _horizontalInput;
+        if (isGrounded)
+        {
+            fPC_HeadbobSystem.SetInput(horizontalInput);
+        }
+        else
+        {
+            fPC_HeadbobSystem.SetInput(Vector2.zero);
+        }
+
+        if(horizontalInput == Vector2.zero && useSprint)
+        {
+            SprintToggle();
+        }
     }
 
     public void OnJumpPressed()
@@ -90,8 +103,6 @@ public class FPC_Movement : MonoBehaviour
 
             SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);
             sprintRegen = true;
-
-
         }
     }
 
@@ -125,7 +136,24 @@ public class FPC_Movement : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(transform.position, 0.1f, ~groundCheckIgnoreMask);
 
-        if(!useSprint && sprintRegen)
+        if(isCrouching)
+        {
+            fPC_HeadbobSystem.SetFrequency(0.7f);
+            fPC_HeadbobSystem.SetAmount(0.2f);
+        }
+        else if (useSprint)
+        {
+            fPC_HeadbobSystem.SetFrequency(1.5f);
+            fPC_HeadbobSystem.SetAmount(2f);
+        }
+        else
+        {
+            fPC_HeadbobSystem.SetFrequency(1f);
+            fPC_HeadbobSystem.SetAmount(1f);
+        }
+
+
+        if (!useSprint && sprintRegen)
         {
             currentSprintTime += Time.deltaTime;
             SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);

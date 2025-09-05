@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -26,8 +27,10 @@ public class FPC_Movement : MonoBehaviour
     private bool jump;
     private bool sprint;
     private float currentSprintTime = 0;
+    private bool sprintRegen = false;
     private bool crouch;
 
+    public event Action<float, float, bool> SprintStatusChanged;
 
     private void Awake()
     {
@@ -48,6 +51,11 @@ public class FPC_Movement : MonoBehaviour
     public void SprintToggle()
     {
         sprint = !sprint;
+        if (sprint)
+        {
+            SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);
+            sprintRegen = true;
+        }
     }
 
     public void CrouchToggle()
@@ -59,10 +67,17 @@ public class FPC_Movement : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(transform.position, 0.1f, ~groundCheckIgnoreMask);
 
-        if(!sprint)
+        if(!sprint && sprintRegen)
         {
             currentSprintTime += Time.deltaTime;
-            currentSprintTime = Mathf.Clamp(currentSprintTime, 0, sprintTime);
+            SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);
+            if (currentSprintTime >= sprintTime)
+            {
+                SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, false);
+                currentSprintTime = sprintTime;
+                sprintRegen = false;
+ 
+            }
         }
 
         if (isGrounded)
@@ -72,10 +87,11 @@ public class FPC_Movement : MonoBehaviour
             if(sprint)
             {
                 currentSprintTime -= Time.deltaTime;
+                SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);
                 horizontalVelocity *= 2;
                 if(currentSprintTime < 0)
                 {
-                    sprint = false;
+                    SprintToggle();
                 }
             }
         }

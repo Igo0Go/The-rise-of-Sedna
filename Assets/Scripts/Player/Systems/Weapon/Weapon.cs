@@ -13,22 +13,21 @@ public class Weapon : MonoBehaviour
     [SerializeField]
     private Transform shootPoint;
     [SerializeField]
-    private Transform cameraTransform;
-    [SerializeField]
     private LayerMask ignoreMask;
     [SerializeField]
     private AudioClip shootCLip;
     [SerializeField]
     private float fireRate = 1;
 
+    private Transform cameraTransform;
     private float shootDelay;
     private bool shoot;
     private float currentTime;
 
-    private void Awake()
+    public void Init(Transform camera)
     {
+        cameraTransform = camera;
         shootDelay = 1 / (fireRate / 60);
-        print(shootDelay);
     }
 
     public void AttackInput()

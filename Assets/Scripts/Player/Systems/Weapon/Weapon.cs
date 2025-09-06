@@ -16,14 +16,39 @@ public class Weapon : MonoBehaviour
     private Transform cameraTransform;
     [SerializeField]
     private LayerMask ignoreMask;
+    [SerializeField]
+    private AudioClip shootCLip;
+    [SerializeField]
+    private float fireRate = 1;
+
+    private float shootDelay;
+    private bool shoot;
+    private float currentTime;
+
+    private void Awake()
+    {
+        shootDelay = 1 / (fireRate / 60);
+        print(shootDelay);
+    }
 
     public void AttackInput()
+    {
+        shoot = true;
+        currentTime = 0;
+    }
+
+    public void StopMainAttack()
+    {
+        shoot = false;
+    }
+
+    private void SpawnBullet()
     {
         Bullet bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation).GetComponent<Bullet>();
 
         Vector3 targetPoint;
 
-        if(Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hitInfo, 
+        if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hitInfo,
             distance, ~ignoreMask))
         {
             targetPoint = hitInfo.point;
@@ -35,5 +60,19 @@ public class Weapon : MonoBehaviour
 
         bullet.transform.forward = targetPoint - bullet.transform.position;
         bullet.LaunchBullet(damage, distance, bulletSpeed, ignoreMask);
+        AudioPack.audioSystem.PlaySound(shootCLip);
+    }
+
+    private void Update()
+    {
+        if(shoot)
+        {
+            currentTime -= Time.deltaTime;
+            if (currentTime <= 0)
+            {
+                SpawnBullet();
+                currentTime = shootDelay;
+            }
+        }
     }
 }

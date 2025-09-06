@@ -22,6 +22,8 @@ public class FPC_InputManager : MonoBehaviour
         groundMovement.HoriozontalMovement.performed += ctx => horizontalInput = ctx.ReadValue<Vector2>();
         groundMovement.View.performed += ctx => viewInput = ctx.ReadValue<Vector2>();
         groundMovement.Attack.performed += _ => fPC_WeaponSystem.MainAttack();
+        groundMovement.Attack.canceled += _ => fPC_WeaponSystem.StopMainAttack();
+
         groundMovement.Jump.performed += _ => fPC_Movement.OnJumpPressed();
         groundMovement.Sprint.performed += _ => fPC_Movement.SprintToggle();
         groundMovement.Crouch.performed += _ => fPC_Movement.CrouchToggle();

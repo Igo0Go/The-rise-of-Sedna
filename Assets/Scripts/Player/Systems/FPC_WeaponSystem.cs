@@ -9,4 +9,8 @@ public class FPC_WeaponSystem : MonoBehaviour
     {
         currentWeapon?.AttackInput();
     }
+    public void StopMainAttack()
+    {
+        currentWeapon?.StopMainAttack();
+    }
 }

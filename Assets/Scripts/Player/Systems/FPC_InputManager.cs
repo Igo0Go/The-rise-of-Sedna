@@ -6,6 +6,8 @@ public class FPC_InputManager : MonoBehaviour
     private FPC_Movement fPC_Movement;
     [SerializeField]
     private FPC_View fPC_Veiew;
+    [SerializeField]
+    private FPC_WeaponSystem fPC_WeaponSystem;
 
     private FPC controls;
     private FPC.GroundMovementActions groundMovement;
@@ -19,7 +21,7 @@ public class FPC_InputManager : MonoBehaviour
         groundMovement = controls.GroundMovement;
         groundMovement.HoriozontalMovement.performed += ctx => horizontalInput = ctx.ReadValue<Vector2>();
         groundMovement.View.performed += ctx => viewInput = ctx.ReadValue<Vector2>();
-
+        groundMovement.Attack.performed += _ => fPC_WeaponSystem.MainAttack();
         groundMovement.Jump.performed += _ => fPC_Movement.OnJumpPressed();
         groundMovement.Sprint.performed += _ => fPC_Movement.SprintToggle();
         groundMovement.Crouch.performed += _ => fPC_Movement.CrouchToggle();

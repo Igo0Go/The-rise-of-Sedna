@@ -14,6 +14,8 @@ public class WeaponItemData : ScriptableObject
     public int damage = 1;
     [Tooltip("Дальность стрельбы"), Min(1)]
     public float distance = 1;
+    [Tooltip("Вектор отдачи")]
+    public Vector2 recoilVector;
     [Tooltip("Скорость полёта пули"), Min(1)]
     public float bulletSpeed = 1;
     [Tooltip("Объект пули")]

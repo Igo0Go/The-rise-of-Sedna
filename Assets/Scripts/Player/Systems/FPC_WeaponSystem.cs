@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,9 +14,16 @@ public class FPC_WeaponSystem : MonoBehaviour
 
     private Dictionary<MagazineType, List<WeaponMagazine>> magazines = new();
 
+    private event Action<Vector2> RecoilEvent;
+
+    private void Awake()
+    {
+        RecoilEvent += FindFirstObjectByType<FPC_View>().OnRecoil;
+    }
+
     public void MainAttack()
     {
-        if (weaponPoint == null) return;
+        if (currentWeapon == null) return;
         currentWeapon.AttackInput();
     }
     public void StopMainAttack()
@@ -27,6 +35,7 @@ public class FPC_WeaponSystem : MonoBehaviour
     {
         if(currentWeapon != null)
         {
+            currentWeapon.Recoil -= OnRecoil;
             Instantiate(currentWeapon.weaponData.weaponItem, cameraTransform.position + cameraTransform.forward,
                 Quaternion.identity).GetComponent<WeaponItem>().magazine = currentWeapon.currentMagazine;
             Destroy(currentWeapon.gameObject);
@@ -34,6 +43,7 @@ public class FPC_WeaponSystem : MonoBehaviour
 
         currentWeapon = Instantiate(weapon.weaponItemData.weaponPrefab, weaponPoint).GetComponent<Weapon>();
         currentWeapon.Init(cameraTransform, weapon.magazine);
+        currentWeapon.Recoil += OnRecoil;
     }
     public void AddMagazine(WeaponMagazine magazine)
     {
@@ -61,5 +71,10 @@ public class FPC_WeaponSystem : MonoBehaviour
                 currentWeapon.Reload(m);
             }
         }
+    }
+
+    private void OnRecoil(Vector2 recoilVector)
+    {
+        RecoilEvent?.Invoke(recoilVector);
     }
 }

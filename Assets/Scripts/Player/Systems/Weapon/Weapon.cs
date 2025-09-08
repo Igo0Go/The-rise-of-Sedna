@@ -21,6 +21,8 @@ public class Weapon : MonoBehaviour
     [HideInInspector]
     public bool reload;
 
+    public event Action<Vector2> Recoil;
+
     private Action shootAction;
 
     public void Init(Transform camera, WeaponMagazine magazine)
@@ -81,6 +83,7 @@ public class Weapon : MonoBehaviour
         bullet.transform.forward = targetPoint - bullet.transform.position;
         bullet.LaunchBullet(weaponData.damage, weaponData.distance, weaponData.bulletSpeed, weaponData.ignoreMask);
         AudioPack.audioSystem.PlaySound(weaponData.shootCLip);
+        Recoil?.Invoke(weaponData.recoilVector);
     }
 
     private void Update()
@@ -130,6 +133,4 @@ public class Weapon : MonoBehaviour
         InsertMagazine(m);
         reload = false;
     }
-
-    
 }

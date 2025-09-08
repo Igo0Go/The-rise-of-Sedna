@@ -19,6 +19,7 @@ MonoBehaviour:
   consumptionPerShot: 1
   damage: 5
   distance: 59
+  recoilVector: {x: 1, y: 0.3}
   bulletSpeed: 80
   bulletPrefab: {fileID: 6746475370492487564, guid: fe65be143dd237c468bb38e48d7e1f2f, type: 3}
   ignoreMask:
@@ -27,7 +28,7 @@ MonoBehaviour:
   shootCLip: {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
   noAmmoCLip: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
   reloadCLip: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
-  fireRate: 240
+  fireRate: 360
   shootMode: 1
   weaponPrefab: {fileID: 5582251726428461898, guid: 7bda32d256833364d94f0cd61dc54df8, type: 3}
   weaponItem: {fileID: 2441901955327864219, guid: 2d8e4006fb4e2f743b41bb6bc8c5b25f, type: 3}

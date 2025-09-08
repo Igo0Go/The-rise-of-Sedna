@@ -1,39 +1,41 @@
+using System;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    [SerializeField, Min(1)]
-    private int damage = 1;
-    [SerializeField, Min(1)]
-    private float distance = 1;
-    [SerializeField, Min(1)]
-    private float bulletSpeed = 1;
-    [SerializeField]
-    private GameObject bulletPrefab;
     [SerializeField]
     private Transform shootPoint;
-    [SerializeField]
-    private LayerMask ignoreMask;
-    [SerializeField]
-    private AudioClip shootCLip;
-    [SerializeField]
-    private float fireRate = 1;
+    public WeaponItemData weaponData;
 
+    public WeaponMagazine currentMagazine;
     private Transform cameraTransform;
     private float shootDelay;
     private bool shoot;
     private float currentTime;
 
-    public void Init(Transform camera)
+    private Action shootAction;
+
+    public void Init(Transform camera, WeaponMagazine magazine)
     {
         cameraTransform = camera;
-        shootDelay = 1 / (fireRate / 60);
+        shootDelay = 1 / (weaponData.fireRate / 60);
+
+        currentMagazine = magazine;
+
+        switch (weaponData.shootMode)
+        {
+            case ShootMode.ClicToOneShot:
+                shootAction = SpawnBullet;
+                break;
+            case ShootMode.PressToShoot:
+                shootAction = StartShoot;
+                break;
+        }
     }
 
     public void AttackInput()
     {
-        shoot = true;
-        currentTime = 0;
+        shootAction();
     }
 
     public void StopMainAttack()
@@ -43,23 +45,32 @@ public class Weapon : MonoBehaviour
 
     private void SpawnBullet()
     {
-        Bullet bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation).GetComponent<Bullet>();
+        if(currentMagazine.currentAmmo <= 0)
+        {
+            AudioPack.audioSystem.PlaySound(weaponData.noAmmoCLip);
+            return;
+        }
+
+        currentMagazine.currentAmmo--;
+
+        Bullet bullet = Instantiate(weaponData.bulletPrefab, shootPoint.position, shootPoint.rotation).
+            GetComponent<Bullet>();
 
         Vector3 targetPoint;
 
         if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hitInfo,
-            distance, ~ignoreMask))
+            weaponData.distance, ~weaponData.ignoreMask))
         {
             targetPoint = hitInfo.point;
         }
         else
         {
-            targetPoint = cameraTransform.position + cameraTransform.forward * distance;
+            targetPoint = cameraTransform.position + cameraTransform.forward * weaponData.distance;
         }
 
         bullet.transform.forward = targetPoint - bullet.transform.position;
-        bullet.LaunchBullet(damage, distance, bulletSpeed, ignoreMask);
-        AudioPack.audioSystem.PlaySound(shootCLip);
+        bullet.LaunchBullet(weaponData.damage, weaponData.distance, weaponData.bulletSpeed, weaponData.ignoreMask);
+        AudioPack.audioSystem.PlaySound(weaponData.shootCLip);
     }
 
     private void Update()
@@ -73,5 +84,11 @@ public class Weapon : MonoBehaviour
                 currentTime = shootDelay;
             }
         }
+    }
+
+    private void StartShoot()
+    {
+        shoot = true;
+        currentTime = 0;
     }
 }

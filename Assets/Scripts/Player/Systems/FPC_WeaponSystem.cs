@@ -7,19 +7,28 @@ public class FPC_WeaponSystem : MonoBehaviour
     [SerializeField]
     private Transform cameraTransform;
 
-    private Weapon currentWeapon;
+    public Weapon currentWeapon;
 
     public void MainAttack()
     {
-        currentWeapon?.AttackInput();
+        if (weaponPoint == null) return;
+        currentWeapon.AttackInput();
     }
     public void StopMainAttack()
     {
-        currentWeapon?.StopMainAttack();
+        if (weaponPoint == null) return;
+        currentWeapon.StopMainAttack();
     }
-    public void TakeWeapon(GameObject weapon)
+    public void TakeWeapon(WeaponItem weapon)
     {
-        currentWeapon = Instantiate(weapon, weaponPoint).GetComponent<Weapon>();
-        currentWeapon.Init(cameraTransform);
+        if(currentWeapon != null)
+        {
+            Instantiate(currentWeapon.weaponData.weaponItem, cameraTransform.position + cameraTransform.forward,
+                Quaternion.identity).GetComponent<WeaponItem>().magazine = currentWeapon.currentMagazine;
+            Destroy(currentWeapon.gameObject);
+        }
+
+        currentWeapon = Instantiate(weapon.weaponItemData.weaponPrefab, weaponPoint).GetComponent<Weapon>();
+        currentWeapon.Init(cameraTransform, weapon.magazine);
     }
 }

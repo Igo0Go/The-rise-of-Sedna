@@ -47,8 +47,7 @@ public class FPC_Movement : MonoBehaviour
     private bool isCrouching = false;
     private float originalHeight;
     private float originalCenterHeight;
-    private Vector3 cameraStandPosition;
-    private Vector3 cameraCrouchPosition;
+
 
     public event Action<float, float, bool> SprintStatusChanged;
 
@@ -58,8 +57,6 @@ public class FPC_Movement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         originalHeight = characterController.height;
         originalCenterHeight = characterController.center.y;
-        cameraStandPosition = standCameraPoint.localPosition;
-        cameraCrouchPosition = crouchCameraPoint.localPosition;
     }
 
     public void ReceiveInput(Vector2 _horizontalInput)
@@ -173,7 +170,7 @@ public class FPC_Movement : MonoBehaviour
             {
                 currentSprintTime -= Time.deltaTime;
                 SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);
-                horizontalVelocity *= 2;
+                horizontalVelocity *= sprintMultiplier;
                 if(currentSprintTime < 0)
                 {
                     SprintToggle();

@@ -26,11 +26,12 @@ public class FPC_Interaction : MonoBehaviour
             if(lastCollider != hitInfo.collider)
             {
                 lastCollider = hitInfo.collider;
-                lastInteractiveObject = lastCollider.GetComponent<InteractiveObject>();
 
-                (string name, string action) data = lastInteractiveObject.GetData();
-
-                NewInteractiveObjectFound?.Invoke(data.name,data.action);
+                if(lastCollider.TryGetComponent(out lastInteractiveObject))
+                {
+                    (string name, string action) data = lastInteractiveObject.GetData();
+                    NewInteractiveObjectFound?.Invoke(data.name, data.action);
+                }
             }
         }
         else

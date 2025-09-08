@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4388345748121905018}
   - component: {fileID: 61540554931002999}
   m_Layer: 0
-  m_Name: sampleDecal
+  m_Name: BlasterDecalBlue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0cc51ef240beea47958ec46492fde1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifeTime: 60
-  sound: {fileID: 8300000, guid: e11a5a019377fbd4c81caa0adcb4c236, type: 3}
+  lifeTime: 20
+  sound: {fileID: 8300000, guid: bb6cdd13aeb95f743847b1cd460889bc, type: 3}
 --- !u!1 &853098005100800810
 GameObject:
   m_ObjectHideFlags: 0
@@ -111,7 +111,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6f7b6f70ff9b12044906e44f2b3c9819, type: 2}
+  - {fileID: 2100000, guid: 90fea526a248a95478eb400805ae7b29, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

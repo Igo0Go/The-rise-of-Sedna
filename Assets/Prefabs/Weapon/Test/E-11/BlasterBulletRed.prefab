@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 3568637306028606631}
   - component: {fileID: 3578600730029634521}
   m_Layer: 0
-  m_Name: sampleBullet
+  m_Name: BlasterBulletRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

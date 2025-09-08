@@ -16,9 +16,12 @@ public class FPC_WeaponSystem : MonoBehaviour
 
     private event Action<Vector2> RecoilEvent;
 
+    private float reloadTime = 0;
+
     private void Awake()
     {
         RecoilEvent += FindFirstObjectByType<FPC_View>().OnRecoil;
+        reloadTime = -1;
     }
 
     public void MainAttack()
@@ -28,8 +31,20 @@ public class FPC_WeaponSystem : MonoBehaviour
     }
     public void StopMainAttack()
     {
-        if (weaponPoint == null) return;
+        if (currentWeapon == null) return;
         currentWeapon.StopMainAttack();
+    }
+    public void StartReload()
+    {
+        reloadTime = 0;
+    }
+    public void StopReload()
+    {
+        if (reloadTime > 1 || reloadTime < 0) return;
+        if (currentWeapon == null) return;
+        if (currentWeapon.reload) return;
+
+        TryReload();
     }
     public void TakeWeapon(WeaponItem weapon)
     {
@@ -59,7 +74,6 @@ public class FPC_WeaponSystem : MonoBehaviour
     public void TryReload()
     {
         if(currentWeapon == null) return;
-
         if (currentWeapon.reload) return;
 
         if(magazines.Keys.Contains(currentWeapon.weaponData.MagazineType))
@@ -76,5 +90,43 @@ public class FPC_WeaponSystem : MonoBehaviour
     private void OnRecoil(Vector2 recoilVector)
     {
         RecoilEvent?.Invoke(recoilVector);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            string result = string.Empty;
+
+            if (currentWeapon != null && currentWeapon.currentMagazine != null)
+            {
+                result += "==[" + currentWeapon.currentMagazine.currentAmmo + "]\t";
+            }
+
+            if (magazines.ContainsKey(currentWeapon.weaponData.MagazineType))
+            {
+                foreach(var item in magazines[currentWeapon.weaponData.MagazineType])
+                {
+                    result += "[" + item.currentAmmo + "] ";
+                }
+            }
+
+            print(result);
+        }
+
+        if(reloadTime < 0) return;
+
+        reloadTime += Time.deltaTime;
+        if(reloadTime > 1)
+        {
+            reloadTime = -1;
+            if (currentWeapon == null) return;
+            if (currentWeapon.reload) return;
+            if (currentWeapon.currentMagazine == null) return;
+
+            AddMagazine(currentWeapon.currentMagazine);
+            currentWeapon.currentMagazine = null;
+            currentWeapon.PullOutMagazine();
+        }
     }
 }

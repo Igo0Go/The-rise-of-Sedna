@@ -57,7 +57,7 @@ public class Weapon : MonoBehaviour
         
     private void SpawnBullet()
     {
-        if(currentMagazine.currentAmmo < weaponData.consumptionPerShot)
+        if(currentMagazine == null || currentMagazine.currentAmmo < weaponData.consumptionPerShot)
         {
             AudioPack.audioSystem.PlaySound(weaponData.noAmmoCLip);
             return;

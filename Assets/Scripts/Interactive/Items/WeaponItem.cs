@@ -3,14 +3,22 @@ public class WeaponItem : InteractiveObject
     public WeaponItemData weaponItemData;
     public WeaponMagazine magazine;
 
-
     public override (string name, string action) GetData()
     {
-        int maxShot = magazine.data.maxAmmo / weaponItemData.consumptionPerShot;
-        int currentShotCount = magazine.currentAmmo / weaponItemData.consumptionPerShot;
+        string title = weaponItemData.Name;
 
-        return (weaponItemData.Name + "(" + currentShotCount +"/" + maxShot +")", 
-            weaponItemData.ActionDescription);
+        if (magazine != null)
+        {
+            int maxShot = magazine.data.maxAmmo / weaponItemData.consumptionPerShot;
+            int currentShotCount = magazine.currentAmmo / weaponItemData.consumptionPerShot;
+            title += "(" + currentShotCount + "/" + maxShot + ")";
+        }
+        else
+        {
+            title += " (разряжено)";
+        }
+
+        return (title, weaponItemData.ActionDescription);
     }
 
     public override void Use()

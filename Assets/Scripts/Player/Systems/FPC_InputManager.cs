@@ -25,7 +25,8 @@ public class FPC_InputManager : MonoBehaviour
         groundMovement.View.performed += ctx => viewInput = ctx.ReadValue<Vector2>();
         groundMovement.Attack.performed += _ => fPC_WeaponSystem.MainAttack();
         groundMovement.Attack.canceled += _ => fPC_WeaponSystem.StopMainAttack();
-        groundMovement.Reload.performed += _ => fPC_WeaponSystem.TryReload();
+        groundMovement.Reload.performed += _ => fPC_WeaponSystem.StartReload();
+        groundMovement.Reload.canceled += _ => fPC_WeaponSystem.StopReload();
         groundMovement.Action.performed += _ => fPC_Interaction.OnUseInput();
         groundMovement.Jump.performed += _ => fPC_Movement.OnJumpPressed();
         groundMovement.Sprint.performed += _ => fPC_Movement.SprintToggle();

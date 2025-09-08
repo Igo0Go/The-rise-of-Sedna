@@ -15,8 +15,9 @@ MonoBehaviour:
   Name: "\u0411\u043B\u0430\u0441\u0442\u0435\u0440\u043D\u044B\u0439 \u043A\u0430\u0440\u0430\u0431\u0438\u043D
     DC-15"
   ActionDescription: "\u0412\u0437\u044F\u0442\u044C"
-  magazineSize: 34
-  damage: 28
+  MagazineType: 0
+  consumptionPerShot: 3
+  damage: 15
   distance: 35
   bulletSpeed: 80
   bulletPrefab: {fileID: 6746475370492487564, guid: 08aefe0d36c72d541bfd3a9a1b766240, type: 3}
@@ -25,6 +26,7 @@ MonoBehaviour:
     m_Bits: 332
   shootCLip: {fileID: 8300000, guid: e11a5a019377fbd4c81caa0adcb4c236, type: 3}
   noAmmoCLip: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
+  reloadCLip: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
   fireRate: 1
   shootMode: 0
   weaponPrefab: {fileID: 36684999156919740, guid: 789eb6173c3960340bc3d2cbf35dc6b8, type: 3}

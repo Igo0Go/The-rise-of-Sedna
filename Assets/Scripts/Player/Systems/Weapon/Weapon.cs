@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class Weapon : MonoBehaviour
@@ -7,11 +9,17 @@ public class Weapon : MonoBehaviour
     private Transform shootPoint;
     public WeaponItemData weaponData;
 
+    [SerializeField]
+    private GameObject magazineObj;
+
     public WeaponMagazine currentMagazine;
     private Transform cameraTransform;
     private float shootDelay;
     private bool shoot;
     private float currentTime;
+
+    [HideInInspector]
+    public bool reload;
 
     private Action shootAction;
 
@@ -35,6 +43,8 @@ public class Weapon : MonoBehaviour
 
     public void AttackInput()
     {
+        if (reload) return;
+
         shootAction();
     }
 
@@ -42,16 +52,16 @@ public class Weapon : MonoBehaviour
     {
         shoot = false;
     }
-
+        
     private void SpawnBullet()
     {
-        if(currentMagazine.currentAmmo <= 0)
+        if(currentMagazine.currentAmmo < weaponData.consumptionPerShot)
         {
             AudioPack.audioSystem.PlaySound(weaponData.noAmmoCLip);
             return;
         }
 
-        currentMagazine.currentAmmo--;
+        currentMagazine.currentAmmo -= weaponData.consumptionPerShot;
 
         Bullet bullet = Instantiate(weaponData.bulletPrefab, shootPoint.position, shootPoint.rotation).
             GetComponent<Bullet>();
@@ -91,4 +101,35 @@ public class Weapon : MonoBehaviour
         shoot = true;
         currentTime = 0;
     }
+
+    public void Reload(WeaponMagazine magazine)
+    {
+        StartCoroutine(ReloadCoroutine(magazine));
+    }
+
+    public void PullOutMagazine()
+    {
+        if(magazineObj.activeSelf)
+        {
+            magazineObj.SetActive(false);
+            AudioPack.audioSystem.PlaySound(weaponData.reloadCLip);
+        }
+    }
+    public void InsertMagazine(WeaponMagazine m)
+    {
+        magazineObj.SetActive(true);
+        AudioPack.audioSystem.PlaySound(weaponData.reloadCLip);
+        currentMagazine = m;
+    }
+
+    public IEnumerator ReloadCoroutine(WeaponMagazine m)
+    {
+        reload = true;
+        PullOutMagazine();
+        yield return new WaitForSeconds(1);
+        InsertMagazine(m);
+        reload = false;
+    }
+
+    
 }

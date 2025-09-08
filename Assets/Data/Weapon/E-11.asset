@@ -15,7 +15,8 @@ MonoBehaviour:
   Name: "\u0411\u043B\u0430\u0441\u0442\u0435\u0440\u043D\u0430\u044F \u0432\u0438\u043D\u0442\u043E\u0432\u043A\u0430
     E-11"
   ActionDescription: "\u0412\u0437\u044F\u0442\u044C"
-  magazineSize: 70
+  MagazineType: 0
+  consumptionPerShot: 1
   damage: 5
   distance: 59
   bulletSpeed: 80
@@ -25,6 +26,7 @@ MonoBehaviour:
     m_Bits: 332
   shootCLip: {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
   noAmmoCLip: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
+  reloadCLip: {fileID: 8300000, guid: a37f44cbf8c2a7443a3c361efa2f233a, type: 3}
   fireRate: 240
   shootMode: 1
   weaponPrefab: {fileID: 5582251726428461898, guid: 7bda32d256833364d94f0cd61dc54df8, type: 3}

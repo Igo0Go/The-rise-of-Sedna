@@ -698,7 +698,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponItemData: {fileID: 11400000, guid: e98e76926fd47f849821808d9848d7bd, type: 2}
-  currentAmmo: 34
+  magazine:
+    data: {fileID: 11400000, guid: 1acb836d6ef9aed4b84f59b22aa9c090, type: 2}
+    currentAmmo: 42
 --- !u!1 &1554018210916330352
 GameObject:
   m_ObjectHideFlags: 0

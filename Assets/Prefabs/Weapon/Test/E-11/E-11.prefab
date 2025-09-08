@@ -26,12 +26,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 59405183537397352}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.153, y: 0.183, z: -0.767}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.10167497, y: 0.093647994, z: 0.08325809}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2977295957041603963}
+  m_Father: {fileID: 6974872260307995816}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2265552578149143273
 MeshFilter:
@@ -803,6 +803,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6974872260307995816}
   - {fileID: 7520054545405984558}
   - {fileID: 6088016668097678702}
   - {fileID: 2261387711301212367}
@@ -818,8 +819,6 @@ Transform:
   - {fileID: 1994358146930998920}
   - {fileID: 5569933583427333318}
   - {fileID: 5763466676515213128}
-  - {fileID: 108253207710334685}
-  - {fileID: 3700393220148286990}
   - {fileID: 7234959967523233901}
   - {fileID: 2565223605800219713}
   - {fileID: 5690905667749760790}
@@ -945,12 +944,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3119715643381105052}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.2111, y: 0.183, z: -0.767}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.058099985, y: 0, z: 0}
   m_LocalScale: {x: 0.028574465, y: 0.10523225, z: 0.09355712}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2977295957041603963}
+  m_Father: {fileID: 6974872260307995816}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &5201235825923867093
 MeshFilter:
@@ -1741,6 +1740,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shootPoint: {fileID: 5683728313058234360}
   weaponData: {fileID: 11400000, guid: 4991fb51990dc2741bd4e7cdb4320260, type: 2}
+  magazineObj: {fileID: 7679647013582896392}
+  currentMagazine:
+    data: {fileID: 11400000, guid: 1acb836d6ef9aed4b84f59b22aa9c090, type: 2}
+    currentAmmo: 42
+  reload: 0
 --- !u!1 &6563531272997506847
 GameObject:
   m_ObjectHideFlags: 0
@@ -2378,6 +2382,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7679647013582896392
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6974872260307995816}
+  m_Layer: 8
+  m_Name: MagazineObj
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6974872260307995816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7679647013582896392}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.153, y: 0.183, z: -0.767}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 108253207710334685}
+  - {fileID: 3700393220148286990}
+  m_Father: {fileID: 2977295957041603963}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7734997298682014262
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class FPC_WeaponSystem : MonoBehaviour
@@ -8,6 +10,8 @@ public class FPC_WeaponSystem : MonoBehaviour
     private Transform cameraTransform;
 
     public Weapon currentWeapon;
+
+    private Dictionary<MagazineType, List<WeaponMagazine>> magazines = new();
 
     public void MainAttack()
     {
@@ -30,5 +34,32 @@ public class FPC_WeaponSystem : MonoBehaviour
 
         currentWeapon = Instantiate(weapon.weaponItemData.weaponPrefab, weaponPoint).GetComponent<Weapon>();
         currentWeapon.Init(cameraTransform, weapon.magazine);
+    }
+    public void AddMagazine(WeaponMagazine magazine)
+    {
+        if(!magazines.Keys.Contains(magazine.data.type))
+        {
+            magazines.Add(magazine.data.type, new List<WeaponMagazine>() { magazine });
+        }
+        else
+        {
+            magazines[magazine.data.type].Add(magazine);
+        }
+    }
+    public void TryReload()
+    {
+        if(currentWeapon == null) return;
+
+        if (currentWeapon.reload) return;
+
+        if(magazines.Keys.Contains(currentWeapon.weaponData.MagazineType))
+        {
+            if (magazines[currentWeapon.weaponData.MagazineType].Count > 0)
+            {
+                WeaponMagazine m = magazines[currentWeapon.weaponData.MagazineType][0];
+                magazines[currentWeapon.weaponData.MagazineType].RemoveAt(0);
+                currentWeapon.Reload(m);
+            }
+        }
     }
 }

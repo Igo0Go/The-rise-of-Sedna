@@ -1,18 +1,15 @@
-using UnityEngine;
-
 public class WeaponItem : InteractiveObject
 {
     public WeaponItemData weaponItemData;
     public WeaponMagazine magazine;
 
-    private void Awake()
-    {
-        magazine = new WeaponMagazine(weaponItemData);
-    }
 
     public override (string name, string action) GetData()
     {
-        return (weaponItemData.Name + "(" + magazine.currentAmmo +"/" + magazine.maxAmmo +")", 
+        int maxShot = magazine.data.maxAmmo / weaponItemData.consumptionPerShot;
+        int currentShotCount = magazine.currentAmmo / weaponItemData.consumptionPerShot;
+
+        return (weaponItemData.Name + "(" + currentShotCount +"/" + maxShot +")", 
             weaponItemData.ActionDescription);
     }
 

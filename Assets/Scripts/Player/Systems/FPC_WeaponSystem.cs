@@ -15,6 +15,9 @@ public class FPC_WeaponSystem : MonoBehaviour
     private Dictionary<MagazineType, List<WeaponMagazine>> magazines = new();
 
     private event Action<Vector2> RecoilEvent;
+    public event Action<Weapon> WeaponChanged;
+    public event Action<Weapon> AmmoChanged;
+    public event Action<List<WeaponMagazine>, Weapon> MagazinesChanged;
 
     private float reloadTime = 0;
 
@@ -51,14 +54,32 @@ public class FPC_WeaponSystem : MonoBehaviour
         if(currentWeapon != null)
         {
             currentWeapon.Recoil -= OnRecoil;
-            Instantiate(currentWeapon.weaponData.weaponItem, cameraTransform.position + cameraTransform.forward,
-                Quaternion.identity).GetComponent<WeaponItem>().magazine = currentWeapon.currentMagazine;
+            currentWeapon.AmmoChanged -= OnCurrentWeaponAmmoChanged;
+            currentWeapon.ReloadFinaled -= OnFinalReload;
+
+            WeaponItem item = Instantiate(currentWeapon.weaponData.weaponItem, cameraTransform.position + cameraTransform.forward,
+                Quaternion.identity).GetComponent<WeaponItem>();
+
+            item.SetMagazine(currentWeapon.currentMagazine);
             Destroy(currentWeapon.gameObject);
         }
 
         currentWeapon = Instantiate(weapon.weaponItemData.weaponPrefab, weaponPoint).GetComponent<Weapon>();
         currentWeapon.Init(cameraTransform, weapon.magazine);
+
         currentWeapon.Recoil += OnRecoil;
+        currentWeapon.AmmoChanged += OnCurrentWeaponAmmoChanged;
+        currentWeapon.ReloadFinaled += OnFinalReload;
+
+        if(!magazines.ContainsKey(weapon.weaponItemData.MagazineType))
+        {
+            magazines.Add(weapon.weaponItemData.MagazineType, new List<WeaponMagazine>());
+        }
+
+
+        WeaponChanged?.Invoke(currentWeapon);
+        AmmoChanged?.Invoke(currentWeapon);
+        MagazinesChanged?.Invoke(magazines[weapon.weaponItemData.MagazineType], currentWeapon);
     }
     public void AddMagazine(WeaponMagazine magazine)
     {
@@ -70,6 +91,13 @@ public class FPC_WeaponSystem : MonoBehaviour
         {
             magazines[magazine.data.type].Add(magazine);
         }
+
+        if (currentWeapon == null) return;
+
+        if(currentWeapon.weaponData.MagazineType == magazine.data.type)
+        {
+            MagazinesChanged?.Invoke(magazines[magazine.data.type], currentWeapon);
+        }
     }
     public void TryReload()
     {
@@ -80,6 +108,10 @@ public class FPC_WeaponSystem : MonoBehaviour
         {
             if (magazines[currentWeapon.weaponData.MagazineType].Count > 0)
             {
+                if(currentWeapon.currentMagazine != null && currentWeapon.currentMagazine.currentAmmo != 0)
+                {
+                    magazines[currentWeapon.weaponData.MagazineType].Add(currentWeapon.currentMagazine);
+                }
                 WeaponMagazine m = magazines[currentWeapon.weaponData.MagazineType][0];
                 magazines[currentWeapon.weaponData.MagazineType].RemoveAt(0);
                 currentWeapon.Reload(m);
@@ -128,5 +160,15 @@ public class FPC_WeaponSystem : MonoBehaviour
             currentWeapon.currentMagazine = null;
             currentWeapon.PullOutMagazine();
         }
+    }
+
+    private void OnCurrentWeaponAmmoChanged()
+    {
+        AmmoChanged?.Invoke(currentWeapon);
+    }
+
+    private void OnFinalReload()
+    {
+        MagazinesChanged?.Invoke(magazines[currentWeapon.weaponData.MagazineType], currentWeapon);
     }
 }

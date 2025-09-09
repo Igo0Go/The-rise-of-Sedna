@@ -19,7 +19,7 @@ MonoBehaviour:
   consumptionPerShot: 2
   damage: 15
   distance: 35
-  recoilVector: {x: -1, y: 3}
+  recoilVector: {x: -1, y: 2}
   bulletSpeed: 80
   bulletPrefab: {fileID: 6746475370492487564, guid: 08aefe0d36c72d541bfd3a9a1b766240, type: 3}
   ignoreMask:

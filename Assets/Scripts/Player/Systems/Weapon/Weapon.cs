@@ -22,6 +22,9 @@ public class Weapon : MonoBehaviour
     public bool reload;
 
     public event Action<Vector2> Recoil;
+    public event Action AmmoChanged;
+    public event Action ReloadFinaled;
+
 
     private Action shootAction;
 
@@ -31,6 +34,11 @@ public class Weapon : MonoBehaviour
         shootDelay = 1 / (weaponData.fireRate / 60);
 
         currentMagazine = magazine;
+
+        if(currentMagazine == null)
+        {
+            magazineObj.SetActive(false);
+        }
 
         switch (weaponData.shootMode)
         {
@@ -64,6 +72,7 @@ public class Weapon : MonoBehaviour
         }
 
         currentMagazine.currentAmmo -= weaponData.consumptionPerShot;
+        AmmoChanged?.Invoke();
 
         Bullet bullet = Instantiate(weaponData.bulletPrefab, shootPoint.position, shootPoint.rotation).
             GetComponent<Bullet>();
@@ -116,6 +125,7 @@ public class Weapon : MonoBehaviour
         {
             magazineObj.SetActive(false);
             AudioPack.audioSystem.PlaySound(weaponData.reloadCLip);
+            AmmoChanged?.Invoke();
         }
     }
     public void InsertMagazine(WeaponMagazine m)
@@ -123,6 +133,7 @@ public class Weapon : MonoBehaviour
         magazineObj.SetActive(true);
         AudioPack.audioSystem.PlaySound(weaponData.reloadCLip);
         currentMagazine = m;
+        AmmoChanged?.Invoke();
     }
 
     public IEnumerator ReloadCoroutine(WeaponMagazine m)
@@ -132,5 +143,6 @@ public class Weapon : MonoBehaviour
         yield return new WaitForSeconds(1);
         InsertMagazine(m);
         reload = false;
+        ReloadFinaled?.Invoke();
     }
 }

@@ -156,7 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   magazine:
     data: {fileID: 11400000, guid: 1acb836d6ef9aed4b84f59b22aa9c090, type: 2}
-    currentAmmo: 42
+    currentAmmo: 100
 --- !u!1 &7128658605993195366
 GameObject:
   m_ObjectHideFlags: 0

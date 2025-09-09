@@ -1,7 +1,18 @@
+using UnityEngine;
+
 public class WeaponItem : InteractiveObject
 {
     public WeaponItemData weaponItemData;
     public WeaponMagazine magazine;
+
+    [SerializeField]
+    private GameObject magazineObject;
+
+    public void SetMagazine(WeaponMagazine m)
+    {
+        magazine = m;
+        magazineObject.SetActive(magazine != null);
+    }
 
     public override (string name, string action) GetData()
     {

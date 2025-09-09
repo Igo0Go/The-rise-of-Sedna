@@ -26,8 +26,15 @@ public class Bullet : MonoBehaviour
 
         if(Physics.Linecast(oldPos, transform.position, out RaycastHit hitInfo, ~ignoreMask))
         {
-            GameObject decalObj = Instantiate(decal, hitInfo.point, Quaternion.identity);
-            decalObj.transform.forward = hitInfo.normal;
+            if(hitInfo.collider.TryGetComponent(out EnemyBase enemy)) 
+            {
+                enemy.GedDamage(damage);
+            }
+            else
+            {
+                GameObject decalObj = Instantiate(decal, hitInfo.point, Quaternion.identity);
+                decalObj.transform.forward = hitInfo.normal;
+            }
             Destroy(gameObject);
         }
 

@@ -17,7 +17,7 @@ MonoBehaviour:
   ActionDescription: "\u0412\u0437\u044F\u0442\u044C"
   MagazineType: 0
   consumptionPerShot: 1
-  damage: 5
+  damage: 35
   distance: 59
   recoilVector: {x: 1, y: 0.3}
   bulletSpeed: 80

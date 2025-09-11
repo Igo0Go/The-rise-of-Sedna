@@ -25,6 +25,8 @@ public class FPC_Movement : MonoBehaviour
     private float crouchCenterHeight = 0.5f;
     [SerializeField, Min(0.1f)]
     private float crouchTransitionSpeed = 10f;
+    [SerializeField, Min(0.01f)]
+    private float groundCheckSphereRadius = 10f;
     [SerializeField]
     private Transform cameraPoint;
     [SerializeField]
@@ -131,7 +133,7 @@ public class FPC_Movement : MonoBehaviour
 
     private void Update()
     {
-        isGrounded = Physics.CheckSphere(transform.position, 0.1f, ~groundCheckIgnoreMask);
+        isGrounded = Physics.CheckSphere(transform.position, groundCheckSphereRadius, ~groundCheckIgnoreMask);
 
         if(isCrouching)
         {

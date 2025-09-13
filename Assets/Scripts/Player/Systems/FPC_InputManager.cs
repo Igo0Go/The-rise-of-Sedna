@@ -31,9 +31,18 @@ public class FPC_InputManager : MonoBehaviour
         groundMovement.Jump.performed += _ => fPC_Movement.OnJumpPressed();
         groundMovement.Sprint.performed += _ => fPC_Movement.SprintToggle();
         groundMovement.Crouch.performed += _ => fPC_Movement.CrouchToggle();
+        groundMovement.Aim.performed += _ => fPC_WeaponSystem.SetAimState(true);
+        groundMovement.Aim.canceled += _ => fPC_WeaponSystem.SetAimState(false);
 
 
         Application.targetFrameRate = 60;
+    }
+
+    public void ResetInput()
+    {
+        horizontalInput = viewInput = Vector2.zero;
+        fPC_Movement.ReceiveInput(horizontalInput);
+        fPC_Veiew.ReceiveInput(viewInput);
     }
 
     private void OnEnable()

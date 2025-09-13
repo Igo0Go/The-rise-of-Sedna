@@ -8,6 +8,8 @@ public class TrainingTarget : EnemyBase
     private int maxHP = 100;
     [SerializeField]
     private GameObject targetObjs;
+    [SerializeField]
+    private bool reborn = true;
 
     protected override void Dead()
     {
@@ -20,8 +22,12 @@ public class TrainingTarget : EnemyBase
         Collider col = GetComponent<Collider>();
         col.enabled = false;
         yield return new WaitForSeconds(3);
-        col.enabled = true;
-        targetObjs.SetActive(true);
-        HP = 100;
+
+        if (reborn)
+        {
+            col.enabled = true;
+            targetObjs.SetActive(true);
+            HP = 100;
+        }
     }
 }

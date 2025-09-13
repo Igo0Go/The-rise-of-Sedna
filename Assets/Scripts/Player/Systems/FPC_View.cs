@@ -21,13 +21,14 @@ public class FPC_View : MonoBehaviour
     [SerializeField]
     private Transform recoilPoint;
 
+    private float aimMultiplier = 1;
+
     private float x, y, xRecoil, yRecoil;
     private float xRotation = 0;
 
-    private void Awake()
+    public void SetAimState(bool value)
     {
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        aimMultiplier = value ? 0.2f : 1;
     }
 
     public void ReceiveInput(Vector2 input)
@@ -67,8 +68,8 @@ public class FPC_View : MonoBehaviour
         {
             t += Time.deltaTime * recoilSpeed;
 
-            xRecoil = Mathf.Lerp(0, input.x * recoilForce, t);
-            yRecoil = Mathf.Lerp(0, input.y * recoilForce, t);
+            xRecoil = Mathf.Lerp(0, input.x * recoilForce * aimMultiplier, t);
+            yRecoil = Mathf.Lerp(0, input.y * recoilForce * aimMultiplier, t);
             yield return null;
         }
 
@@ -78,21 +79,11 @@ public class FPC_View : MonoBehaviour
         {
             t += Time.deltaTime * recoilSpeed;
 
-            xRecoil = Mathf.Lerp(0, -input.x * recoilForce, t);
-            yRecoil = Mathf.Lerp(0, -input.y * recoilForce, t);
+            xRecoil = Mathf.Lerp(0, -input.x * recoilForce * aimMultiplier, t);
+            yRecoil = Mathf.Lerp(0, -input.y * recoilForce * aimMultiplier, t);
             yield return null;
         }
 
         xRecoil = yRecoil = 0;
-
-        //t = 0;
-
-        //while (t < 1*recoilReturnForce)
-        //{
-        //    t += Time.deltaTime * recoilSpeed;
-        //    transform.localEulerAngles = Vector3.Lerp(targetY, saveY, t);
-        //    cameraPoint.localEulerAngles = Vector3.Lerp(targetX, saveX, t);
-        //    yield return null;
-        //}
     }
 }

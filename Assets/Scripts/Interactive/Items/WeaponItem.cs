@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WeaponItem : InteractiveObject
 {
@@ -7,6 +8,8 @@ public class WeaponItem : InteractiveObject
 
     [SerializeField]
     private GameObject magazineObject;
+    [SerializeField]
+    private UnityEvent onUseEvent;
 
     public void SetMagazine(WeaponMagazine m)
     {
@@ -35,6 +38,7 @@ public class WeaponItem : InteractiveObject
     public override void Use()
     {
         FindFirstObjectByType<FPC_WeaponSystem>().TakeWeapon(this);
+        onUseEvent?.Invoke();
         Destroy(gameObject);
     }
 }

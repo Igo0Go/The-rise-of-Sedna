@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class PauseControlSystem : MonoBehaviour
 {
@@ -15,27 +16,46 @@ public class PauseControlSystem : MonoBehaviour
         }
     }
     private bool _isMessage = false;
+    public bool IsCutscene
+    {
+        get
+        {
+            return _isCutscene;
+        }
+        set
+        {
+            _isCutscene = value;
+            PauseUpdate();
+        }
+    }
+    private bool _isCutscene = false;
 
     [SerializeField]
     private FPC_InputManager _inputManager;
 
-    private void Awake()
+    public event Action<bool> CursorModeChanged;
+    public event Action<bool> HudActiveChanged;
+
+    private void Start()
     {
         PauseUpdate();
     }
 
     private void PauseUpdate()
     {
-        bool pause = _isMessage;
-        SetPause(pause);
+        SetTimeBlockState(_isMessage);
+        SetCotrollBlockState(_isMessage || _isCutscene);
+        HudActiveChanged?.Invoke(!_isCutscene);
+        CursorModeChanged?.Invoke(_isMessage);
     }
 
-    private void SetPause(bool value)
+    private void SetCotrollBlockState(bool value)
     {
-        Time.timeScale = value ? 0 : 1;
-        Cursor.lockState = value? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = value;
         _inputManager.ResetInput();
         _inputManager.enabled = !value;
+    }
+    private void SetTimeBlockState(bool value)
+    {
+        Time.timeScale = value ? 0 : 1;
     }
 }

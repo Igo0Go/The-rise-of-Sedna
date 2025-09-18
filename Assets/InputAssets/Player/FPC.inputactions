@@ -233,6 +233,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "Cutscene",
+            "id": "c5a2c765-c6b5-4757-b7ca-6af6ab9f7d61",
+            "actions": [
+                {
+                    "name": "Skip",
+                    "type": "Button",
+                    "id": "76ee0c96-7242-4627-89e1-87c836bb8324",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "8e153ba9-bf04-449d-946c-108add83dcf5",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": []

@@ -17,6 +17,7 @@ public class ScreenMessageSystem : MonoBehaviour
 
     private void Awake()
     {
+        panel.SetActive(false);
         continueButton.onClick.AddListener(OnContinue);
     }
 

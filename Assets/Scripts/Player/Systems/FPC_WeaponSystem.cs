@@ -17,6 +17,7 @@ public class FPC_WeaponSystem : MonoBehaviour
     private event Action<Vector2> RecoilEvent;
     public event Action<Weapon> WeaponChanged;
     public event Action<Weapon> AmmoChanged;
+    public event Action<bool> AimValueChanged;
     public event Action<List<WeaponMagazine>, Weapon> MagazinesChanged;
 
     private float reloadTime = 0;
@@ -24,6 +25,8 @@ public class FPC_WeaponSystem : MonoBehaviour
     private void Awake()
     {
         RecoilEvent += FindFirstObjectByType<FPC_View>().OnRecoil;
+        AimValueChanged += FindFirstObjectByType<FPC_HeadbobSystem>().SetAim;
+        AimValueChanged += FindFirstObjectByType<FPC_View>().SetAimState;
         reloadTime = -1;
     }
 
@@ -116,6 +119,14 @@ public class FPC_WeaponSystem : MonoBehaviour
                 magazines[currentWeapon.weaponData.MagazineType].RemoveAt(0);
                 currentWeapon.Reload(m);
             }
+        }
+    }
+    public void SetAimState(bool state)
+    {
+        if(currentWeapon != null)
+        {
+            AimValueChanged?.Invoke(state);
+            currentWeapon.SetAimState(state);
         }
     }
 

@@ -6,8 +6,7 @@ public abstract class EnemyBase : MonoBehaviour
     [SerializeField, Min(1)]
     protected int HP;
 
-    [SerializeField]
-    private UnityEvent deadEvent;
+    public UnityEvent<EnemyBase> deadEvent;
 
     public virtual void GedDamage(int damage)
     {
@@ -15,7 +14,7 @@ public abstract class EnemyBase : MonoBehaviour
         if (HP <= 0)
         {
             Dead();
-            deadEvent.Invoke();
+            deadEvent.Invoke(this);
         }
     }
     protected abstract void Dead();

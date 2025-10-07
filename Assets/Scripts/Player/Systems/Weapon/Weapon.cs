@@ -7,6 +7,14 @@ public class Weapon : MonoBehaviour
 {
     [SerializeField]
     private Transform shootPoint;
+    [SerializeField]
+    private Transform gunObject;
+    [SerializeField]
+    private Transform defaultPoint;
+    [SerializeField]
+    private Transform aimPoint;
+
+
     public WeaponItemData weaponData;
 
     [SerializeField]
@@ -144,5 +152,34 @@ public class Weapon : MonoBehaviour
         InsertMagazine(m);
         reload = false;
         ReloadFinaled?.Invoke();
+    }
+
+    public void SetAimState(bool value)
+    {
+        if(changeWeaponPositionCoroutine != null)
+        {
+            StopCoroutine(changeWeaponPositionCoroutine);
+        }
+        changeWeaponPositionCoroutine = 
+            StartCoroutine(ChangeWeaponPositionCoroutine(value ? aimPoint : defaultPoint));
+    }
+
+    Coroutine changeWeaponPositionCoroutine;
+    private IEnumerator ChangeWeaponPositionCoroutine(Transform target)
+    {
+        Vector3 startPoint = gunObject.transform.localPosition;
+        Quaternion startOrientation = gunObject.transform.localRotation;
+
+        float t = 0;
+        while(t < 1)
+        {
+            t += Time.deltaTime * 5;
+            gunObject.localPosition = Vector3.Lerp(startPoint, target.localPosition, t);
+            gunObject.localRotation = Quaternion.Lerp(startOrientation, target.localRotation, t);
+            yield return null;
+        }
+
+        gunObject.localPosition = target.localPosition;
+        gunObject.localRotation = target.localRotation;
     }
 }

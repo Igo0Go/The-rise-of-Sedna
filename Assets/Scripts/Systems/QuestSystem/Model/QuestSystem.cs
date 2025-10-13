@@ -1,15 +1,39 @@
 using System.IO;
-using UnityEngine;
 using System.Collections.Generic;
+using System;
 
-public class QuestSystem : MonoBehaviour
+public class QuestSystem
 {
-    [SerializeField]
-    private TextAsset _textAsset;
-
     private List<QuestBase> quests;
 
-    [ContextMenu("Сохранить")]
+    public event Action<QuestBase> questStateChanged;
+
+    public QuestSystem(string questDataString)
+    {
+        quests = Load(questDataString);
+    }
+
+    public void SetStateForQuestById(int id, QuestState stateType)
+    {
+        QuestBase quest = GetQuestById(id);
+        quest.state = stateType;
+        questStateChanged?.Invoke(quest);
+    }
+
+    private QuestBase GetQuestById(int id)
+    {
+        QuestBase quest = quests.Find(x => x.id == id);
+
+        if (quest == null)
+        {
+            throw new Exception("Квест с указанным ID не найден");
+        }
+
+        return quest;
+    }
+
+
+    #region Работа с файлом
     public static void Save(List<QuestBase> quests, string path)
     {
         string s = string.Empty;
@@ -25,8 +49,6 @@ public class QuestSystem : MonoBehaviour
             sw.Write(s);
         }
     }
-
-    [ContextMenu("Загрузить")]
     public static List<QuestBase> Load(string dataText)
     {
         List<QuestBase> quests = new List<QuestBase>();
@@ -58,9 +80,9 @@ public class QuestSystem : MonoBehaviour
 
         return quests;
     }
-
     public static QuestType GetQuestTypeFromLoadString(string strings)
     {
         return (QuestType)int.Parse(strings);
     }
+    #endregion
 }

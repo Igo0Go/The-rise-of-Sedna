@@ -16,7 +16,8 @@ public class QuestSystem : MonoBehaviour
 
         foreach (QuestBase quest in quests)
         {
-            s += quest.ConvertToString();
+            s += quest.ConvertToSaveString();
+            s += "----";
         }
 
         using (StreamWriter sw = new StreamWriter(path))
@@ -30,15 +31,17 @@ public class QuestSystem : MonoBehaviour
     {
         List<QuestBase> quests = new List<QuestBase>();
 
-        string[] chars = { "{\n", "}\n" };
-        string[] QuestDataStrings = dataText.Split(chars, System.StringSplitOptions.RemoveEmptyEntries);
+        string[] separators = { "{\n", "}\n", "----"};
+        string[] QuestDataStrings = dataText.Split(separators,
+            System.StringSplitOptions.RemoveEmptyEntries);
 
         foreach (string questData in QuestDataStrings)
         {
             QuestBase quest;
 
-            string[] s = { "\n", "type: ", "id: ", "name: ", "desc: ", "state: ", "spec: " };
-            string[] QuestSettingsStrings = questData.Split(s, System.StringSplitOptions.RemoveEmptyEntries);
+            string[] s = { "\n", "type: ", "id: ", "name: ", "desc: ", "state: " };
+            string[] QuestSettingsStrings = questData.Split(s, 
+                System.StringSplitOptions.RemoveEmptyEntries);
 
             switch (GetQuestTypeFromLoadString(QuestSettingsStrings[0]))
             {
@@ -47,7 +50,7 @@ public class QuestSystem : MonoBehaviour
                     break;
                 default:
                     quest = null;
-                    break;
+                    break;  
             }
 
             quests.Add(quest);
@@ -56,7 +59,7 @@ public class QuestSystem : MonoBehaviour
         return quests;
     }
 
-    static QuestType GetQuestTypeFromLoadString(string strings)
+    public static QuestType GetQuestTypeFromLoadString(string strings)
     {
         return (QuestType)int.Parse(strings);
     }

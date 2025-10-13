@@ -9,7 +9,7 @@ public abstract class QuestBase
 
     public QuestState state = QuestState.waitStart;
 
-    public string ConvertToString()
+    public virtual string ConvertToSaveString()
     {
         string s = "{\n";
         s += "type: " + GetQuestTypeIndex() + "\n";
@@ -17,6 +17,7 @@ public abstract class QuestBase
         s += "name: " + name + "\n";
         s += "desc: " + description + "\n";
         s += "state: " + (int)state + "\n";
+        s += GetSpecificData() + "\n";
         s += "}\n";
         return s;
     }
@@ -28,8 +29,11 @@ public abstract class QuestBase
         name = settingsStrings[2];
         description = settingsStrings[3];
         state = (QuestState)int.Parse(settingsStrings[4]);
+        SetSpecificData(settingsStrings[5]);
     }
     protected abstract int GetQuestTypeIndex();
+    protected abstract string GetSpecificData();
+    protected abstract void SetSpecificData(string inputString);
 }
 
 public enum QuestState
@@ -52,5 +56,27 @@ public class ActivationQuest : QuestBase
     protected override int GetQuestTypeIndex()
     {
         return (int)QuestType.Activation;
+    }
+    protected override string GetSpecificData()
+    {
+        string s = "activationIds: [";
+        foreach (int i in activationObjectsIds)
+        {
+            s += i + ",";
+        }
+        s += "]";
+        return s;
+    }
+
+    protected override void SetSpecificData(string inputString)
+    {
+        string[] s = { "\n", "activationIds: ", "[", "]", ","};
+        string[] dataStrings = inputString.Split(s, System.StringSplitOptions.RemoveEmptyEntries);
+
+        activationObjectsIds = new List<int>();
+        foreach (string i in dataStrings)
+        {
+            activationObjectsIds.Add(int.Parse(i));
+        }
     }
 }

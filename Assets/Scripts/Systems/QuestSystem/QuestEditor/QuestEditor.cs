@@ -70,6 +70,10 @@ public class QuestSO
     public QuestState state = QuestState.waitStart;
     public QuestType typeOfQuest = QuestType.Activation;
 
+    [Header("Activation")]
+    public List<int> activationIds;
+
+
     public QuestBase ToQuestBase()
     {
         switch(typeOfQuest)
@@ -80,7 +84,8 @@ public class QuestSO
                     id = this.id,
                     name = this.name,
                     description = this.description,
-                    state = this.state
+                    state = this.state,
+                    activationObjectsIds = activationIds
                 };
             default:
                 return null;
@@ -96,9 +101,10 @@ public class QuestSO
         sO.description = questBase.description;
         sO.state = questBase.state;
 
-        if(questBase is ActivationQuest)
+        if(questBase is ActivationQuest activationQuest)
         {
             sO.typeOfQuest = QuestType.Activation;
+            sO.activationIds = activationQuest.activationObjectsIds;
         }
 
         return sO;

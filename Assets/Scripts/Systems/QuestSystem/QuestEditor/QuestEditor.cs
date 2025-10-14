@@ -84,7 +84,7 @@ public class QuestSO
                     id = this.id,
                     name = this.name,
                     description = this.description,
-                    state = this.state,
+                    State = this.state,
                     activationObjectsIds = activationIds
                 };
             default:
@@ -99,7 +99,7 @@ public class QuestSO
         sO.id = questBase.id;
         sO.name = questBase.name;
         sO.description = questBase.description;
-        sO.state = questBase.state;
+        sO.state = questBase.State;
 
         if(questBase is ActivationQuest activationQuest)
         {

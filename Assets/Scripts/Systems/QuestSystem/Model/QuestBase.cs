@@ -1,13 +1,28 @@
 using System.Collections.Generic;
+using System;
 
-[System.Serializable]
+[Serializable]
 public abstract class QuestBase
 {
     public int id;
     public string name;
     public string description;
 
-    public QuestState state = QuestState.waitStart;
+    public event Action<QuestBase> OnStateChanged;
+
+    public QuestState State
+    {
+        get => _state;
+        set
+        {
+            if (_state != value)
+            {
+                _state = value;
+                OnStateChanged?.Invoke(this);
+            }
+        }
+    }
+    private QuestState _state = QuestState.waitStart;
 
     public virtual string ConvertToSaveString()
     {
@@ -16,7 +31,7 @@ public abstract class QuestBase
         s += "id: " + id + "\n";
         s += "name: " + name + "\n";
         s += "desc: " + description + "\n";
-        s += "state: " + (int)state + "\n";
+        s += "state: " + (int)_state + "\n";
         s += GetSpecificData() + "\n";
         s += "}\n";
         return s;
@@ -28,7 +43,7 @@ public abstract class QuestBase
         id = int.Parse(settingsStrings[1]);
         name = settingsStrings[2];
         description = settingsStrings[3];
-        state = (QuestState)int.Parse(settingsStrings[4]);
+        _state = (QuestState)int.Parse(settingsStrings[4]);
         SetSpecificData(settingsStrings[5]);
     }
     protected abstract int GetQuestTypeIndex();
@@ -77,6 +92,19 @@ public class ActivationQuest : QuestBase
         foreach (string i in dataStrings)
         {
             activationObjectsIds.Add(int.Parse(i));
+        }
+    }
+
+    public void OnQuestTargetActivation(int  targetId)
+    {
+        if (activationObjectsIds.Contains(targetId))
+        {
+            activationObjectsIds.Remove(targetId);
+        }
+
+        if (activationObjectsIds.Count == 0)
+        {
+            State = QuestState.complete;
         }
     }
 }

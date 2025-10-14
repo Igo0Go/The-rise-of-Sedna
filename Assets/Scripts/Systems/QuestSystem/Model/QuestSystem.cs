@@ -11,13 +11,22 @@ public class QuestSystem
     public QuestSystem(string questDataString)
     {
         quests = Load(questDataString);
+
+        foreach (QuestBase quest in quests)
+        {
+            quest.OnStateChanged += QuestStateChanged;
+        }
+    }
+
+    private void QuestStateChanged(QuestBase quest)
+    {
+        questStateChanged?.Invoke(quest);
     }
 
     public void SetStateForQuestById(int id, QuestState stateType)
     {
         QuestBase quest = GetQuestById(id);
-        quest.state = stateType;
-        questStateChanged?.Invoke(quest);
+        quest.State = stateType;
     }
 
     private QuestBase GetQuestById(int id)
@@ -31,6 +40,19 @@ public class QuestSystem
 
         return quest;
     }
+
+    public void ActivationQuestTargetUsed(int targetId)
+    {
+        List<QuestBase> actQuests = quests.FindAll(q => q is  ActivationQuest);
+
+        for (int i = 0; i < actQuests.Count; i++)
+        {
+            ActivationQuest actQuest = actQuests[i] as ActivationQuest;
+            actQuest.OnQuestTargetActivation(targetId);
+        }
+    }
+
+
 
 
     #region Работа с файлом

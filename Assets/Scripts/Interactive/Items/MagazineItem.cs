@@ -15,6 +15,7 @@ public class MagazineItem : InteractiveObject
     public override void Use()
     {
         FindFirstObjectByType<FPC_WeaponSystem>().AddMagazine(magazine);
+        onUseEvent?.Invoke();
         Destroy(gameObject);
     }
 }

@@ -1,17 +1,11 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
 public class AnimationModule : InteractiveModule
 {
     [SerializeField]
     private string animBoolParameterName;
-
+    [SerializeField]
     private Animator animator;
-
-    private void Awake()
-    {
-        animator = GetComponent<Animator>();
-    }
 
     public override void Activate()
     {

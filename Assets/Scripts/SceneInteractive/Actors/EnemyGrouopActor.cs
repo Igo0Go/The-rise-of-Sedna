@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class EnemyGrouoActor : Actor
+public class EnemyGrouopActor : Actor
 {
     [SerializeField]
     private List<EnemyBase> enemies;

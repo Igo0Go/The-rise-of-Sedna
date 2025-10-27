@@ -8,13 +8,17 @@ public abstract class EnemyBase : MonoBehaviour
 
     public UnityEvent<EnemyBase> deadEvent;
 
-    public virtual void GedDamage(int damage)
+    public virtual void GetDamage(int damage)
     {
+        if (HP <= 0)
+            return;
+
         HP -= damage;
         if (HP <= 0)
         {
-            Dead();
+            HP = 0;
             deadEvent.Invoke(this);
+            Dead();
         }
     }
     protected abstract void Dead();

@@ -288,7 +288,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 187
+    m_Bits: 699
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -363,7 +363,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2799183917866332092}
   - component: {fileID: 8521958726223812233}
-  - component: {fileID: 626051069632144836}
   - component: {fileID: 6241426077206201270}
   m_Layer: 6
   m_Name: Camera
@@ -438,14 +437,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &626051069632144836
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6664480256894247319}
-  m_Enabled: 1
 --- !u!114 &6241426077206201270
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -508,7 +499,7 @@ GameObject:
   - component: {fileID: 689214755674970218}
   m_Layer: 6
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -597,7 +588,7 @@ MonoBehaviour:
   crouchHeight: 0.8
   crouchCenterHeight: 0.5
   crouchTransitionSpeed: 5
-  groundCheckSphereRadius: 0.1
+  groundCheckSphereRadius: 0.13
   cameraPoint: {fileID: 8188068580721101507}
   crouchCameraPoint: {fileID: 5820864331603879191}
   standCameraPoint: {fileID: 6206898753204249249}

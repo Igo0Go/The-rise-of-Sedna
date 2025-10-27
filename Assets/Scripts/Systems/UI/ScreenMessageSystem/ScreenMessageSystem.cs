@@ -34,5 +34,4 @@ public class ScreenMessageSystem : MonoBehaviour
         pausedControlSystem.IsMessage = false;
         panel.SetActive(false);
     }
-
 }

@@ -25,7 +25,7 @@ public class FPC_HealhSystem : MonoBehaviour
     }
     private int _health;
 
-    public event Action<FPC_HealhSystem> OnDead;
+    public event Action OnDead;
     public event Action OnDamage;
     public event Action<int, int> OnHealthStateChanged;
 
@@ -36,7 +36,7 @@ public class FPC_HealhSystem : MonoBehaviour
 
     public void Dead()
     {
-        OnDead?.Invoke(this);
+        OnDead?.Invoke();
     }
 
     public void GetDamage(int damage)

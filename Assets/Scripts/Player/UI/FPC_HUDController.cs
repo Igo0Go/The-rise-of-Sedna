@@ -15,7 +15,6 @@ public class FPC_HUDController : MonoBehaviour
         Cursor.visible = value;
     }
 
-
     private void Awake()
     {
         PauseControlSystem pauseControlSystem = FindFirstObjectByType<PauseControlSystem>();

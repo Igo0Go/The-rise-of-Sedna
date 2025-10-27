@@ -29,6 +29,19 @@ public class PauseControlSystem : MonoBehaviour
         }
     }
     private bool _isCutscene = false;
+    public bool IsDead
+    {
+        get
+        {
+            return _isDead;
+        }
+        set
+        {
+            _isDead = value;
+            PauseUpdate();
+        }
+    }
+    private bool _isDead = false;
 
     [SerializeField]
     private FPC_InputManager _inputManager;
@@ -43,10 +56,10 @@ public class PauseControlSystem : MonoBehaviour
 
     private void PauseUpdate()
     {
-        SetTimeBlockState(_isMessage);
-        SetCotrollBlockState(_isMessage || _isCutscene);
-        HudActiveChanged?.Invoke(!_isCutscene);
-        CursorModeChanged?.Invoke(_isMessage);
+        SetTimeBlockState(_isMessage || _isDead);
+        SetCotrollBlockState(_isMessage || _isCutscene || _isDead);
+        HudActiveChanged?.Invoke(!_isCutscene || !_isDead);
+        CursorModeChanged?.Invoke(_isMessage || _isDead);
     }
 
     private void SetCotrollBlockState(bool value)

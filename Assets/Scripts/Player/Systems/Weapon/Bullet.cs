@@ -26,21 +26,26 @@ public class Bullet : MonoBehaviour
 
         if(Physics.Linecast(oldPos, transform.position, out RaycastHit hitInfo, ~ignoreMask))
         {
-            if(hitInfo.collider.CompareTag("Enemy"))
+            if(hitInfo.collider.CompareTag(TagHolder.Enemy) || 
+                hitInfo.collider.CompareTag(TagHolder.Player))
             {
                 GameObject decalObj = Instantiate(decal, hitInfo.point, Quaternion.identity, 
                     hitInfo.collider.transform);
                 decalObj.transform.forward = hitInfo.normal;
+
+                if (hitInfo.collider.TryGetComponent(out EnemyBase enemy))
+                {
+                    enemy.GetDamage(damage);
+                }
+                else if (hitInfo.collider.TryGetComponent(out FPC_HealhSystem player))
+                {
+                    player.GetDamage(damage);
+                }
             }
             else
             {
                 GameObject decalObj = Instantiate(decal, hitInfo.point, Quaternion.identity);
                 decalObj.transform.forward = hitInfo.normal;
-            }
-
-            if (hitInfo.collider.TryGetComponent(out EnemyBase enemy)) 
-            {
-                enemy.GetDamage(damage);
             }
 
             Destroy(gameObject);

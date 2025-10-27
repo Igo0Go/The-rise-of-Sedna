@@ -59,7 +59,7 @@ public class FPC_Interaction : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag(TagHolder.interactive))
+        if(other.CompareTag(TagHolder.Interactive))
         {
             if(other.TryGetComponent(out InteractiveArea area))
             {
@@ -70,7 +70,7 @@ public class FPC_Interaction : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag(TagHolder.interactive))
+        if (other.CompareTag(TagHolder.Interactive))
         {
             if (other.TryGetComponent(out InteractiveArea area))
             {
@@ -78,9 +78,4 @@ public class FPC_Interaction : MonoBehaviour
             }
         }
     }
-}
-
-public static class TagHolder
-{
-    public const string interactive = "interactive";
 }

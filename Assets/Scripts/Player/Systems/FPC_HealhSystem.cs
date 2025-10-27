@@ -47,4 +47,15 @@ public class FPC_HealhSystem : MonoBehaviour
             OnDamage?.Invoke();
         }
     }
+
+    public bool TryHeal(int heal)
+    {
+        if(Health == maxHealth)
+        {
+            return false;
+        }
+
+        Health += heal;
+        return true;
+    }
 }

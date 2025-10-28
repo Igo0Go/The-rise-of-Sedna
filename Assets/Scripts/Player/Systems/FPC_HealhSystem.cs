@@ -28,6 +28,12 @@ public class FPC_HealhSystem : MonoBehaviour
     public event Action OnDead;
     public event Action OnDamage;
     public event Action<int, int> OnHealthStateChanged;
+    public event Action<int> MedPackCountChanged;
+
+    private void Awake()
+    {
+        FindFirstObjectByType<FPC_InventorySystem>().inventoryChanged += OnIventoryChanged;
+    }
 
     private void Start()
     {
@@ -48,7 +54,7 @@ public class FPC_HealhSystem : MonoBehaviour
         }
     }
 
-    public bool TryHeal(int heal)
+    public bool Heal(int heal)
     {
         if(Health == maxHealth)
         {
@@ -57,5 +63,33 @@ public class FPC_HealhSystem : MonoBehaviour
 
         Health += heal;
         return true;
+    }
+
+    public void UseMedPack()
+    {
+        if(Health >= maxHealth)
+        {
+            return;
+        }
+
+        FPC_InventorySystem inventorySystem = FindFirstObjectByType<FPC_InventorySystem>();
+
+        (InventoryObject data, int count) info = inventorySystem.
+            GetInventoryItemDataById(IdHolder.InventoryItemsIds.Biogel);
+
+        if(info.count > 0)
+        {
+            MedItemData medData = info.data as MedItemData;
+            Heal(medData.hpValue);
+            inventorySystem.RemoveFromInventory(IdHolder.InventoryItemsIds.Biogel);
+        }
+    }
+
+    public void OnIventoryChanged(InventoryObject obj, int count)
+    {
+        if(obj.id == IdHolder.InventoryItemsIds.Biogel)
+        {
+            MedPackCountChanged?.Invoke(count);
+        }
     }
 }

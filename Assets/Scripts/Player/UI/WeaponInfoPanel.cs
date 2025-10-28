@@ -32,7 +32,7 @@ public class WeaponInfoPanel : MonoBehaviour
         else
         {
             infoPnel.SetActive(true);
-            weaponNameText.text = newWeapon.weaponData.Name;
+            weaponNameText.text = newWeapon.weaponData.itemName;
         }
     }
     private void OnAmmoChanged(Weapon currentWeapon)

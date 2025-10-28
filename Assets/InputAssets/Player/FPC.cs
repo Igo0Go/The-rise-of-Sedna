@@ -172,6 +172,15 @@ public partial class @FPC: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Heal"",
+                    ""type"": ""Button"",
+                    ""id"": ""d63d5e12-c791-4904-ab8e-a0a867cbbb31"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -317,6 +326,17 @@ public partial class @FPC: IInputActionCollection2, IDisposable
                     ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2e444dd1-ba82-483f-a817-6ea651c9375d"",
+                    ""path"": ""<Keyboard>/h"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Heal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -362,6 +382,7 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         m_GroundMovement_Action = m_GroundMovement.FindAction("Action", throwIfNotFound: true);
         m_GroundMovement_Reload = m_GroundMovement.FindAction("Reload", throwIfNotFound: true);
         m_GroundMovement_Aim = m_GroundMovement.FindAction("Aim", throwIfNotFound: true);
+        m_GroundMovement_Heal = m_GroundMovement.FindAction("Heal", throwIfNotFound: true);
         // Cutscene
         m_Cutscene = asset.FindActionMap("Cutscene", throwIfNotFound: true);
         m_Cutscene_Skip = m_Cutscene.FindAction("Skip", throwIfNotFound: true);
@@ -455,6 +476,7 @@ public partial class @FPC: IInputActionCollection2, IDisposable
     private readonly InputAction m_GroundMovement_Action;
     private readonly InputAction m_GroundMovement_Reload;
     private readonly InputAction m_GroundMovement_Aim;
+    private readonly InputAction m_GroundMovement_Heal;
     /// <summary>
     /// Provides access to input actions defined in input action map "GroundMovement".
     /// </summary>
@@ -502,6 +524,10 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "GroundMovement/Aim".
         /// </summary>
         public InputAction @Aim => m_Wrapper.m_GroundMovement_Aim;
+        /// <summary>
+        /// Provides access to the underlying input action "GroundMovement/Heal".
+        /// </summary>
+        public InputAction @Heal => m_Wrapper.m_GroundMovement_Heal;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -555,6 +581,9 @@ public partial class @FPC: IInputActionCollection2, IDisposable
             @Aim.started += instance.OnAim;
             @Aim.performed += instance.OnAim;
             @Aim.canceled += instance.OnAim;
+            @Heal.started += instance.OnHeal;
+            @Heal.performed += instance.OnHeal;
+            @Heal.canceled += instance.OnHeal;
         }
 
         /// <summary>
@@ -593,6 +622,9 @@ public partial class @FPC: IInputActionCollection2, IDisposable
             @Aim.started -= instance.OnAim;
             @Aim.performed -= instance.OnAim;
             @Aim.canceled -= instance.OnAim;
+            @Heal.started -= instance.OnHeal;
+            @Heal.performed -= instance.OnHeal;
+            @Heal.canceled -= instance.OnHeal;
         }
 
         /// <summary>
@@ -792,6 +824,13 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAim(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Heal" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnHeal(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Cutscene" which allows adding and removing callbacks.

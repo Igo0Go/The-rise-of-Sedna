@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a7e7da2d182e2f42b72730b732d07ca, type: 3}
   m_Name: E-11
   m_EditorClassIdentifier: 
-  Name: "\u0411\u043B\u0430\u0441\u0442\u0435\u0440\u043D\u0430\u044F \u0432\u0438\u043D\u0442\u043E\u0432\u043A\u0430
+  id: 2
+  itemName: "\u0411\u043B\u0430\u0441\u0442\u0435\u0440\u043D\u0430\u044F \u0432\u0438\u043D\u0442\u043E\u0432\u043A\u0430
     E-11"
-  ActionDescription: "\u0412\u0437\u044F\u0442\u044C"
+  actionDescription: "\u0412\u0437\u044F\u0442\u044C"
   MagazineType: 0
   consumptionPerShot: 1
   damage: 35

@@ -5,10 +5,9 @@ public class MagazineItem : InteractiveObject
     [SerializeField]
     private WeaponMagazine magazine;
 
-
     public override (string name, string action) GetData()
     {
-        return (magazine.data.magazineName + " (" + magazine.currentAmmo + "/" + magazine.data.maxAmmo + ")",
+        return (magazine.data.itemName + " (" + magazine.currentAmmo + "/" + magazine.data.maxAmmo + ")",
             magazine.data.actionDescription);
     }
 

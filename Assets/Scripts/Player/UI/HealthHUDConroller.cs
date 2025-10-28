@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,12 +9,15 @@ public class HealthHudConroller : MonoBehaviour
     private Slider healthSlider;
     [SerializeField]
     private Image damagePanel;
+    [SerializeField]
+    private TMP_Text medPackCountText;
 
     private void Awake()
     {
         FPC_HealhSystem healthSystem = FindFirstObjectByType<FPC_HealhSystem>();
         healthSystem.OnHealthStateChanged += OnHealthChanged;
         healthSystem.OnDamage += OnDamage;
+        healthSystem.MedPackCountChanged += OnMedPackCountChanged;
         SetValueForDamagePanel(0);
     }
 
@@ -45,5 +49,10 @@ public class HealthHudConroller : MonoBehaviour
             t -= Time.deltaTime;
         }
         SetValueForDamagePanel(0);
+    }
+
+    private void OnMedPackCountChanged(int medPackCount)
+    {
+        medPackCountText.text = medPackCount.ToString();
     }
 }

@@ -16,7 +16,7 @@ public class WeaponItem : InteractiveObject
 
     public override (string name, string action) GetData()
     {
-        string title = weaponItemData.Name;
+        string title = weaponItemData.itemName;
 
         if (magazine != null)
         {
@@ -29,7 +29,7 @@ public class WeaponItem : InteractiveObject
             title += " (разряжено)";
         }
 
-        return (title, weaponItemData.ActionDescription);
+        return (title, weaponItemData.actionDescription);
     }
 
     public override void Use()

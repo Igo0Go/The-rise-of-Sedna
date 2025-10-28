@@ -72,9 +72,7 @@ MonoBehaviour:
   onUseEvent:
     m_PersistentCalls:
       m_Calls: []
-  Name: "\u0411\u0438\u043E\u0433\u0435\u043B\u044C"
-  ActionDescription: "\u0418\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u0442\u044C"
-  hpPoints: 15
+  data: {fileID: 11400000, guid: 1112be71d3df8b643b61c3e7f49b7a40, type: 2}
 --- !u!1 &6535781569933394841
 GameObject:
   m_ObjectHideFlags: 0

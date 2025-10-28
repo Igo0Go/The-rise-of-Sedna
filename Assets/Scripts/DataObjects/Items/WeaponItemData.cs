@@ -1,11 +1,8 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName ="IgoGoTools/Items/Weapon")]
-public class WeaponItemData : ScriptableObject
+public class WeaponItemData : InventoryObject
 {
-    public string Name;
-    public string ActionDescription;
-
     [Tooltip("Тип магазина")]
     public MagazineType MagazineType;
     [Tooltip("Расход магазина за выстрел")]

@@ -10,6 +10,8 @@ public class FPC_InputManager : MonoBehaviour
     private FPC_WeaponSystem fPC_WeaponSystem;
     [SerializeField]
     private FPC_Interaction fPC_Interaction;
+    [SerializeField]
+    private FPC_HealhSystem fPC_HealhSystem;
 
     private FPC controls;
     private FPC.GroundMovementActions groundMovement;
@@ -33,6 +35,7 @@ public class FPC_InputManager : MonoBehaviour
         groundMovement.Crouch.performed += _ => fPC_Movement.CrouchToggle();
         groundMovement.Aim.performed += _ => fPC_WeaponSystem.SetAimState(true);
         groundMovement.Aim.canceled += _ => fPC_WeaponSystem.SetAimState(false);
+        groundMovement.Heal.performed += _ => fPC_HealhSystem.UseMedPack();
 
 
         Application.targetFrameRate = 60;

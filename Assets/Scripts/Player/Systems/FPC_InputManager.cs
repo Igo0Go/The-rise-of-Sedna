@@ -38,6 +38,10 @@ public class FPC_InputManager : MonoBehaviour
         groundMovement.Heal.performed += _ => fPC_HealhSystem.UseMedPack();
 
 
+        QuestJornal questJornal = FindFirstObjectByType<QuestJornal>();
+        groundMovement.Jornal.performed += _ => questJornal.JornalToggle();
+
+
         Application.targetFrameRate = 60;
     }
 

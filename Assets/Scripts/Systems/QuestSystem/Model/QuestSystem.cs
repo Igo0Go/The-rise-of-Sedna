@@ -29,7 +29,7 @@ public class QuestSystem
         quest.State = stateType;
     }
 
-    private QuestBase GetQuestById(int id)
+    public QuestBase GetQuestById(int id)
     {
         QuestBase quest = quests.Find(x => x.id == id);
 
@@ -52,7 +52,10 @@ public class QuestSystem
         }
     }
 
-
+    public List<QuestBase> GetAllQuestsWithState(QuestState state)
+    {
+        return quests.FindAll(q => q.State == state);
+    }
 
 
     #region Работа с файлом

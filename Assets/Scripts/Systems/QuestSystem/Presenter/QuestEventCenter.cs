@@ -5,7 +5,8 @@ public class QuestEventCenter : MonoBehaviour
     [SerializeField]
     private TextAsset _textAsset;
 
-    QuestSystem questSystem;
+    private QuestSystem questSystem;
+    private QuestJornal jornal;
 
     void Awake()
     {
@@ -23,12 +24,21 @@ public class QuestEventCenter : MonoBehaviour
         #endregion 
 
         ActivationQuestTarget[] actiovationQuestTargets =
-   FindObjectsByType<ActivationQuestTarget>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            FindObjectsByType<ActivationQuestTarget>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         foreach (ActivationQuestTarget target in actiovationQuestTargets)
         {
             target.targetActivated += OnActivateQuestTarget;
         }
+
+        jornal = FindFirstObjectByType<QuestJornal>();
+
+        if (jornal != null)
+        {
+            jornal.SelectedQuestStateCategoryChanged += FindQuestsForJornalByState;
+            jornal.SelectedQuestChanged += FindQuestForJornalById;
+        }
+
     }
 
     private void OnActivateQuestTarget(ActivationQuestTarget target)
@@ -44,5 +54,15 @@ public class QuestEventCenter : MonoBehaviour
     private void OnQuestStateChanged(QuestBase quest)
     {
         Debug.Log(quest.name + " теперь " + quest.State);
+    }
+
+    private void FindQuestsForJornalByState(QuestState state)
+    {
+        jornal.UpdateAllQuestButtons(questSystem.GetAllQuestsWithState(state));
+    }
+
+    private void FindQuestForJornalById(int id)
+    {
+        jornal.DrawQuestData(questSystem.GetQuestById(id));
     }
 }

@@ -181,6 +181,15 @@ public partial class @FPC: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Jornal"",
+                    ""type"": ""Button"",
+                    ""id"": ""24915ea3-bb3e-494e-9564-75804e219825"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -337,6 +346,17 @@ public partial class @FPC: IInputActionCollection2, IDisposable
                     ""action"": ""Heal"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""be029d60-e248-48b1-b28c-7e8538276d30"",
+                    ""path"": ""<Keyboard>/j"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jornal"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -383,6 +403,7 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         m_GroundMovement_Reload = m_GroundMovement.FindAction("Reload", throwIfNotFound: true);
         m_GroundMovement_Aim = m_GroundMovement.FindAction("Aim", throwIfNotFound: true);
         m_GroundMovement_Heal = m_GroundMovement.FindAction("Heal", throwIfNotFound: true);
+        m_GroundMovement_Jornal = m_GroundMovement.FindAction("Jornal", throwIfNotFound: true);
         // Cutscene
         m_Cutscene = asset.FindActionMap("Cutscene", throwIfNotFound: true);
         m_Cutscene_Skip = m_Cutscene.FindAction("Skip", throwIfNotFound: true);
@@ -477,6 +498,7 @@ public partial class @FPC: IInputActionCollection2, IDisposable
     private readonly InputAction m_GroundMovement_Reload;
     private readonly InputAction m_GroundMovement_Aim;
     private readonly InputAction m_GroundMovement_Heal;
+    private readonly InputAction m_GroundMovement_Jornal;
     /// <summary>
     /// Provides access to input actions defined in input action map "GroundMovement".
     /// </summary>
@@ -528,6 +550,10 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "GroundMovement/Heal".
         /// </summary>
         public InputAction @Heal => m_Wrapper.m_GroundMovement_Heal;
+        /// <summary>
+        /// Provides access to the underlying input action "GroundMovement/Jornal".
+        /// </summary>
+        public InputAction @Jornal => m_Wrapper.m_GroundMovement_Jornal;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -584,6 +610,9 @@ public partial class @FPC: IInputActionCollection2, IDisposable
             @Heal.started += instance.OnHeal;
             @Heal.performed += instance.OnHeal;
             @Heal.canceled += instance.OnHeal;
+            @Jornal.started += instance.OnJornal;
+            @Jornal.performed += instance.OnJornal;
+            @Jornal.canceled += instance.OnJornal;
         }
 
         /// <summary>
@@ -625,6 +654,9 @@ public partial class @FPC: IInputActionCollection2, IDisposable
             @Heal.started -= instance.OnHeal;
             @Heal.performed -= instance.OnHeal;
             @Heal.canceled -= instance.OnHeal;
+            @Jornal.started -= instance.OnJornal;
+            @Jornal.performed -= instance.OnJornal;
+            @Jornal.canceled -= instance.OnJornal;
         }
 
         /// <summary>
@@ -831,6 +863,13 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnHeal(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Jornal" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnJornal(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Cutscene" which allows adding and removing callbacks.

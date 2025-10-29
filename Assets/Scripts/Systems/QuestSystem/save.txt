@@ -6,4 +6,68 @@ desc: Пройдите в зону выдачи оружия и получите
 state: 0
 activationIds: [0,1,]
 }
+----{
+type: 1
+id: 1
+name: Взять всё в свои руки
+desc: Добраться до верзней рубки управления
+state: 1
+activationIds: []
+}
+----{
+type: 1
+id: 2
+name: Восстание машин
+desc: Уничтожить всех ботов, которые напали на корабль
+state: 1
+activationIds: []
+}
+----{
+type: 1
+id: 3
+name: Новый старт
+desc: Перезапустите реактор
+state: 1
+activationIds: []
+}
+----{
+type: 1
+id: 4
+name: Новый друг
+desc: Запустите ремонтного бота
+state: 0
+activationIds: []
+}
+----{
+type: 1
+id: 5
+name: Беззащитный
+desc: Сопроводите ремонтного бота до места ремонта
+state: 0
+activationIds: []
+}
+----{
+type: 1
+id: 6
+name: Защита слабых
+desc: Охраняйте бота, пока он занимается перезапуском реактора
+state: 0
+activationIds: []
+}
+----{
+type: 1
+id: 7
+name: Новый путь
+desc: Перезапустить навигационный модуль
+state: -1
+activationIds: []
+}
+----{
+type: 1
+id: 8
+name: Вот мои документы!
+desc: Найти парольную карточку навигационного компьютера
+state: -1
+activationIds: []
+}
 ----

@@ -5,26 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class FPC_Movement : MonoBehaviour
 {
-    [SerializeField, Min(0.1f)]
-    private float speed = 11f;
-    [SerializeField, Range(0, 1)]
-    private float inAirMoveForce = 0;
+
+
     [SerializeField]
     private float gravity = -30f;
     [SerializeField]
     private LayerMask groundCheckIgnoreMask;
     [SerializeField, Min(0.1f)]
-    private float jumpHeight = 1;
-    [SerializeField, Min(1.1f)]
-    private float sprintMultiplier = 2;
-    [SerializeField, Min(1)]
-    private float sprintTime = 10;
-    [SerializeField, Min(0.1f)]
     private float crouchHeight = 0.5f;
     [SerializeField, Min(0.1f)]
     private float crouchCenterHeight = 0.5f;
-    [SerializeField, Min(0.1f)]
-    private float crouchTransitionSpeed = 10f;
     [SerializeField, Min(0.01f)]
     private float groundCheckSphereRadius = 10f;
     [SerializeField]
@@ -49,13 +39,13 @@ public class FPC_Movement : MonoBehaviour
     private bool isCrouching = false;
     private float originalHeight;
     private float originalCenterHeight;
-
+    private float crouchTransitionSpeed = 8f;
 
     public event Action<float, float, bool> SprintStatusChanged;
 
     private void Awake()
     {
-        currentSprintTime = sprintTime;
+        currentSprintTime = SkillHolder.Instance.sprintTime.currentValue;
         characterController = GetComponent<CharacterController>();
         originalHeight = characterController.height;
         originalCenterHeight = characterController.center.y;
@@ -100,7 +90,7 @@ public class FPC_Movement : MonoBehaviour
                 CrouchToggle();
             }
 
-            SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);
+            SprintStatusChanged?.Invoke(currentSprintTime, SkillHolder.Instance.sprintTime.currentValue, true);
             sprintRegen = true;
         }
     }
@@ -155,11 +145,11 @@ public class FPC_Movement : MonoBehaviour
         if (!useSprint && sprintRegen)
         {
             currentSprintTime += Time.deltaTime;
-            SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);
-            if (currentSprintTime >= sprintTime)
+            SprintStatusChanged?.Invoke(currentSprintTime, SkillHolder.Instance.sprintTime.currentValue, true);
+            if (currentSprintTime >= SkillHolder.Instance.sprintTime.currentValue)
             {
-                SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, false);
-                currentSprintTime = sprintTime;
+                SprintStatusChanged?.Invoke(currentSprintTime, SkillHolder.Instance.sprintTime.currentValue, false);
+                currentSprintTime = SkillHolder.Instance.sprintTime.currentValue;
                 sprintRegen = false;
             }
         }
@@ -171,8 +161,8 @@ public class FPC_Movement : MonoBehaviour
             if(useSprint)
             {
                 currentSprintTime -= Time.deltaTime;
-                SprintStatusChanged?.Invoke(currentSprintTime, sprintTime, true);
-                horizontalVelocity *= sprintMultiplier;
+                SprintStatusChanged?.Invoke(currentSprintTime, SkillHolder.Instance.sprintTime.currentValue, true);
+                horizontalVelocity *= SkillHolder.Instance.sprintMultiplier.currentValue;
                 if(currentSprintTime < 0)
                 {
                     SprintToggle();
@@ -182,11 +172,11 @@ public class FPC_Movement : MonoBehaviour
         else
         {
             horizontalVelocity += (transform.right * horizontalInput.x + transform.forward * horizontalInput.y)
-                *inAirMoveForce;
+                * SkillHolder.Instance.inAirMoveForce.currentValue;
             horizontalVelocity.Normalize();
         }
 
-        horizontalVelocity *= speed;
+        horizontalVelocity *= SkillHolder.Instance.speed.currentValue;
         if(isCrouching)
         {
             horizontalVelocity /= 2;
@@ -198,7 +188,7 @@ public class FPC_Movement : MonoBehaviour
         {
             if (isGrounded)
             {
-                verticalVelocity.y = Mathf.Sqrt(-2f * jumpHeight * gravity);
+                verticalVelocity.y = Mathf.Sqrt(-2f * SkillHolder.Instance.jumpHeight.currentValue * gravity);
             }
             jump = false;
         }
@@ -213,7 +203,8 @@ public class FPC_Movement : MonoBehaviour
         while (t < 1)
         {
             t+= Time.deltaTime * crouchTransitionSpeed;
-            cameraPoint.localPosition = Vector3.Lerp(standCameraPoint.localPosition, crouchCameraPoint.localPosition, t);
+            cameraPoint.localPosition = Vector3.Lerp(standCameraPoint.localPosition, 
+                crouchCameraPoint.localPosition, t);
             yield return null;
         }
         characterController.height = crouchHeight;

@@ -190,6 +190,15 @@ public partial class @FPC: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skills"",
+                    ""type"": ""Button"",
+                    ""id"": ""40dc33f5-6b3a-4d13-a101-8f8f98c24e0c"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -357,6 +366,17 @@ public partial class @FPC: IInputActionCollection2, IDisposable
                     ""action"": ""Jornal"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fbcba16d-4965-4514-a10e-befd494fd222"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skills"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -404,6 +424,7 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         m_GroundMovement_Aim = m_GroundMovement.FindAction("Aim", throwIfNotFound: true);
         m_GroundMovement_Heal = m_GroundMovement.FindAction("Heal", throwIfNotFound: true);
         m_GroundMovement_Jornal = m_GroundMovement.FindAction("Jornal", throwIfNotFound: true);
+        m_GroundMovement_Skills = m_GroundMovement.FindAction("Skills", throwIfNotFound: true);
         // Cutscene
         m_Cutscene = asset.FindActionMap("Cutscene", throwIfNotFound: true);
         m_Cutscene_Skip = m_Cutscene.FindAction("Skip", throwIfNotFound: true);
@@ -499,6 +520,7 @@ public partial class @FPC: IInputActionCollection2, IDisposable
     private readonly InputAction m_GroundMovement_Aim;
     private readonly InputAction m_GroundMovement_Heal;
     private readonly InputAction m_GroundMovement_Jornal;
+    private readonly InputAction m_GroundMovement_Skills;
     /// <summary>
     /// Provides access to input actions defined in input action map "GroundMovement".
     /// </summary>
@@ -554,6 +576,10 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "GroundMovement/Jornal".
         /// </summary>
         public InputAction @Jornal => m_Wrapper.m_GroundMovement_Jornal;
+        /// <summary>
+        /// Provides access to the underlying input action "GroundMovement/Skills".
+        /// </summary>
+        public InputAction @Skills => m_Wrapper.m_GroundMovement_Skills;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -613,6 +639,9 @@ public partial class @FPC: IInputActionCollection2, IDisposable
             @Jornal.started += instance.OnJornal;
             @Jornal.performed += instance.OnJornal;
             @Jornal.canceled += instance.OnJornal;
+            @Skills.started += instance.OnSkills;
+            @Skills.performed += instance.OnSkills;
+            @Skills.canceled += instance.OnSkills;
         }
 
         /// <summary>
@@ -657,6 +686,9 @@ public partial class @FPC: IInputActionCollection2, IDisposable
             @Jornal.started -= instance.OnJornal;
             @Jornal.performed -= instance.OnJornal;
             @Jornal.canceled -= instance.OnJornal;
+            @Skills.started -= instance.OnSkills;
+            @Skills.performed -= instance.OnSkills;
+            @Skills.canceled -= instance.OnSkills;
         }
 
         /// <summary>
@@ -870,6 +902,13 @@ public partial class @FPC: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJornal(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Skills" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSkills(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Cutscene" which allows adding and removing callbacks.

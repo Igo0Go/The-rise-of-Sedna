@@ -21,6 +21,7 @@ MonoBehaviour:
   damage: 35
   distance: 59
   recoilVector: {x: 1, y: 0.3}
+  recoilTime: 0.2
   bulletSpeed: 80
   bulletPrefab: {fileID: 6746475370492487564, guid: fe65be143dd237c468bb38e48d7e1f2f, type: 3}
   ignoreMask:

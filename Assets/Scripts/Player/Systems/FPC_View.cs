@@ -12,11 +12,7 @@ public class FPC_View : MonoBehaviour
     private Transform cameraPoint;
     [SerializeField, Range(0, 90)]
     private float verticalClamp = 90;
-    [SerializeField, Range(0,1)]
-    private float recoilForce = 1;
-    [SerializeField, Range(0, 1)]
-    private float recoilReturnForce = 1;
-    [SerializeField, Min(1)]
+    [SerializeField, Min(0)]
     private float recoilSpeed = 1;
     [SerializeField]
     private Transform recoilPoint;
@@ -26,9 +22,16 @@ public class FPC_View : MonoBehaviour
     private float x, y, xRecoil, yRecoil;
     private float xRotation = 0;
 
+    private const float recoilSpeedMultiplier = 4;
+
+    private void Start()
+    {
+        SetAimState(false);
+    }
+
     public void SetAimState(bool value)
     {
-        aimMultiplier = value ? 0.2f : 1;
+        aimMultiplier = value ? 0.75f : 1;
     }
 
     public void ReceiveInput(Vector2 input)
@@ -64,23 +67,25 @@ public class FPC_View : MonoBehaviour
 
         float t = 0;
 
-        while (t < 1)
+        float recoilValue = SkillHolder.Instance.recoilForceMultiplier.currentValue * aimMultiplier;
+
+        while (t < recoilValue / recoilSpeedMultiplier)
         {
             t += Time.deltaTime * recoilSpeed;
 
-            xRecoil = Mathf.Lerp(0, input.x * recoilForce * aimMultiplier, t);
-            yRecoil = Mathf.Lerp(0, input.y * recoilForce * aimMultiplier, t);
+            xRecoil = Mathf.Lerp(0, input.x * recoilValue * recoilSpeedMultiplier, t);
+            yRecoil = Mathf.Lerp(0, input.y * recoilValue * recoilSpeedMultiplier, t);
             yield return null;
         }
 
         t = 0;
 
-        while (t < 1 * recoilReturnForce)
+        while (t < recoilValue / recoilSpeedMultiplier)
         {
             t += Time.deltaTime * recoilSpeed;
 
-            xRecoil = Mathf.Lerp(0, -input.x * recoilForce * aimMultiplier, t);
-            yRecoil = Mathf.Lerp(0, -input.y * recoilForce * aimMultiplier, t);
+            xRecoil = Mathf.Lerp(0, -input.x * recoilValue * recoilSpeedMultiplier/2, t);
+            yRecoil = Mathf.Lerp(0, -input.y * recoilValue * recoilSpeedMultiplier/2, t);
             yield return null;
         }
 

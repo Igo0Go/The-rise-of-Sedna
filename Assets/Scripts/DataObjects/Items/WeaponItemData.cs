@@ -13,6 +13,8 @@ public class WeaponItemData : InventoryObject
     public float distance = 1;
     [Tooltip("Вектор отдачи")]
     public Vector2 recoilVector;
+    [Tooltip("Время отдачи"), Min(0.01f)]
+    public float recoilTime;
     [Tooltip("Скорость полёта пули"), Min(1)]
     public float bulletSpeed = 1;
     [Tooltip("Объект пули")]

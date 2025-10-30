@@ -41,6 +41,9 @@ public class FPC_InputManager : MonoBehaviour
         QuestJornal questJornal = FindFirstObjectByType<QuestJornal>();
         groundMovement.Jornal.performed += _ => questJornal.JornalToggle();
 
+        SkillPanel skillPanel = FindFirstObjectByType<SkillPanel>();
+        groundMovement.Skills.performed += _ => skillPanel.PanelToggle();
+
 
         Application.targetFrameRate = 60;
     }

@@ -9,10 +9,10 @@ public class QuestStateModule : MonoBehaviour
     [SerializeField]
     private QuestState targetState;
 
-    public event Action<int, QuestState> OnQuestStateChange;
+    public event Action<int, QuestState> QuestStateChanged;
 
     public void Activate()
     {
-        OnQuestStateChange?.Invoke(targetQuestID, targetState);
+        QuestStateChanged?.Invoke(targetQuestID, targetState);
     }
 }

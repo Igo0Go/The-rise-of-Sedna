@@ -102,6 +102,18 @@ public class QuestJornal : MonoBehaviour
     public void DrawQuestData(QuestBase quest)
     {
         selectedQuestName.text = quest.name;
-        selectedQuestDescription.text = quest.description;
+
+        string s = quest.description;
+
+        foreach (var item in quest.details)
+        {
+            if (item.unblock)
+            {
+                s += "\n-------\n";
+                s += item.text;
+            }
+        }
+
+        selectedQuestDescription.text = s;
     }
 }

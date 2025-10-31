@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using UnityEngine;
 
 [Serializable]
 public abstract class QuestBase
@@ -7,6 +8,7 @@ public abstract class QuestBase
     public int id;
     public string name;
     public string description;
+    public List<QuestDetails> details;
 
     public event Action<QuestBase> OnStateChanged;
 
@@ -31,6 +33,7 @@ public abstract class QuestBase
         s += "id: " + id + "\n";
         s += "name: " + name + "\n";
         s += "desc: " + description + "\n";
+        s += GetDetailsData() + "\n";
         s += "state: " + (int)_state + "\n";
         s += GetSpecificData() + "\n";
         s += "}\n";
@@ -43,12 +46,51 @@ public abstract class QuestBase
         id = int.Parse(settingsStrings[1]);
         name = settingsStrings[2];
         description = settingsStrings[3];
-        _state = (QuestState)int.Parse(settingsStrings[4]);
-        SetSpecificData(settingsStrings[5]);
+        details = SetDetailsData(settingsStrings[4]);
+        _state = (QuestState)int.Parse(settingsStrings[5]);
+        SetSpecificData(settingsStrings[6]);
     }
     protected abstract int GetQuestTypeIndex();
     protected abstract string GetSpecificData();
     protected abstract void SetSpecificData(string inputString);
+
+    protected string GetDetailsData()
+    {
+        string s = "details: [";
+        foreach (QuestDetails item in details)
+        {
+            s += "(" + item.text + "|" + (item.unblock? "1" : "0" ) + ")=-=";
+        }
+        s += "]";
+        return s;
+    }
+    protected List<QuestDetails> SetDetailsData(string inputString)
+    {
+        List<QuestDetails> details = new List<QuestDetails>();
+
+        string[] s = { "\n", "details: ", "[", "]", "=-=" };
+        string[] dataStrings = inputString.Split(s, System.StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (string str in dataStrings)
+        {
+            string[] separators = { "(", ")", "|" };
+            string[] parts = str.Split(separators, System.StringSplitOptions.RemoveEmptyEntries);
+            QuestDetails det = new QuestDetails();
+            det.text = parts[0];
+            det.unblock = parts[1] == "1";
+            details.Add(det);
+        }
+
+        return details;
+    }
+}
+
+[Serializable]
+public class QuestDetails
+{
+    [TextArea(4, 8)]
+    public string text;
+    public bool unblock;
 }
 
 public enum QuestState

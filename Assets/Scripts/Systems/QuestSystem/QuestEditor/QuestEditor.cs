@@ -67,6 +67,7 @@ public class QuestSO
     public string name;
     [TextArea(4, 8)]
     public string description;
+    public List<QuestDetails> details;
     public QuestState state = QuestState.waitStart;
     public QuestType typeOfQuest = QuestType.Activation;
 
@@ -85,7 +86,8 @@ public class QuestSO
                     name = this.name,
                     description = this.description,
                     State = this.state,
-                    activationObjectsIds = activationIds
+                    activationObjectsIds = activationIds,
+                    details = this.details
                 };
             default:
                 return null;
@@ -100,6 +102,7 @@ public class QuestSO
         sO.name = questBase.name;
         sO.description = questBase.description;
         sO.state = questBase.State;
+        sO.details = questBase.details;
 
         if(questBase is ActivationQuest activationQuest)
         {

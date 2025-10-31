@@ -7,27 +7,24 @@ public class QuestSystem
     #region Старый код
     private List<QuestBase> quests;
 
-    public event Action<QuestBase> questStateChanged;
+
 
     public QuestSystem(string questDataString)
     {
         quests = Load(questDataString);
-
-        foreach (QuestBase quest in quests)
-        {
-            quest.OnStateChanged += QuestStateChanged;
-        }
     }
 
-    private void QuestStateChanged(QuestBase quest)
-    {
-        questStateChanged?.Invoke(quest);
-    }
+
 
     public void SetStateForQuestById(int id, QuestState stateType)
     {
         QuestBase quest = GetQuestById(id);
         quest.State = stateType;
+
+        if(stateType == QuestState.active)
+        {
+            newInfoInJornal?.Invoke();
+        }
     }
 
     public QuestBase GetQuestById(int id)
@@ -52,13 +49,21 @@ public class QuestSystem
             actQuest.OnQuestTargetActivation(targetId);
         }
     }
-    #endregion
 
     public List<QuestBase> GetAllQuestsWithState(QuestState state)
     {
         return quests.FindAll(q => q.State == state);
     }
+    #endregion
 
+    public event Action newInfoInJornal;
+
+    public void UnblockQuestDetails(int questId, int detailsIndex)
+    {
+        QuestBase quest = GetQuestById(questId);
+        quest.details[detailsIndex].unblock = true;
+        newInfoInJornal?.Invoke();
+    }
 
     #region Работа с файлом
     public static void Save(List<QuestBase> quests, string path)

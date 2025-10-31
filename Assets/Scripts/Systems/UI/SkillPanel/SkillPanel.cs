@@ -16,9 +16,6 @@ public class SkillPanel : MonoBehaviour
     [SerializeField]
     private TMP_Text EXPText;
 
-    [SerializeField]
-    private TMP_Text logext;
-
     private List<SkillUIItem> skillUIItems = new List<SkillUIItem>();
     private PauseControlSystem pauseSystem;
 
@@ -96,21 +93,11 @@ public class SkillPanel : MonoBehaviour
 
     public void OnNewExp(int  exp)
     {
-        StopAllCoroutines();
-        StartCoroutine(ShowLogTextCoroutine("Очки опыта: +" + exp));
+       LogPanel.instance.ShowStringInLog("Очки опыта: +" + exp);
     }
     public void OnNewSkillPoint(int skillPoint)
     {
         UpdateAll();
-        StopAllCoroutines();
-        StartCoroutine(ShowLogTextCoroutine("Очков навыков: " + skillPoint));
-    }
-
-    private IEnumerator ShowLogTextCoroutine(string message)
-    {
-        logext.gameObject.SetActive(true);
-        logext.text = message;
-        yield return new WaitForSeconds(2);
-        logext.gameObject.SetActive(false);
+        LogPanel.instance.ShowStringInLog("Очков навыков: " + skillPoint);
     }
 }

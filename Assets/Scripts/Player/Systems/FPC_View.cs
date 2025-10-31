@@ -71,7 +71,7 @@ public class FPC_View : MonoBehaviour
 
         while (t < recoilValue / recoilSpeedMultiplier)
         {
-            t += Time.deltaTime * recoilSpeed;
+            t += Time.deltaTime * recoilSpeed * 2;
 
             xRecoil = Mathf.Lerp(0, input.x * recoilValue * recoilSpeedMultiplier, t);
             yRecoil = Mathf.Lerp(0, input.y * recoilValue * recoilSpeedMultiplier, t);

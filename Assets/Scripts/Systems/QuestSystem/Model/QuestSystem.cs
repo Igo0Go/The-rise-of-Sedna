@@ -4,6 +4,7 @@ using System;
 
 public class QuestSystem
 {
+    #region Старый код
     private List<QuestBase> quests;
 
     public event Action<QuestBase> questStateChanged;
@@ -51,6 +52,7 @@ public class QuestSystem
             actQuest.OnQuestTargetActivation(targetId);
         }
     }
+    #endregion
 
     public List<QuestBase> GetAllQuestsWithState(QuestState state)
     {

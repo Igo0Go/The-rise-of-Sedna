@@ -11,6 +11,7 @@ public class QuestEventCenter : MonoBehaviour
     void Awake()
     {
         #region предыдущий код
+
         questSystem = new QuestSystem(_textAsset.text);
         questSystem.questStateChanged += OnQuestStateChanged;
 
@@ -21,15 +22,16 @@ public class QuestEventCenter : MonoBehaviour
         {
             module.OnQuestStateChange += OnTryQuestStateChange;
         }
-        #endregion 
 
         ActivationQuestTarget[] actiovationQuestTargets =
-            FindObjectsByType<ActivationQuestTarget>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+    FindObjectsByType<ActivationQuestTarget>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         foreach (ActivationQuestTarget target in actiovationQuestTargets)
         {
             target.targetActivated += OnActivateQuestTarget;
         }
+
+        #endregion 
 
         jornal = FindFirstObjectByType<QuestJornal>();
 
@@ -38,7 +40,16 @@ public class QuestEventCenter : MonoBehaviour
             jornal.SelectedQuestStateCategoryChanged += FindQuestsForJornalByState;
             jornal.SelectedQuestChanged += FindQuestForJornalById;
         }
+    }
 
+    private void FindQuestsForJornalByState(QuestState state)
+    {
+        jornal.UpdateAllQuestButtons(questSystem.GetAllQuestsWithState(state));
+    }
+
+    private void FindQuestForJornalById(int id)
+    {
+        jornal.DrawQuestData(questSystem.GetQuestById(id));
     }
 
     private void OnActivateQuestTarget(ActivationQuestTarget target)
@@ -54,15 +65,5 @@ public class QuestEventCenter : MonoBehaviour
     private void OnQuestStateChanged(QuestBase quest)
     {
         Debug.Log(quest.name + " теперь " + quest.State);
-    }
-
-    private void FindQuestsForJornalByState(QuestState state)
-    {
-        jornal.UpdateAllQuestButtons(questSystem.GetAllQuestsWithState(state));
-    }
-
-    private void FindQuestForJornalById(int id)
-    {
-        jornal.DrawQuestData(questSystem.GetQuestById(id));
     }
 }

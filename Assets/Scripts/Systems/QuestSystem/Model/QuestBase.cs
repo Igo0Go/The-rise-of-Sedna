@@ -8,6 +8,7 @@ public abstract class QuestBase
     public int id;
     public string name;
     public string description;
+    public bool dirty = true;
     public List<QuestDetails> details;
 
     public event Action<QuestBase> OnStateChanged;
@@ -33,6 +34,7 @@ public abstract class QuestBase
         s += "id: " + id + "\n";
         s += "name: " + name + "\n";
         s += "desc: " + description + "\n";
+        s += "dirty: " + (dirty ? 1 : 0) + "\n";
         s += GetDetailsData() + "\n";
         s += "state: " + (int)_state + "\n";
         s += GetSpecificData() + "\n";
@@ -46,9 +48,10 @@ public abstract class QuestBase
         id = int.Parse(settingsStrings[1]);
         name = settingsStrings[2];
         description = settingsStrings[3];
-        details = SetDetailsData(settingsStrings[4]);
-        _state = (QuestState)int.Parse(settingsStrings[5]);
-        SetSpecificData(settingsStrings[6]);
+        dirty = settingsStrings[4] == "1";
+        details = SetDetailsData(settingsStrings[5]);
+        _state = (QuestState)int.Parse(settingsStrings[6]);
+        SetSpecificData(settingsStrings[7]);
     }
     protected abstract int GetQuestTypeIndex();
     protected abstract string GetSpecificData();

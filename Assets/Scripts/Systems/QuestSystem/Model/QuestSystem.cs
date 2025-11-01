@@ -61,6 +61,7 @@ public class QuestSystem
     public void UnblockQuestDetails(int questId, int detailsIndex)
     {
         QuestBase quest = GetQuestById(questId);
+        quest.dirty = true;
         quest.details[detailsIndex].unblock = true;
         newInfoInJornal?.Invoke();
     }
@@ -85,7 +86,7 @@ public class QuestSystem
     {
         List<QuestBase> quests = new List<QuestBase>();
 
-        string[] separators = { "{\n", "}\n", "----"};
+        string[] separators = { "{\r\n", "}\r\n", "----"};
         string[] QuestDataStrings = dataText.Split(separators,
             System.StringSplitOptions.RemoveEmptyEntries);
 
@@ -93,7 +94,7 @@ public class QuestSystem
         {
             QuestBase quest;
 
-            string[] s = { "\n", "type: ", "id: ", "name: ", "desc: ", "state: " };
+            string[] s = { "\n", "\r", "type: ", "id: ", "name: ", "desc: ", "state: ", "dirty: " };
             string[] QuestSettingsStrings = questData.Split(s, 
                 System.StringSplitOptions.RemoveEmptyEntries);
 

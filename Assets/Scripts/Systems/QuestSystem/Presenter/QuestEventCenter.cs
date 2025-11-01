@@ -60,7 +60,9 @@ public class QuestEventCenter : MonoBehaviour
 
     private void FindQuestForJornalById(int id)
     {
-        jornal.DrawQuestData(questSystem.GetQuestById(id));
+        QuestBase quest = questSystem.GetQuestById(id);
+        quest.dirty = false;
+        jornal.DrawQuestData(quest);
     }
 
     private void OnActivateQuestTarget(ActivationQuestTarget target)

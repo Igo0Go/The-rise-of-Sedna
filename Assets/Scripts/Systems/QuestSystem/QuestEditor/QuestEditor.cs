@@ -40,6 +40,8 @@ public class QuestEditor : ScriptableObject
 
         List<QuestBase> baseQuests = QuestSystem.Load(_textAsset.text);
 
+        quests.Clear();
+
         foreach (QuestBase quest in baseQuests)
         {
             quests.Add(QuestSO.GetFromBase(quest));
@@ -67,6 +69,7 @@ public class QuestSO
     public string name;
     [TextArea(4, 8)]
     public string description;
+    private bool dirty = true;
     public List<QuestDetails> details;
     public QuestState state = QuestState.waitStart;
     public QuestType typeOfQuest = QuestType.Activation;
@@ -87,7 +90,8 @@ public class QuestSO
                     description = this.description,
                     State = this.state,
                     activationObjectsIds = activationIds,
-                    details = this.details
+                    details = this.details,
+                    dirty = this.dirty
                 };
             default:
                 return null;
@@ -103,6 +107,7 @@ public class QuestSO
         sO.description = questBase.description;
         sO.state = questBase.State;
         sO.details = questBase.details;
+        sO.dirty = questBase.dirty;
 
         if(questBase is ActivationQuest activationQuest)
         {

@@ -98,7 +98,7 @@ public class QuestSO
                     activationObjectsIds = activationIds,
                 };
             case QuestType.Search:
-                return new Quest_Search()
+                return new Quest_Collecting()
                 {
                     id = this.id,
                     name = this.name,
@@ -130,7 +130,7 @@ public class QuestSO
             sO.typeOfQuest = QuestType.Activation;
             sO.activationIds = activationQuest.activationObjectsIds;
         }
-        else if(questBase is Quest_Search searchQuest)
+        else if(questBase is Quest_Collecting searchQuest)
         {
             sO.searchObjectId = searchQuest.objectId;
             sO.targetCount = searchQuest.count;

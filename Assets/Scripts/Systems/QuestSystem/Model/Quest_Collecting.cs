@@ -1,11 +1,11 @@
-public class Quest_Search : QuestBase
+public class Quest_Collecting : QuestBase
 {
     public int objectId;
     public int count;
 
-    public Quest_Search() { }
+    public Quest_Collecting() { }
 
-    public Quest_Search(string[] settingsStrings) : base(settingsStrings)
+    public Quest_Collecting(string[] settingsStrings) : base(settingsStrings)
     {
     }
 

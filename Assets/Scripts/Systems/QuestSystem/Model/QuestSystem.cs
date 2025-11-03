@@ -64,7 +64,7 @@ public class QuestSystem
 
     public void TryCompleteSearchQuest(int questId, FPC_InventorySystem inventorySystem)
     {
-        Quest_Search quest = quests.Find(q => q.id == questId) as Quest_Search;
+        Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
         quest.TryCompleteQuest(inventorySystem);
     }
 
@@ -107,7 +107,7 @@ public class QuestSystem
                     quest = new Quest_Activation(QuestSettingsStrings);
                     break;
                 case QuestType.Search:
-                    quest = new Quest_Search(QuestSettingsStrings);
+                    quest = new Quest_Collecting(QuestSettingsStrings);
                     break;
                 default:
                     quest = null;

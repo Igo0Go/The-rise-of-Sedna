@@ -73,6 +73,10 @@ public class QuestSO
     public List<QuestDetails> details;
     public QuestState state = QuestState.waitStart;
     public QuestType typeOfQuest = QuestType.Activation;
+    [Min(0)]
+    public int searchObjectId = 0;
+    [Min(1)]
+    public int targetCount = 1;
 
     [Header("Activation")]
     public List<int> activationIds;
@@ -83,15 +87,27 @@ public class QuestSO
         switch(typeOfQuest)
         {
             case QuestType.Activation:
-                return new ActivationQuest()
+                return new Quest_Activation()
                 {
                     id = this.id,
                     name = this.name,
                     description = this.description,
                     State = this.state,
-                    activationObjectsIds = activationIds,
                     details = this.details,
-                    dirty = this.dirty
+                    dirty = this.dirty,
+                    activationObjectsIds = activationIds,
+                };
+            case QuestType.Search:
+                return new Quest_Search()
+                {
+                    id = this.id,
+                    name = this.name,
+                    description = this.description,
+                    State = this.state,
+                    details = this.details,
+                    dirty = this.dirty,
+                    objectId = searchObjectId,
+                    count = this.targetCount
                 };
             default:
                 return null;
@@ -109,10 +125,15 @@ public class QuestSO
         sO.details = questBase.details;
         sO.dirty = questBase.dirty;
 
-        if(questBase is ActivationQuest activationQuest)
+        if(questBase is Quest_Activation activationQuest)
         {
             sO.typeOfQuest = QuestType.Activation;
             sO.activationIds = activationQuest.activationObjectsIds;
+        }
+        else if(questBase is Quest_Search searchQuest)
+        {
+            sO.searchObjectId = searchQuest.objectId;
+            sO.targetCount = searchQuest.count;
         }
 
         return sO;

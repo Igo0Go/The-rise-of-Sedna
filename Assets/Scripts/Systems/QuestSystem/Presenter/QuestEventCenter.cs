@@ -38,10 +38,8 @@ public class QuestEventCenter : MonoBehaviour
             jornal.SelectedQuestChanged += FindQuestForJornalById;
         }
 
-        #endregion 
-
         QuestDetailModule[] questDetailsModules =
-            FindObjectsByType<QuestDetailModule>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+    FindObjectsByType<QuestDetailModule>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         foreach (QuestDetailModule module in questDetailsModules)
         {
@@ -49,6 +47,16 @@ public class QuestEventCenter : MonoBehaviour
         }
 
         questSystem.newInfoInJornal += OnNewInfoInJornal;
+
+        #endregion
+
+        SearchQuestTargetModule[] searchQuestTargetModules =
+    FindObjectsByType<SearchQuestTargetModule>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        foreach (SearchQuestTargetModule module in searchQuestTargetModules)
+        {
+            module.TryCompleteSearchQuest += OnTryCompleteSearchQuest;
+        }
     }
 
     #region Старый код
@@ -75,8 +83,6 @@ public class QuestEventCenter : MonoBehaviour
         questSystem.SetStateForQuestById(id, state);
     }
 
-    #endregion
-
     private void OnQuestDetailUnblock(int questId, int detailIndex)
     {
         questSystem.UnblockQuestDetails(questId, detailIndex);
@@ -85,5 +91,12 @@ public class QuestEventCenter : MonoBehaviour
     private void OnNewInfoInJornal()
     {
         LogPanel.instance.ShowStringInLog("Новая запись в журнале");
+    }
+
+    #endregion
+
+    private void OnTryCompleteSearchQuest(int id, FPC_InventorySystem inventorySystem)
+    {
+        questSystem.TryCompleteSearchQuest(id, inventorySystem);
     }
 }

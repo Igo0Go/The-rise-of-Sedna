@@ -32,7 +32,7 @@ public class FPC_HealhSystem : MonoBehaviour
 
     private void Awake()
     {
-        FindFirstObjectByType<FPC_InventorySystem>().inventoryChanged += OnIventoryChanged;
+        FindFirstObjectByType<FPC_InventorySystem>().InventoryChanged += OnIventoryChanged;
     }
 
     private void Start()

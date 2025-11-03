@@ -98,4 +98,14 @@ details: [(Я добрался до реакторной. Осталось вк�
 state: 0
 activationIds: []
 }
+----{
+type: 2
+id: 10
+name: Медицинская помощь
+desc: Найти 5 ампул биогеля
+dirty: 1
+details: []
+state: 1
+targetObjects: [0,5]
+}
 ----

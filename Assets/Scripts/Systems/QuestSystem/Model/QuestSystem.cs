@@ -7,14 +7,12 @@ public class QuestSystem
     #region Старый код
     private List<QuestBase> quests;
 
-
+    public event Action newInfoInJornal;
 
     public QuestSystem(string questDataString)
     {
         quests = Load(questDataString);
     }
-
-
 
     public void SetStateForQuestById(int id, QuestState stateType)
     {
@@ -41,11 +39,11 @@ public class QuestSystem
 
     public void ActivationQuestTargetUsed(int targetId)
     {
-        List<QuestBase> actQuests = quests.FindAll(q => q is  ActivationQuest);
+        List<QuestBase> actQuests = quests.FindAll(q => q is  Quest_Activation);
 
         for (int i = 0; i < actQuests.Count; i++)
         {
-            ActivationQuest actQuest = actQuests[i] as ActivationQuest;
+            Quest_Activation actQuest = actQuests[i] as Quest_Activation;
             actQuest.OnQuestTargetActivation(targetId);
         }
     }
@@ -54,9 +52,6 @@ public class QuestSystem
     {
         return quests.FindAll(q => q.State == state);
     }
-    #endregion
-
-    public event Action newInfoInJornal;
 
     public void UnblockQuestDetails(int questId, int detailsIndex)
     {
@@ -65,6 +60,14 @@ public class QuestSystem
         quest.details[detailsIndex].unblock = true;
         newInfoInJornal?.Invoke();
     }
+    #endregion
+
+    public void TryCompleteSearchQuest(int questId, FPC_InventorySystem inventorySystem)
+    {
+        Quest_Search quest = quests.Find(q => q.id == questId) as Quest_Search;
+        quest.TryCompleteQuest(inventorySystem);
+    }
+
 
     #region Работа с файлом
     public static void Save(List<QuestBase> quests, string path)
@@ -101,7 +104,10 @@ public class QuestSystem
             switch (GetQuestTypeFromLoadString(QuestSettingsStrings[0]))
             {
                 case QuestType.Activation:
-                    quest = new ActivationQuest(QuestSettingsStrings);
+                    quest = new Quest_Activation(QuestSettingsStrings);
+                    break;
+                case QuestType.Search:
+                    quest = new Quest_Search(QuestSettingsStrings);
                     break;
                 default:
                     quest = null;

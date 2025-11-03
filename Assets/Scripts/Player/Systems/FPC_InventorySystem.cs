@@ -4,21 +4,21 @@ using System;
 
 public class FPC_InventorySystem : MonoBehaviour
 {
-    private Dictionary<InventoryObject, int> inventory = new Dictionary<InventoryObject, int>();
+    private Dictionary<InventoryObject, int> inventory = new();
 
-    public event Action<InventoryObject, int> inventoryChanged;
+    public event Action<InventoryObject, int> InventoryChanged;
 
     public void AddToInventory(InventoryObject obj)
     {
         if(inventory.ContainsKey(obj))
         {
             inventory[obj]++;
-            inventoryChanged?.Invoke(obj, inventory[obj]);
+            InventoryChanged?.Invoke(obj, inventory[obj]);
         }
         else
         {
             inventory.Add(obj, 1);
-            inventoryChanged?.Invoke(obj, inventory[obj]);
+            InventoryChanged?.Invoke(obj, inventory[obj]);
         }
     }
 
@@ -31,14 +31,36 @@ public class FPC_InventorySystem : MonoBehaviour
             if (inventory[bufer] > 1)
             {
                 inventory[bufer]--;
-                inventoryChanged?.Invoke(bufer, inventory[bufer]);
+                InventoryChanged?.Invoke(bufer, inventory[bufer]);
             }
             else
             {
                 inventory.Remove(bufer);
-                inventoryChanged?.Invoke(bufer, 0);
+                InventoryChanged?.Invoke(bufer, 0);
             }
         }
+    }
+
+    public bool TrySpendItem(int Id, int count)
+    {
+        InventoryObject bufer = FindById(Id);
+
+        if (inventory[bufer] >= count)
+        {
+            inventory[bufer] -= count;
+            if (inventory[bufer] <= 0)
+            {
+                inventory.Remove(bufer);
+                InventoryChanged?.Invoke(bufer, 0);
+            }
+            else
+            {
+                InventoryChanged?.Invoke(bufer, inventory[bufer]);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     public (InventoryObject obj, int count) GetInventoryItemDataById(int id)
@@ -53,7 +75,7 @@ public class FPC_InventorySystem : MonoBehaviour
         return (null, 0);
     }
 
-    private InventoryObject FindById(int id)
+    public InventoryObject FindById(int id)
     {
         InventoryObject bufer = null;
         foreach (InventoryObject obj in inventory.Keys)

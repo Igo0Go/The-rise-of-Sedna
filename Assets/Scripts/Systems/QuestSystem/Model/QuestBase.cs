@@ -29,7 +29,7 @@ public abstract class QuestBase
 
     public virtual string ConvertToSaveString()
     {
-        string s = "{\n";
+        string s = "{\r\n";
         s += "type: " + GetQuestTypeIndex() + "\n";
         s += "id: " + id + "\n";
         s += "name: " + name + "\n";
@@ -38,7 +38,7 @@ public abstract class QuestBase
         s += GetDetailsData() + "\n";
         s += "state: " + (int)_state + "\n";
         s += GetSpecificData() + "\n";
-        s += "}\n";
+        s += "}\r\n";
         return s;
     }
 
@@ -104,52 +104,4 @@ public enum QuestState
     complete = 2
 }
 
-public class ActivationQuest : QuestBase
-{
-    public List<int> activationObjectsIds;
 
-    public ActivationQuest() { }
-
-    public ActivationQuest(string[] settingsStrings) : base(settingsStrings)
-    {
-    }
-    protected override int GetQuestTypeIndex()
-    {
-        return (int)QuestType.Activation;
-    }
-    protected override string GetSpecificData()
-    {
-        string s = "activationIds: [";
-        foreach (int i in activationObjectsIds)
-        {
-            s += i + ",";
-        }
-        s += "]";
-        return s;
-    }
-
-    protected override void SetSpecificData(string inputString)
-    {
-        string[] s = { "\n", "activationIds: ", "[", "]", ","};
-        string[] dataStrings = inputString.Split(s, System.StringSplitOptions.RemoveEmptyEntries);
-
-        activationObjectsIds = new List<int>();
-        foreach (string i in dataStrings)
-        {
-            activationObjectsIds.Add(int.Parse(i));
-        }
-    }
-
-    public void OnQuestTargetActivation(int  targetId)
-    {
-        if (activationObjectsIds.Contains(targetId))
-        {
-            activationObjectsIds.Remove(targetId);
-        }
-
-        if (activationObjectsIds.Count == 0)
-        {
-            State = QuestState.complete;
-        }
-    }
-}

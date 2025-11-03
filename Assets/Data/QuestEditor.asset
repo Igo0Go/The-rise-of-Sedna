@@ -24,6 +24,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 0000000001000000
   - id: 1
     name: "\u0412\u0437\u044F\u0442\u044C \u0432\u0441\u0451 \u0432 \u0441\u0432\u043E\u0438
@@ -33,6 +35,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 
   - id: 2
     name: "\u0412\u043E\u0441\u0441\u0442\u0430\u043D\u0438\u0435 \u043C\u0430\u0448\u0438\u043D"
@@ -42,6 +46,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 
   - id: 3
     name: "\u041D\u043E\u0432\u044B\u0439 \u0441\u0442\u0430\u0440\u0442"
@@ -50,6 +56,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 
   - id: 4
     name: "\u041D\u043E\u0432\u044B\u0439 \u0434\u0440\u0443\u0433"
@@ -58,6 +66,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 
   - id: 5
     name: "\u0411\u0435\u0437\u0437\u0430\u0449\u0438\u0442\u043D\u044B\u0439"
@@ -67,6 +77,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 
   - id: 6
     name: "\u0417\u0430\u0449\u0438\u0442\u0430 \u0441\u043B\u0430\u0431\u044B\u0445"
@@ -76,6 +88,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 
   - id: 7
     name: "\u041D\u043E\u0432\u044B\u0439 \u043F\u0443\u0442\u044C"
@@ -85,6 +99,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 
   - id: 8
     name: "\u0412\u043E\u0442 \u043C\u043E\u0438 \u0434\u043E\u043A\u0443\u043C\u0435\u043D\u0442\u044B!"
@@ -94,6 +110,8 @@ MonoBehaviour:
     details: []
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
     activationIds: 
   - id: 9
     name: "\u0412\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u0440\u0435\u0430\u043A\u0442\u043E\u0440\u044B"
@@ -112,4 +130,16 @@ MonoBehaviour:
       unblock: 0
     state: 0
     typeOfQuest: 1
+    searchObjectId: 0
+    targetCount: 1
+    activationIds: 
+  - id: 10
+    name: "\u041C\u0435\u0434\u0438\u0446\u0438\u043D\u0441\u043A\u0430\u044F \u043F\u043E\u043C\u043E\u0449\u044C"
+    description: "\u041D\u0430\u0439\u0442\u0438 5 \u0430\u043C\u043F\u0443\u043B
+      \u0431\u0438\u043E\u0433\u0435\u043B\u044F"
+    details: []
+    state: 1
+    typeOfQuest: 2
+    searchObjectId: 0
+    targetCount: 5
     activationIds: 

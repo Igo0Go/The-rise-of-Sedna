@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 626918332363643604}
   - component: {fileID: 570087008647072890}
   m_Layer: 7
-  m_Name: MagazineObj
+  m_Name: Plasma D-14 Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,5 +1,5 @@
 public enum QuestType
 {
     Activation = 1,
-    Search = 2
+    Collecting = 2
 }

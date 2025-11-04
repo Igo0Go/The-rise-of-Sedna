@@ -12,7 +12,7 @@ public class MedPack : InteractiveObject
 
     public override void Use()
     {
-        FindFirstObjectByType<FPC_InventorySystem>().AddToInventory(data);
+        InventarySystem.Instance.AddToInventory(data.id, 1);
         Destroy(gameObject);
     }
 }

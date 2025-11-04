@@ -15,4 +15,5 @@ MonoBehaviour:
   id: 0
   itemName: "\u0411\u0438\u043E\u0433\u0435\u043B\u044C"
   actionDescription: "\u0412\u0437\u044F\u0442\u044C"
+  itemPrefab: {fileID: 2957004024845649821, guid: 4b986d13bdc9a5f4dbace5ccceca7ef1, type: 3}
   hpValue: 15

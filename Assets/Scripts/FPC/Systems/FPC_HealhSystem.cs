@@ -32,7 +32,7 @@ public class FPC_HealhSystem : MonoBehaviour
 
     private void Awake()
     {
-        FindFirstObjectByType<FPC_InventorySystem>().InventoryChanged += OnIventoryChanged;
+        InventarySystem.Instance.InventoryChanged += OnIventoryChanged;
     }
 
     private void Start()
@@ -72,22 +72,19 @@ public class FPC_HealhSystem : MonoBehaviour
             return;
         }
 
-        FPC_InventorySystem inventorySystem = FindFirstObjectByType<FPC_InventorySystem>();
+        (InventoryItemData data, int count) info = InventarySystem.Instance.
+    GetInventoryItemDataById(IdHolder.InventoryItemsIds.Biogel);
 
-        (InventoryObject data, int count) info = inventorySystem.
-            GetInventoryItemDataById(IdHolder.InventoryItemsIds.Biogel);
-
-        if(info.count > 0)
+        if (InventarySystem.Instance.TrySpendItem(IdHolder.InventoryItemsIds.Biogel, 1))
         {
             MedItemData medData = info.data as MedItemData;
             Heal(medData.hpValue);
-            inventorySystem.RemoveFromInventory(IdHolder.InventoryItemsIds.Biogel);
         }
     }
 
-    public void OnIventoryChanged(InventoryObject obj, int count)
+    public void OnIventoryChanged(int itemId, int count)
     {
-        if(obj.id == IdHolder.InventoryItemsIds.Biogel)
+        if(itemId == IdHolder.InventoryItemsIds.Biogel)
         {
             MedPackCountChanged?.Invoke(count);
         }

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName ="IgoGoTools/Items/Weapon")]
-public class WeaponItemData : InventoryObject
+public class WeaponItemData : InventoryItemData
 {
     [Tooltip("Тип магазина")]
     public MagazineType MagazineType;
@@ -30,9 +30,7 @@ public class WeaponItemData : InventoryObject
     [Tooltip("Скорострельность (выстрелов в минуту)"), Min(1)]
     public float fireRate = 1;
     public ShootMode shootMode = ShootMode.ClicToOneShot;
-
     public GameObject weaponPrefab;
-    public GameObject weaponItem;
 }
 
 public enum ShootMode

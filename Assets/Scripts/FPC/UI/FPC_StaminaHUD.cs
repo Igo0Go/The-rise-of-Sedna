@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StaminaSliderController : MonoBehaviour
+public class FPC_StaminaHUD : MonoBehaviour
 {
     [SerializeField]
     private Slider staminaSlider;

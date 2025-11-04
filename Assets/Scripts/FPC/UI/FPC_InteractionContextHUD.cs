@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class ContextMessagePanel : MonoBehaviour
+public class FPC_InteractionContextHUD : MonoBehaviour
 {
     [SerializeField]
     private TMP_Text itemNameText;

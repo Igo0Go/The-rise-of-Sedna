@@ -95,8 +95,8 @@ public class QuestEventCenter : MonoBehaviour
 
     #endregion
 
-    private void OnTryCompleteSearchQuest(int id, FPC_InventorySystem inventorySystem)
+    private void OnTryCompleteSearchQuest(int id)
     {
-        questSystem.TryCompleteSearchQuest(id, inventorySystem);
+        questSystem.TryCompleteCollectingQuest(id);
     }
 }

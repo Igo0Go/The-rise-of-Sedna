@@ -9,11 +9,6 @@ public class QuestSystem
 
     public event Action newInfoInJornal;
 
-    public QuestSystem(string questDataString)
-    {
-        quests = Load(questDataString);
-    }
-
     public void SetStateForQuestById(int id, QuestState stateType)
     {
         QuestBase quest = GetQuestById(id);
@@ -62,12 +57,18 @@ public class QuestSystem
     }
     #endregion
 
-    public void TryCompleteSearchQuest(int questId, FPC_InventorySystem inventorySystem)
+    public QuestSystem(string questDataString)
     {
-        Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
-        quest.TryCompleteQuest(inventorySystem);
+        quests = Load(questDataString);
     }
 
+    public event Action<QuestBase> QuestStateChanged;
+
+    public void TryCompleteCollectingQuest(int questId)
+    {
+        Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
+        quest.TryCompleteQuest();
+    }
 
     #region Работа с файлом
     public static void Save(List<QuestBase> quests, string path)
@@ -106,7 +107,7 @@ public class QuestSystem
                 case QuestType.Activation:
                     quest = new Quest_Activation(QuestSettingsStrings);
                     break;
-                case QuestType.Search:
+                case QuestType.Collecting:
                     quest = new Quest_Collecting(QuestSettingsStrings);
                     break;
                 default:

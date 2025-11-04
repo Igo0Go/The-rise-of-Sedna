@@ -60,7 +60,7 @@ public class FPC_WeaponSystem : MonoBehaviour
             currentWeapon.AmmoChanged -= OnCurrentWeaponAmmoChanged;
             currentWeapon.ReloadFinaled -= OnFinalReload;
 
-            WeaponItem item = Instantiate(currentWeapon.weaponData.weaponItem, cameraTransform.position + cameraTransform.forward,
+            WeaponItem item = Instantiate(currentWeapon.weaponData.itemPrefab, cameraTransform.position + cameraTransform.forward,
                 Quaternion.identity).GetComponent<WeaponItem>();
 
             item.SetMagazine(currentWeapon.currentMagazine);

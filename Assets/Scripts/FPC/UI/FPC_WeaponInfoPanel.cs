@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class WeaponInfoPanel : MonoBehaviour
+public class FPC_WeaponInfoPanel : MonoBehaviour
 {
     [SerializeField]
     private GameObject infoPnel;

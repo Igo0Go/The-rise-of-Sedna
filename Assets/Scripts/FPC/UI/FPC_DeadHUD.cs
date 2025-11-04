@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class DeadPlayerSystem : MonoBehaviour
+public class FPC_DeadHUD : MonoBehaviour
 {
     [SerializeField]
     private GameObject deadPanel;

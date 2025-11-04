@@ -73,13 +73,22 @@ public class QuestSO
     public List<QuestDetails> details;
     public QuestState state = QuestState.waitStart;
     public QuestType typeOfQuest = QuestType.Activation;
-    [Min(0)]
-    public int searchObjectId = 0;
-    [Min(1)]
-    public int targetCount = 1;
 
+
+    [Space(20)]
     [Header("Activation")]
     public List<int> activationIds;
+
+    [Space(20)]
+    [Header("Collecting")]
+    [Min(0)]
+    public int startObjectId = 0;
+    [Min(1)]
+    public int startObjectsCount = 1;
+    [Min(0)]
+    public int collectedObjectId = 0;
+    [Min(1)]
+    public int collectedObjectsCount = 1;
 
 
     public QuestBase ToQuestBase()
@@ -97,7 +106,7 @@ public class QuestSO
                     dirty = this.dirty,
                     activationObjectsIds = activationIds,
                 };
-            case QuestType.Search:
+            case QuestType.Collecting:
                 return new Quest_Collecting()
                 {
                     id = this.id,
@@ -106,8 +115,10 @@ public class QuestSO
                     State = this.state,
                     details = this.details,
                     dirty = this.dirty,
-                    objectId = searchObjectId,
-                    count = this.targetCount
+                    startObjectsCount = this.startObjectsCount,
+                    startingObjectId = this.startObjectId,
+                    collectedObjectId = collectedObjectId,
+                    collectedObjectsCount = this.collectedObjectsCount
                 };
             default:
                 return null;
@@ -130,10 +141,12 @@ public class QuestSO
             sO.typeOfQuest = QuestType.Activation;
             sO.activationIds = activationQuest.activationObjectsIds;
         }
-        else if(questBase is Quest_Collecting searchQuest)
+        else if(questBase is Quest_Collecting collectingQuest)
         {
-            sO.searchObjectId = searchQuest.objectId;
-            sO.targetCount = searchQuest.count;
+            sO.startObjectId = collectingQuest.startingObjectId;
+            sO.startObjectsCount = collectingQuest.startObjectsCount;
+            sO.collectedObjectId = collectingQuest.collectedObjectId;
+            sO.collectedObjectsCount = collectingQuest.collectedObjectsCount;
         }
 
         return sO;

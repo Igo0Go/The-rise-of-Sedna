@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MagazineData", menuName = "IgoGoTools/Items/Magazines")]
-public class MagazineData : InventoryObject
+public class MagazineData : InventoryItemData
 {
     public MagazineType type;
     [Tooltip("Количество патронов в магазине"), Min(1)]

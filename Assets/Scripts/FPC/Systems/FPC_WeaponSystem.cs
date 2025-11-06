@@ -12,13 +12,13 @@ public class FPC_WeaponSystem : MonoBehaviour
 
     public Weapon currentWeapon;
 
-    private Dictionary<MagazineType, List<WeaponMagazine>> magazines = new();
+
 
     private event Action<Vector2> RecoilEvent;
     public event Action<Weapon> WeaponChanged;
     public event Action<Weapon> AmmoChanged;
     public event Action<bool> AimValueChanged;
-    public event Action<List<WeaponMagazine>, Weapon> MagazinesChanged;
+    public event Action<List<WeaponMagazine>, Weapon> MagazinesForCurrentWeaponChanged;
 
     private float reloadTime = 0;
 
@@ -27,7 +27,12 @@ public class FPC_WeaponSystem : MonoBehaviour
         RecoilEvent += FindFirstObjectByType<FPC_View>().OnRecoil;
         AimValueChanged += FindFirstObjectByType<FPC_HeadbobSystem>().SetAim;
         AimValueChanged += FindFirstObjectByType<FPC_View>().SetAimState;
+        InventarySystem.Instance.MagazinesChanged += OnInventaryMagazinesChanged;
         reloadTime = -1;
+    }
+    private void OnDestroy()
+    {
+        InventarySystem.Instance.MagazinesChanged -= OnCurrentWeaponAmmoChanged;
     }
 
     public void MainAttack()
@@ -74,51 +79,28 @@ public class FPC_WeaponSystem : MonoBehaviour
         currentWeapon.AmmoChanged += OnCurrentWeaponAmmoChanged;
         currentWeapon.ReloadFinaled += OnFinalReload;
 
-        if(!magazines.ContainsKey(weapon.weaponItemData.MagazineType))
-        {
-            magazines.Add(weapon.weaponItemData.MagazineType, new List<WeaponMagazine>());
-        }
-
-
         WeaponChanged?.Invoke(currentWeapon);
         AmmoChanged?.Invoke(currentWeapon);
-        MagazinesChanged?.Invoke(magazines[weapon.weaponItemData.MagazineType], currentWeapon);
+        OnInventaryMagazinesChanged();
     }
-    public void AddMagazine(WeaponMagazine magazine)
-    {
-        if(!magazines.Keys.Contains(magazine.data.type))
-        {
-            magazines.Add(magazine.data.type, new List<WeaponMagazine>() { magazine });
-        }
-        else
-        {
-            magazines[magazine.data.type].Add(magazine);
-        }
 
-        if (currentWeapon == null) return;
-
-        if(currentWeapon.weaponData.MagazineType == magazine.data.type)
-        {
-            MagazinesChanged?.Invoke(magazines[magazine.data.type], currentWeapon);
-        }
-    }
     public void TryReload()
     {
         if(currentWeapon == null) return;
         if (currentWeapon.reload) return;
 
-        if(magazines.Keys.Contains(currentWeapon.weaponData.MagazineType))
+        List<WeaponMagazine> magazines =
+            InventarySystem.Instance.GetMagazinesOfType(currentWeapon.weaponData.MagazineType);
+
+        if (magazines.Count > 0)
         {
-            if (magazines[currentWeapon.weaponData.MagazineType].Count > 0)
+            if (currentWeapon.currentMagazine != null && currentWeapon.currentMagazine.currentAmmo != 0)
             {
-                if(currentWeapon.currentMagazine != null && currentWeapon.currentMagazine.currentAmmo != 0)
-                {
-                    magazines[currentWeapon.weaponData.MagazineType].Add(currentWeapon.currentMagazine);
-                }
-                WeaponMagazine m = magazines[currentWeapon.weaponData.MagazineType][0];
-                magazines[currentWeapon.weaponData.MagazineType].RemoveAt(0);
-                currentWeapon.Reload(m);
+                InventarySystem.Instance.AddConcreteMagazine(currentWeapon.currentMagazine);
             }
+            WeaponMagazine m = magazines[0];
+            InventarySystem.Instance.RemoveConcreteMagazine(magazines[0]);
+            currentWeapon.Reload(m);
         }
     }
     public void SetAimState(bool state)
@@ -137,26 +119,6 @@ public class FPC_WeaponSystem : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            string result = string.Empty;
-
-            if (currentWeapon != null && currentWeapon.currentMagazine != null)
-            {
-                result += "==[" + currentWeapon.currentMagazine.currentAmmo + "]\t";
-            }
-
-            if (magazines.ContainsKey(currentWeapon.weaponData.MagazineType))
-            {
-                foreach(var item in magazines[currentWeapon.weaponData.MagazineType])
-                {
-                    result += "[" + item.currentAmmo + "] ";
-                }
-            }
-
-            print(result);
-        }
-
         if(reloadTime < 0) return;
 
         reloadTime += Time.deltaTime;
@@ -167,7 +129,7 @@ public class FPC_WeaponSystem : MonoBehaviour
             if (currentWeapon.reload) return;
             if (currentWeapon.currentMagazine == null) return;
 
-            AddMagazine(currentWeapon.currentMagazine);
+            InventarySystem.Instance.AddConcreteMagazine(currentWeapon.currentMagazine);
             currentWeapon.currentMagazine = null;
             currentWeapon.PullOutMagazine();
         }
@@ -180,6 +142,18 @@ public class FPC_WeaponSystem : MonoBehaviour
 
     private void OnFinalReload()
     {
-        MagazinesChanged?.Invoke(magazines[currentWeapon.weaponData.MagazineType], currentWeapon);
+        MagazinesForCurrentWeaponChanged?.Invoke(
+            InventarySystem.Instance.GetMagazinesOfType(currentWeapon.weaponData.MagazineType),
+            currentWeapon);
+    }
+
+    private void OnInventaryMagazinesChanged()
+    {
+        if(currentWeapon == null) return;
+
+        List<WeaponMagazine> weaponMagazines =
+            InventarySystem.Instance.GetMagazinesOfType(currentWeapon.weaponData.MagazineType);
+
+        MagazinesForCurrentWeaponChanged?.Invoke(weaponMagazines, currentWeapon);
     }
 }

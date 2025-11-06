@@ -25,8 +25,6 @@ public class FPC_SkillSystem : MonoBehaviour
         SkillHolder.Instance.sprintTime = new SkillInfo(sprintTime);
         SkillHolder.Instance.recoilForceMultiplier = new SkillInfo(recoilForceMultiplier);
     }
-
-
 }
 
 public class SkillHolder

@@ -9,6 +9,7 @@ public abstract class QuestBase
     public string name;
     public string description;
     public bool dirty = true;
+    public int exp = 0;
     public List<QuestDetails> details;
 
     public event Action<QuestBase> OnStateChanged;
@@ -20,6 +21,15 @@ public abstract class QuestBase
         {
             if (_state != value)
             {
+                if(value == QuestState.active && _state != QuestState.active)
+                {
+                    OnActivateQuest();
+                }
+                if (value == QuestState.complete && _state != QuestState.complete)
+                {
+                    OnCompleteQuest();
+                }
+
                 _state = value;
                 OnStateChanged?.Invoke(this);
             }
@@ -34,6 +44,7 @@ public abstract class QuestBase
         s += "id: " + id + "\n";
         s += "name: " + name + "\n";
         s += "desc: " + description + "\n";
+        s += "exp: " + exp + "\n";
         s += "dirty: " + (dirty ? 1 : 0) + "\n";
         s += GetDetailsData() + "\n";
         s += "state: " + (int)_state + "\n";
@@ -42,16 +53,26 @@ public abstract class QuestBase
         return s;
     }
 
+    protected virtual void OnCompleteQuest()
+    {
+        SkillHolder.Instance.AddExperience(exp);
+    }
+    protected virtual void OnActivateQuest()
+    {
+        
+    }
+
     public QuestBase() { }
     public QuestBase(string[] settingsStrings)
     {
         id = int.Parse(settingsStrings[1]);
         name = settingsStrings[2];
         description = settingsStrings[3];
-        dirty = settingsStrings[4] == "1";
-        details = SetDetailsData(settingsStrings[5]);
-        _state = (QuestState)int.Parse(settingsStrings[6]);
-        SetSpecificData(settingsStrings[7]);
+        exp = int.Parse(settingsStrings[4]);
+        dirty = settingsStrings[5] == "1";
+        details = SetDetailsData(settingsStrings[6]);
+        _state = (QuestState)int.Parse(settingsStrings[7]);
+        SetSpecificData(settingsStrings[8]);
     }
     protected abstract int GetQuestTypeIndex();
     protected abstract string GetSpecificData();

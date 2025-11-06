@@ -18,7 +18,7 @@ public class FPC_WeaponInfoPanel : MonoBehaviour
         FPC_WeaponSystem ws = FindFirstObjectByType<FPC_WeaponSystem>();
         ws.WeaponChanged += OnWeaponChanged;
         ws.AmmoChanged += OnAmmoChanged;
-        ws.MagazinesChanged += OnMagazinesChenged;
+        ws.MagazinesForCurrentWeaponChanged += OnMagazinesChenged;
 
         infoPnel.SetActive(false);
     }
@@ -48,9 +48,9 @@ public class FPC_WeaponInfoPanel : MonoBehaviour
             weaponAmmoText.text = "[" + availableShots + "/" + maxShots + "]";
         }
     }
-    private void OnMagazinesChenged(List<WeaponMagazine> newMagazines, Weapon currentWeapon)
+    private void OnMagazinesChenged(List<WeaponMagazine> weaponMagazines, Weapon currentWeapon)
     {
-        if(newMagazines == null ||  newMagazines.Count == 0)
+        if(weaponMagazines == null ||  weaponMagazines.Count == 0)
         {
             magazinesText.text = string.Empty;
             return;
@@ -58,7 +58,7 @@ public class FPC_WeaponInfoPanel : MonoBehaviour
 
         string s = string.Empty;
 
-        foreach (var item in newMagazines)
+        foreach (var item in weaponMagazines)
         {
             int availableShots = item.currentAmmo / currentWeapon.weaponData.consumptionPerShot;
             s += "[" + availableShots + "] ";

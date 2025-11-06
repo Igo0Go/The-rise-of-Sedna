@@ -1,7 +1,7 @@
 using UnityEngine;
 using System;
 
-public class SearchQuestTargetModule : InteractiveModule
+public class CollectingQuestTargetModule : InteractiveModule
 {
     [SerializeField, Min(0)]
     private int questId = 0;

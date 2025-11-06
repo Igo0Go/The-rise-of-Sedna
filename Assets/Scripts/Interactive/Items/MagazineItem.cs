@@ -13,7 +13,7 @@ public class MagazineItem : InteractiveObject
 
     public override void Use()
     {
-        FindFirstObjectByType<FPC_WeaponSystem>().AddMagazine(magazine);
+        InventarySystem.Instance.AddConcreteMagazine(magazine);
         onUseEvent?.Invoke();
         Destroy(gameObject);
     }

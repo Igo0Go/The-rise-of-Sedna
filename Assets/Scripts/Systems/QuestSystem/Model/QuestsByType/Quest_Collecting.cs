@@ -11,22 +11,23 @@ public class Quest_Collecting : QuestBase
 
     public event Action<Quest_Collecting> CollectedQuestStartedWithItem;
 
-    public Quest_Collecting()
-    {
-        StartItemEventInvokerSubscribe();
-    }
-
     public Quest_Collecting(string[] settingsStrings) : base(settingsStrings)
     {
-        StartItemEventInvokerSubscribe();
+    }
+    public Quest_Collecting()
+    {
+        
     }
 
-    private void StartItemEventInvokerSubscribe()
+    protected override void OnActivateQuest()
     {
+        base.OnActivateQuest();
+
         if (startingObjectId < 0 || startObjectsCount <= 0)
             return;
-
-        OnStateChanged += (s) => CollectedQuestStartedWithItem?.Invoke(this);
+        CollectedQuestStartedWithItem?.Invoke(this);
+        InventarySystem.Instance.
+          AddToInventory(startingObjectId, startObjectsCount);
     }
 
     protected override int GetQuestTypeIndex()

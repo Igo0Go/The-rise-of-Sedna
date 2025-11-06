@@ -98,7 +98,7 @@ public class QuestSystem
         {
             QuestBase quest;
 
-            string[] s = { "\n", "\r", "type: ", "id: ", "name: ", "desc: ", "state: ", "dirty: " };
+            string[] s = { "\n", "\r", "type: ", "id: ", "name: ", "desc: ", "exp: ", "state: ", "dirty: " };
             string[] QuestSettingsStrings = questData.Split(s, 
                 System.StringSplitOptions.RemoveEmptyEntries);
 

@@ -50,10 +50,10 @@ public class QuestEventCenter : MonoBehaviour
 
         #endregion
 
-        SearchQuestTargetModule[] searchQuestTargetModules =
-    FindObjectsByType<SearchQuestTargetModule>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        CollectingQuestTargetModule[] searchQuestTargetModules =
+    FindObjectsByType<CollectingQuestTargetModule>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
-        foreach (SearchQuestTargetModule module in searchQuestTargetModules)
+        foreach (CollectingQuestTargetModule module in searchQuestTargetModules)
         {
             module.TryCompleteSearchQuest += OnTryCompleteSearchQuest;
         }

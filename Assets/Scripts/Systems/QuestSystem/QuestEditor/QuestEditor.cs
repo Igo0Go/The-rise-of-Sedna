@@ -69,6 +69,8 @@ public class QuestSO
     public string name;
     [TextArea(4, 8)]
     public string description;
+    [Min(1)]
+    public int exp;
     private bool dirty = true;
     public List<QuestDetails> details;
     public QuestState state = QuestState.waitStart;
@@ -83,8 +85,8 @@ public class QuestSO
     [Header("Collecting")]
     [Min(0)]
     public int startObjectId = 0;
-    [Min(1)]
-    public int startObjectsCount = 1;
+    [Min(0)]
+    public int startObjectsCount = 0;
     [Min(0)]
     public int collectedObjectId = 0;
     [Min(1)]
@@ -101,6 +103,7 @@ public class QuestSO
                     id = this.id,
                     name = this.name,
                     description = this.description,
+                    exp = this.exp,
                     State = this.state,
                     details = this.details,
                     dirty = this.dirty,
@@ -112,6 +115,7 @@ public class QuestSO
                     id = this.id,
                     name = this.name,
                     description = this.description,
+                    exp = this.exp,
                     State = this.state,
                     details = this.details,
                     dirty = this.dirty,
@@ -135,6 +139,7 @@ public class QuestSO
         sO.state = questBase.State;
         sO.details = questBase.details;
         sO.dirty = questBase.dirty;
+        sO.exp = questBase.exp;
 
         if(questBase is Quest_Activation activationQuest)
         {

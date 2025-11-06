@@ -42,6 +42,7 @@ public class ManualInteractive : InteractiveObject
     public override void Use()
     {
         useAction();
+        onUseEvent?.Invoke();
     }
 
     private Action useAction;

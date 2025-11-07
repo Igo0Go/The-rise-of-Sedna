@@ -5,8 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class FPC_Movement : MonoBehaviour
 {
-
-
     [SerializeField]
     private float gravity = -30f;
     [SerializeField]
@@ -25,6 +23,8 @@ public class FPC_Movement : MonoBehaviour
     private Transform standCameraPoint;
     [SerializeField]
     private FPC_HeadbobSystem fPC_HeadbobSystem;
+    [SerializeField]
+    private FootStepSystem footstepSystem;
 
     private CharacterController characterController;
     private Vector2 horizontalInput;
@@ -66,6 +66,21 @@ public class FPC_Movement : MonoBehaviour
         if(horizontalInput == Vector2.zero && useSprint)
         {
             SprintToggle();
+        }
+
+        if(horizontalInput == Vector2.zero)
+        {
+            footstepSystem.ResetStepValue();
+        }
+        else
+        {
+            footstepSystem.Step();
+            float stepDelta = SkillHolder.Instance.speed.currentValue;
+            if(useSprint)
+            {
+                stepDelta *= SkillHolder.Instance.sprintMultiplier.currentValue;
+            }
+            footstepSystem.AddStepValue(stepDelta * Time.deltaTime);
         }
     }
 

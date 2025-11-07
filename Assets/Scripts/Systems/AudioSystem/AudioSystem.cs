@@ -27,3 +27,35 @@ public static class AudioPack
 {
     public static AudioSystem audioSystem;
 }
+
+[System.Serializable]
+public class FootStepSystem
+{
+    [SerializeField, Min(1)]
+    private float stepTargetValue = 1;
+
+    [SerializeField]
+    private AudioClip clip;
+
+    private float stepValue = 0;
+
+    public void ResetStepValue()
+    { 
+        stepValue = 0;
+    }
+    public void AddStepValue(float delta)
+    {
+        stepValue += delta;
+        if (stepValue > stepTargetValue)
+        {
+            stepValue = 0;
+        }
+    }
+    public void Step()
+    {
+        if(stepValue == 0)
+        {
+            AudioPack.audioSystem.PlaySound(clip);
+        }
+    }
+}

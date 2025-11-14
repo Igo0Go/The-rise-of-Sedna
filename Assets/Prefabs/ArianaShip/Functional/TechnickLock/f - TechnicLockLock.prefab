@@ -248,6 +248,7 @@ MonoBehaviour:
   actionType: 2
   FirstUseDescription: "\u041E\u0442\u043A\u0440\u044B\u0442\u044C"
   SecondUseDescription: "\u0417\u0430\u043A\u0440\u044B\u0442\u044C"
+  npc_use_targetState: 1
   modules:
   - {fileID: 7908459077555170115}
 --- !u!114 &7908459077555170115

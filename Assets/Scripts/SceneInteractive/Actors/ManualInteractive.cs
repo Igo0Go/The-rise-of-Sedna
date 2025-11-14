@@ -12,6 +12,8 @@ public class ManualInteractive : InteractiveObject
     private string FirstUseDescription;
     [SerializeField]
     private string SecondUseDescription;
+    [SerializeField]
+    private bool npc_use_targetState = false;
 
     private bool isActive = false;
 
@@ -67,6 +69,18 @@ public class ManualInteractive : InteractiveObject
         foreach( var module in modules)
         {
             module.Deactivate();
+        }
+    }
+
+    public void NPC_Use()
+    {
+        if(npc_use_targetState)
+        {
+            ActivateAction();
+        }
+        else
+        {
+            DeactivateAction();
         }
     }
 }

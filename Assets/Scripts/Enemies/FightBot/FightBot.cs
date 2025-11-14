@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -36,9 +37,15 @@ public class FightBot : MultipartEnemy
     private Transform[] patrolPoints;
     [SerializeField, Min(1)]
     private float patrolStayTime = 1;
+    [SerializeField, Min(1)]
+    private float interactiveLoopTime = 1;
+    [SerializeField, Min(1)]
+    private float interactiveRange = 1;
 
     [SerializeField]
     private AudioClip deadClip;
+    [SerializeField]
+    private LayerMask interactionMask;
 
     private Vector3 lastPlayerPoint;
 
@@ -64,7 +71,6 @@ public class FightBot : MultipartEnemy
         }
 
         AudioPack.audioSystem.SoundEventInPoint += OnSoundEvent;
-
     }
 
     private void Update()
@@ -215,6 +221,7 @@ public class FightBot : MultipartEnemy
         }
     }
 
+
     private void FindingTargetPattern()
     {
         if (viewPlayer)
@@ -228,6 +235,13 @@ public class FightBot : MultipartEnemy
             {
                 viewPlayer = false;
             }
+        }
+
+        interactionTimer += Time.deltaTime;
+        if (interactionTimer >= interactiveLoopTime)
+        {
+            interactionTimer = 0;
+            CheckManualInteractive();
         }
 
         agent.destination = lastPlayerPoint;
@@ -338,6 +352,20 @@ public class FightBot : MultipartEnemy
             SetMarker(3);
             currentFindingTime = 0;
             currentPattern = FindingTargetPattern;
+        }
+    }
+
+    float interactionTimer;
+    private void CheckManualInteractive()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, interactiveRange, interactionMask);
+
+        foreach (Collider collider in colliders)
+        {
+            if(collider.TryGetComponent(out ManualInteractive component))
+            {
+                component.NPC_Use();
+            }
         }
     }
 }

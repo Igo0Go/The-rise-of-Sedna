@@ -14,8 +14,11 @@ public class ManualInteractive : InteractiveObject
     private string SecondUseDescription;
     [SerializeField]
     private bool npc_use_targetState = false;
+    [SerializeField]
+    private bool onDestroyTargetState = false;
 
     private bool isActive = false;
+    private bool destroyed = false;
 
     [SerializeField]
     private List<InteractiveModule> modules;
@@ -51,6 +54,8 @@ public class ManualInteractive : InteractiveObject
 
     private void ToggleAction()
     {
+        if(destroyed) return;
+
         foreach (var module in modules)
         {
             module.Switch();
@@ -59,14 +64,16 @@ public class ManualInteractive : InteractiveObject
     }
     private void ActivateAction()
     {
-        foreach(var module in modules)
+        if (destroyed) return;
+        foreach (var module in modules)
         {
             module.Activate();
         }
     }
     private void DeactivateAction()
     {
-        foreach( var module in modules)
+        if (destroyed) return;
+        foreach ( var module in modules)
         {
             module.Deactivate();
         }
@@ -82,6 +89,19 @@ public class ManualInteractive : InteractiveObject
         {
             DeactivateAction();
         }
+    }
+    public void OnDestroyFromWeapon()
+    {
+        if(destroyed) return;
+        if(onDestroyTargetState)
+        {
+            ActivateAction();
+        }
+        else
+        {
+            DeactivateAction();
+        }
+        destroyed = true;
     }
 }
 

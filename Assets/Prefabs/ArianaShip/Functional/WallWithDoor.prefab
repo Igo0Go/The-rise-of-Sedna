@@ -1394,6 +1394,10 @@ PrefabInstance:
       value: "\u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0438\u0442\u044C"
       objectReference: {fileID: 0}
     - target: {fileID: 8667652131664822491, guid: 829215717c867de4da69dccf7b98c013, type: 3}
+      propertyPath: onDestroyTargetState
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8667652131664822491, guid: 829215717c867de4da69dccf7b98c013, type: 3}
       propertyPath: 'modules.Array.data[1]'
       value: 
       objectReference: {fileID: 3008106824605327912}
@@ -1489,6 +1493,10 @@ PrefabInstance:
     - target: {fileID: 8667652131664822491, guid: 829215717c867de4da69dccf7b98c013, type: 3}
       propertyPath: SecondUseDescription
       value: "\u041F\u0435\u0440\u0435\u043A\u043B\u044E\u0447\u0438\u0442\u044C"
+      objectReference: {fileID: 0}
+    - target: {fileID: 8667652131664822491, guid: 829215717c867de4da69dccf7b98c013, type: 3}
+      propertyPath: onDestroyTargetState
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8667652131664822491, guid: 829215717c867de4da69dccf7b98c013, type: 3}
       propertyPath: 'modules.Array.data[1]'

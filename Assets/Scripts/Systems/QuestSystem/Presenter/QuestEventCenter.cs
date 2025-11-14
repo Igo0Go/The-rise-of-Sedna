@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 public class QuestEventCenter : MonoBehaviour
@@ -57,6 +58,10 @@ public class QuestEventCenter : MonoBehaviour
         {
             module.TryCompleteSearchQuest += OnTryCompleteSearchQuest;
         }
+
+        EnemyBase[] enemies =
+            FindObjectsByType<EnemyBase>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        questSystem.SubscribeQuestsToEnemyDeadEvent(enemies.ToList());
     }
 
     #region Старый код
@@ -93,10 +98,9 @@ public class QuestEventCenter : MonoBehaviour
         LogPanel.instance.ShowStringInLog("Новая запись в журнале");
     }
 
-    #endregion
-
     private void OnTryCompleteSearchQuest(int id)
     {
         questSystem.TryCompleteCollectingQuest(id);
     }
+    #endregion
 }

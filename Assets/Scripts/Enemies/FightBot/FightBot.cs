@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -28,20 +27,28 @@ public class FightBot : MultipartEnemy
     private Transform viewPoint;
     [SerializeField, Min(0)]
     private float findingPredictionTime = 1;
+    [SerializeField]
+    private GameObject deadExplosionPrefab;
 
     [SerializeField]
     private GameObject[] patternMarkers;
-
     [SerializeField]
-    private Transform lastPointMarker;
+    private Transform[] patrolPoints;
+    [SerializeField, Min(1)]
+    private float patrolStayTime = 1;
 
     private Vector3 lastPlayerPoint;
+
+    private int currentTargetPatrolPont;
+    private int patrolPointChangeMultiplier = 1;
+    private float currentPatrolStayTime;
 
     private Action currentPattern;
     private float currentFindingTime;
 
     private void Start()
     {
+        currentTargetPatrolPont = -1;
         agent.isStopped = true;
         SetMarker(0);
         currentPattern = StayPattern;
@@ -58,8 +65,6 @@ public class FightBot : MultipartEnemy
     {
         if(HP > 0)
             currentPattern();
-
-        lastPointMarker.position = lastPlayerPoint;
     }
 
     private void OnPartDestroy(EnemyPart turret)
@@ -82,12 +87,62 @@ public class FightBot : MultipartEnemy
         {
             Vector3 dirToPlayer = target.position - transform.position;
 
-            if (dirToPlayer.sqrMagnitude > viewDistance * viewDistance)
-                return;
+            if (dirToPlayer.sqrMagnitude <= viewDistance * viewDistance)
+            {
+                agent.isStopped = false;
+                SetMarker(1);
+                currentPattern = MoveToPlayerPattern;
+            }
+        }
 
+        currentPatrolStayTime += Time.deltaTime;
+        if (currentPatrolStayTime >= patrolStayTime)
+        {
+            currentTargetPatrolPont += patrolPointChangeMultiplier;
+
+            if (currentTargetPatrolPont < 0)
+            {
+                currentTargetPatrolPont = 1;
+                patrolPointChangeMultiplier = 1;
+            }
+            else if (currentTargetPatrolPont > patrolPoints.Length - 1)
+            {
+                currentTargetPatrolPont = patrolPoints.Length - 2;
+                patrolPointChangeMultiplier = -1;
+            }
             agent.isStopped = false;
-            SetMarker(1);
-            currentPattern = MoveToPlayerPattern;
+            currentPatrolStayTime = 0;
+            currentPattern = MoveToPatrolPointPattern;
+        }
+    }
+
+    private void MoveToPatrolPointPattern()
+    {
+        if (PlayerVisible())
+        {
+            Vector3 dirToPlayer = target.position - transform.position;
+
+            if (dirToPlayer.sqrMagnitude < stopMoveDistance * stopMoveDistance)
+            {
+                agent.isStopped = true;
+                SetMarker(2);
+                currentPattern = AttackPattern;
+                return;
+            }
+        }
+        else
+        {
+            Transform patrolPoint = patrolPoints[currentTargetPatrolPont];
+            Vector3 dirToPoint = patrolPoint.position - transform.position;
+            agent.destination = patrolPoint.position;
+
+            if (dirToPoint.sqrMagnitude < stopMoveDistance * stopMoveDistance)
+            {
+                agent.isStopped = true;
+                SetMarker(0);
+                currentPattern = StayPattern;
+                return;
+            }
         }
     }
 
@@ -236,5 +291,20 @@ public class FightBot : MultipartEnemy
     {
         lastPlayerPoint = target.position;
         currentPattern = RotateToShoot;
+    }
+
+    protected override void Dead()
+    {
+        agent.isStopped = true;
+        for (int i = turrets.Count-1; i >= 0; i--)
+        {
+            BotTurret t = turrets[i];
+            if (t != null)
+            {
+                t.GetDamage(1000);
+            }
+        }
+        Instantiate(deadExplosionPrefab, transform.position, Quaternion.identity);
+        base.Dead();
     }
 }

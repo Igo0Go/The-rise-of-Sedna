@@ -1,6 +1,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 public class QuestSystem
 {
@@ -55,12 +56,6 @@ public class QuestSystem
         quest.details[detailsIndex].unblock = true;
         newInfoInJornal?.Invoke();
     }
-    #endregion
-
-    public QuestSystem(string questDataString)
-    {
-        quests = Load(questDataString);
-    }
 
     public event Action<QuestBase> QuestStateChanged;
 
@@ -68,6 +63,34 @@ public class QuestSystem
     {
         Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
         quest.TryCompleteQuest();
+    }
+
+    public void TryCompleteHuntingQuest(int questId)
+    {
+        Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
+        quest.TryCompleteQuest();
+    }
+
+    public void SubscribeQuestsToEnemyDeadEvent(List<EnemyBase> enemies)
+    {
+        List<QuestBase> huntingQuests = quests.FindAll(q => q is Quest_Hunting);
+
+        foreach(Quest_Hunting quest in huntingQuests)
+        {
+            foreach(EnemyBase enemy in enemies)
+            {
+                if(enemy.ID == quest.targetEnemyId)
+                {
+                    enemy.deadEvent.AddListener((e) => quest.OnEnemyDead());
+                }
+            }
+        }
+    }
+    #endregion
+
+    public QuestSystem(string questDataString)
+    {
+        quests = Load(questDataString);
     }
 
     #region Работа с файлом
@@ -99,8 +122,7 @@ public class QuestSystem
             QuestBase quest;
 
             string[] s = { "\n", "\r", "type: ", "id: ", "name: ", "desc: ", "exp: ", "state: ", "dirty: " };
-            string[] QuestSettingsStrings = questData.Split(s, 
-                System.StringSplitOptions.RemoveEmptyEntries);
+            string[] QuestSettingsStrings = questData.Split(s, StringSplitOptions.RemoveEmptyEntries);
 
             switch (GetQuestTypeFromLoadString(QuestSettingsStrings[0]))
             {
@@ -109,6 +131,9 @@ public class QuestSystem
                     break;
                 case QuestType.Collecting:
                     quest = new Quest_Collecting(QuestSettingsStrings);
+                    break;
+                case QuestType.Hunting:
+                    quest = new Quest_Hunting(QuestSettingsStrings);
                     break;
                 default:
                     quest = null;

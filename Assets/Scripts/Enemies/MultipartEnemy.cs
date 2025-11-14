@@ -25,7 +25,13 @@ public class MultipartEnemy : EnemyBase
 
     protected override void Dead()
     {
-        gameObject.AddComponent<Rigidbody>();
+        Rigidbody rb = gameObject.AddComponent<Rigidbody>();
+        float x = Random.Range(-1, 1);
+        float y = Random.Range(-1, 1);
+        float z = Random.Range(-1, 1);
+        Vector3 vector = new Vector3(x, y, z);
+        rb.AddForce(vector * 10, ForceMode.Impulse);
+        base.Dead();
         Destroy(deadTarget, deadTime);
     }
 }

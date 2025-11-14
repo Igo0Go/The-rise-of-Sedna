@@ -87,7 +87,7 @@ state: 0
 activationIds: []
 }
 ----{
-type: 1
+type: 2
 id: 8
 name: Вот мои документы!
 desc: Найти парольную карточку навигационного компьютера
@@ -95,7 +95,7 @@ exp: 300
 dirty: 1
 details: []
 state: 0
-activationIds: []
+startObjects:[0,1]collectedObjects:[0,1]
 }
 ----{
 type: 1
@@ -129,5 +129,16 @@ dirty: 1
 details: []
 state: 0
 startObjects:[3,2]collectedObjects:[3,2]
+}
+----{
+type: 3
+id: 12
+name: Обеспечение безопасности
+desc: Уничтожте всех дронов на корабле
+exp: 800
+dirty: 1
+details: []
+state: 0
+targetInfo:[1,8]
 }
 ----

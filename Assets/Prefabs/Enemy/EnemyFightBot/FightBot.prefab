@@ -121,7 +121,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3685c0bf1c4064ab2aa74ab28e1a49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 1
   HP: 0
+  Exp: 1
   deadEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -175,7 +177,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec931560da8d13e41b07e0976fc5c487, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 300
+  ID: 1
+  HP: 100
+  Exp: 30
   deadEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -199,12 +203,14 @@ MonoBehaviour:
   agent: {fileID: 5123470033109396296}
   viewPoint: {fileID: 820460081065627825}
   findingPredictionTime: 2
+  deadExplosionPrefab: {fileID: 8456581616506365629, guid: 121cfe29a23781b45a70ee6cba7c41f8, type: 3}
   patternMarkers:
   - {fileID: 7546407398213160399}
   - {fileID: 2856126290986018276}
   - {fileID: 3851582882324436224}
   - {fileID: 7989427853601425963}
-  lastPointMarker: {fileID: 0}
+  patrolPoints: []
+  patrolStayTime: 1
 --- !u!1 &2165634256213680313
 GameObject:
   m_ObjectHideFlags: 0
@@ -730,7 +736,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d3685c0bf1c4064ab2aa74ab28e1a49, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 1
   HP: 0
+  Exp: 1
   deadEvent:
     m_PersistentCalls:
       m_Calls: []

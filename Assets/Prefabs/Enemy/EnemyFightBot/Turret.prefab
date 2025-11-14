@@ -417,14 +417,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c05963573259f114faa91a1321215beb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 100
+  ID: 2
+  HP: 20
+  Exp: 10
   deadEvent:
     m_PersistentCalls:
       m_Calls: []
   deadTime: 3
   destroyDamageForMain: 30
   shootPoint: {fileID: 3837574965062185706}
-  damage: 7
   ignoreMask:
     serializedVersion: 2
     m_Bits: 46

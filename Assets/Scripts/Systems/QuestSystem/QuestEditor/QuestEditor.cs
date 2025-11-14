@@ -92,6 +92,13 @@ public class QuestSO
     [Min(1)]
     public int collectedObjectsCount = 1;
 
+    [Space(20)]
+    [Header("Activation")]
+    [Min(1)]
+    public int targetEnemyId = 1;
+    [Min(1)]
+    public int targetEnemyCount = 1;
+
 
     public QuestBase ToQuestBase()
     {
@@ -124,6 +131,19 @@ public class QuestSO
                     collectedObjectId = collectedObjectId,
                     collectedObjectsCount = this.collectedObjectsCount
                 };
+            case QuestType.Hunting:
+                return new Quest_Hunting()
+                {
+                    id = this.id,
+                    name = this.name,
+                    description = this.description,
+                    exp = this.exp,
+                    State = this.state,
+                    details = this.details,
+                    dirty = this.dirty,
+                    targetEnemyId = this.targetEnemyId,
+                    targetsCount = targetEnemyCount
+                };
             default:
                 return null;
         }
@@ -148,10 +168,17 @@ public class QuestSO
         }
         else if(questBase is Quest_Collecting collectingQuest)
         {
+            sO.typeOfQuest = QuestType.Collecting;
             sO.startObjectId = collectingQuest.startingObjectId;
             sO.startObjectsCount = collectingQuest.startObjectsCount;
             sO.collectedObjectId = collectingQuest.collectedObjectId;
             sO.collectedObjectsCount = collectingQuest.collectedObjectsCount;
+        }
+        else if(questBase is Quest_Hunting huntingQuest)
+        {
+            sO.typeOfQuest = QuestType.Hunting;
+            sO.targetEnemyId = huntingQuest.targetEnemyId;
+            sO.targetEnemyCount = huntingQuest.targetsCount;
         }
 
         return sO;

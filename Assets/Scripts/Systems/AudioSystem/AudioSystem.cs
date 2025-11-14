@@ -6,6 +6,8 @@ public class AudioSystem : MonoBehaviour
     private AudioSource soundSource2D;
     [SerializeField]
     private AudioSource soundSource3D;
+    [SerializeField]
+    private AudioSource musicSource;
 
     private void Awake()
     {

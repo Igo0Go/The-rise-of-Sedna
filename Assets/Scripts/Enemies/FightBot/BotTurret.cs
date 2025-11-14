@@ -8,8 +8,6 @@ public class BotTurret : EnemyPart
     private Transform shootPoint;
 
     [SerializeField]
-    private int damage;
-    [SerializeField]
     private LayerMask ignoreMask;
     [SerializeField]
     private AudioSource shootSource;

@@ -34,3 +34,4 @@ MonoBehaviour:
   fireRate: 1
   shootMode: 0
   weaponPrefab: {fileID: 36684999156919740, guid: 789eb6173c3960340bc3d2cbf35dc6b8, type: 3}
+  fireSoundRange: 30

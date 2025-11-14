@@ -591,6 +591,18 @@ MonoBehaviour:
   crouchCameraPoint: {fileID: 5820864331603879191}
   standCameraPoint: {fileID: 6206898753204249249}
   fPC_HeadbobSystem: {fileID: 1679968334628644477}
+  footstepSystem:
+    stepTargetValue: 2.5
+    stepSounds:
+    - type: 0
+      clip: {fileID: 8300000, guid: d25a8335420d09f43bedf446e2deffa0, type: 3}
+      range: 5
+    - type: 1
+      clip: {fileID: 8300000, guid: 150e70d1ee30a0547ab9ded90647ad8d, type: 3}
+      range: 15
+    - type: 2
+      clip: {fileID: 8300000, guid: 403d45f89131a5a4f9afe643ccbf4f18, type: 3}
+      range: 1
 --- !u!114 &3003695494887237330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -721,7 +733,7 @@ MonoBehaviour:
     name: "\u0423\u0441\u043A\u043E\u0440\u0435\u043D\u0438\u0435"
     description: "\u041C\u043D\u043E\u0436\u0438\u0442\u0435\u043B\u044C \u043A \u0441\u043A\u043E\u0440\u043E\u0441\u0442\u0438
       \u0432\u043E \u0432\u0440\u0435\u043C\u044F \u0431\u0435\u0433\u0430"
-    currentValue: 1.1
+    currentValue: 1.2
     treholdValue: 2
     levelUpStep: 0.1
   sprintTime:

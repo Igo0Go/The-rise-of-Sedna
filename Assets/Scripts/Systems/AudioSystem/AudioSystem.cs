@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class AudioSystem : MonoBehaviour
@@ -18,11 +20,18 @@ public class AudioSystem : MonoBehaviour
     {
         soundSource2D.PlayOneShot(clip);
     }
-    public void PlaySoundInPoint(AudioClip clip, Vector3 point)
+    public void PlaySoundInPoint(AudioClip clip, Vector3 point, float soundRange)
     {
         soundSource3D.transform.position = point;
         soundSource3D.PlayOneShot(clip);
+        InvokeSoundEvent(point, soundRange);
     }
+    public void InvokeSoundEvent(Vector3 point, float soundRange)
+    {
+        SoundEventInPoint?.Invoke(point, soundRange);
+    }
+
+    public event Action<Vector3, float> SoundEventInPoint;
 }
 
 public static class AudioPack
@@ -37,7 +46,7 @@ public class FootStepSystem
     private float stepTargetValue = 1;
 
     [SerializeField]
-    private AudioClip clip;
+    List<SoundItem> stepSounds;
 
     private float stepValue = 0;
 
@@ -53,11 +62,33 @@ public class FootStepSystem
             stepValue = 0;
         }
     }
-    public void Step()
+    public void Step(PlayerSoundType type, Transform player)
     {
         if(stepValue == 0)
         {
-            AudioPack.audioSystem.PlaySound(clip);
+            SoundItem soundItem = GetSoundItem(type);
+            AudioPack.audioSystem.PlaySound(soundItem.clip);
+            AudioPack.audioSystem.InvokeSoundEvent(player.position, soundItem.range);
         }
     }
+
+    private SoundItem GetSoundItem(PlayerSoundType stepSoundType)
+    {
+        return stepSounds.Find(s => s.type == stepSoundType);
+    }
+}
+
+[Serializable]
+public class SoundItem
+{
+    public PlayerSoundType type;
+    public AudioClip clip;
+    public float range;
+}
+
+public enum PlayerSoundType
+{
+    simpleMove,
+    runMove,
+    crouchMove
 }

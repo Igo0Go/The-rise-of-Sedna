@@ -9,7 +9,7 @@ public class Decal : MonoBehaviour
 
     void Awake()
     {
-        AudioPack.audioSystem.PlaySoundInPoint(sound, transform.position);
+        AudioPack.audioSystem.PlaySoundInPoint(sound, transform.position, 0);
         Destroy(gameObject, lifeTime);
     }
 }

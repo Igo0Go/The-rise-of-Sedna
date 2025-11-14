@@ -75,7 +75,7 @@ public class Weapon : MonoBehaviour
     {
         if(currentMagazine == null || currentMagazine.currentAmmo < weaponData.consumptionPerShot)
         {
-            AudioPack.audioSystem.PlaySound(weaponData.noAmmoCLip);
+            AudioPack.audioSystem.PlaySoundInPoint(weaponData.noAmmoCLip, shootPoint.position, 5);
             return;
         }
 
@@ -99,7 +99,7 @@ public class Weapon : MonoBehaviour
 
         bullet.transform.forward = targetPoint - bullet.transform.position;
         bullet.LaunchBullet(weaponData.damage, weaponData.distance, weaponData.bulletSpeed, weaponData.ignoreMask);
-        AudioPack.audioSystem.PlaySound(weaponData.shootCLip);
+        AudioPack.audioSystem.PlaySoundInPoint(weaponData.shootCLip, shootPoint.position, weaponData.fireSoundRange);
         Recoil?.Invoke(weaponData.recoilVector);
     }
 
@@ -132,14 +132,14 @@ public class Weapon : MonoBehaviour
         if(magazineObj.activeSelf)
         {
             magazineObj.SetActive(false);
-            AudioPack.audioSystem.PlaySound(weaponData.reloadCLip);
+            AudioPack.audioSystem.PlaySoundInPoint(weaponData.reloadCLip, shootPoint.position, 5);
             AmmoChanged?.Invoke();
         }
     }
     public void InsertMagazine(WeaponMagazine m)
     {
         magazineObj.SetActive(true);
-        AudioPack.audioSystem.PlaySound(weaponData.reloadCLip);
+        AudioPack.audioSystem.PlaySoundInPoint(weaponData.reloadCLip, shootPoint.position, 5);
         currentMagazine = m;
         AmmoChanged?.Invoke();
     }

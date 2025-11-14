@@ -10,8 +10,6 @@ public class BotTurret : EnemyPart
     [SerializeField]
     private LayerMask ignoreMask;
     [SerializeField]
-    private AudioSource shootSource;
-    [SerializeField]
     private WeaponItemData weaponData;
 
     private float shootDelayTime;
@@ -68,7 +66,7 @@ public class BotTurret : EnemyPart
             GetComponent<Bullet>();
 
         bullet.LaunchBullet(weaponData.damage, weaponData.distance, weaponData.bulletSpeed, weaponData.ignoreMask);
-        AudioPack.audioSystem.PlaySound(weaponData.shootCLip);
+        AudioPack.audioSystem.PlaySoundInPoint(weaponData.shootCLip, shootPoint.position, 50);
     }
 
     public override void GetDamage(int damage)

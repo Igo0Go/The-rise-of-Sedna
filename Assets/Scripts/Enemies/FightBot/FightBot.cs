@@ -37,6 +37,9 @@ public class FightBot : MultipartEnemy
     [SerializeField, Min(1)]
     private float patrolStayTime = 1;
 
+    [SerializeField]
+    private AudioClip deadClip;
+
     private Vector3 lastPlayerPoint;
 
     private int currentTargetPatrolPont;
@@ -45,6 +48,7 @@ public class FightBot : MultipartEnemy
 
     private Action currentPattern;
     private float currentFindingTime;
+    private bool viewPlayer = false;
 
     private void Start()
     {
@@ -58,6 +62,8 @@ public class FightBot : MultipartEnemy
             turret.OnDestroyPart += OnPartDestroy;
             turret.DamageEvent += OnGetDamage;
         }
+
+        AudioPack.audioSystem.SoundEventInPoint += OnSoundEvent;
 
     }
 
@@ -89,6 +95,7 @@ public class FightBot : MultipartEnemy
 
             if (dirToPlayer.sqrMagnitude <= viewDistance * viewDistance)
             {
+                viewPlayer = true;
                 agent.isStopped = false;
                 SetMarker(1);
                 currentPattern = MoveToPlayerPattern;
@@ -122,12 +129,12 @@ public class FightBot : MultipartEnemy
         {
             Vector3 dirToPlayer = target.position - transform.position;
 
-            if (dirToPlayer.sqrMagnitude < stopMoveDistance * stopMoveDistance)
+            if (dirToPlayer.sqrMagnitude <= viewDistance * viewDistance)
             {
-                agent.isStopped = true;
-                SetMarker(2);
-                currentPattern = AttackPattern;
-                return;
+                viewPlayer = true;
+                agent.isStopped = false;
+                SetMarker(1);
+                currentPattern = MoveToPlayerPattern;
             }
         }
         else
@@ -154,9 +161,11 @@ public class FightBot : MultipartEnemy
 
             if (dirToPlayer.sqrMagnitude > viewDistance * viewDistance)
             {
-                agent.isStopped = true;
-                SetMarker(0);
-                currentPattern = StayPattern;
+                viewPlayer = true;
+                agent.isStopped = false;
+                SetMarker(3);
+                currentFindingTime = 0;
+                currentPattern = FindingTargetPattern;
             }
             else if (dirToPlayer.sqrMagnitude < stopMoveDistance * stopMoveDistance)
             {
@@ -171,6 +180,7 @@ public class FightBot : MultipartEnemy
         }
         else
         {
+            viewPlayer = true;
             agent.isStopped = false;
             SetMarker(3);
             currentFindingTime = 0;
@@ -197,6 +207,7 @@ public class FightBot : MultipartEnemy
         }
         else
         {
+            viewPlayer = true;
             agent.isStopped = false;
             SetMarker(3);
             currentFindingTime = 0;
@@ -206,10 +217,17 @@ public class FightBot : MultipartEnemy
 
     private void FindingTargetPattern()
     {
-        if(currentFindingTime < findingPredictionTime)
+        if (viewPlayer)
         {
-            currentFindingTime += Time.deltaTime;
-            lastPlayerPoint = target.position;
+            if (currentFindingTime < findingPredictionTime)
+            {
+                currentFindingTime += Time.deltaTime;
+                lastPlayerPoint = target.position;
+            }
+            else
+            {
+                viewPlayer = false;
+            }
         }
 
         agent.destination = lastPlayerPoint;
@@ -234,6 +252,7 @@ public class FightBot : MultipartEnemy
                 agent.isStopped = true;
                 SetMarker(0);
                 currentPattern = StayPattern;
+                Debug.Log("Закончить поиск");
             }
         }
     }
@@ -295,6 +314,8 @@ public class FightBot : MultipartEnemy
 
     protected override void Dead()
     {
+        AudioPack.audioSystem.SoundEventInPoint -= OnSoundEvent;
+        AudioPack.audioSystem.PlaySoundInPoint(deadClip, transform.position, 50);
         agent.isStopped = true;
         for (int i = turrets.Count-1; i >= 0; i--)
         {
@@ -306,5 +327,17 @@ public class FightBot : MultipartEnemy
         }
         Instantiate(deadExplosionPrefab, transform.position, Quaternion.identity);
         base.Dead();
+    }
+
+    private void OnSoundEvent(Vector3 point, float range)
+    {
+        if(Vector3.Distance(point, transform.position) < range)
+        {
+            lastPlayerPoint = point;
+            agent.isStopped = false;
+            SetMarker(3);
+            currentFindingTime = 0;
+            currentPattern = FindingTargetPattern;
+        }
     }
 }

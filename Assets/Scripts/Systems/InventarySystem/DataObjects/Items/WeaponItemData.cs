@@ -31,6 +31,8 @@ public class WeaponItemData : InventoryItemData
     public float fireRate = 1;
     public ShootMode shootMode = ShootMode.ClicToOneShot;
     public GameObject weaponPrefab;
+    [Tooltip("Громкость"), Min(1)]
+    public float fireSoundRange = 1;
 }
 
 public enum ShootMode

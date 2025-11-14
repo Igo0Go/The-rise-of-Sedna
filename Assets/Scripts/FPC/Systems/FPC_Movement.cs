@@ -40,6 +40,7 @@ public class FPC_Movement : MonoBehaviour
     private float originalHeight;
     private float originalCenterHeight;
     private float crouchTransitionSpeed = 8f;
+    private PlayerSoundType currentSoundType;
 
     public event Action<float, float, bool> SprintStatusChanged;
 
@@ -74,7 +75,7 @@ public class FPC_Movement : MonoBehaviour
         }
         else
         {
-            footstepSystem.Step();
+            footstepSystem.Step(currentSoundType, transform);
             float stepDelta = SkillHolder.Instance.speed.currentValue;
             if(useSprint)
             {
@@ -144,16 +145,19 @@ public class FPC_Movement : MonoBehaviour
         {
             fPC_HeadbobSystem.SetFrequency(0.7f);
             fPC_HeadbobSystem.SetAmount(0.2f);
+            currentSoundType = PlayerSoundType.crouchMove;
         }
         else if (useSprint)
         {
             fPC_HeadbobSystem.SetFrequency(1.5f);
             fPC_HeadbobSystem.SetAmount(2f);
+            currentSoundType = PlayerSoundType.runMove;
         }
         else
         {
             fPC_HeadbobSystem.SetFrequency(1f);
             fPC_HeadbobSystem.SetAmount(1f);
+            currentSoundType = PlayerSoundType.simpleMove;
         }
 
 

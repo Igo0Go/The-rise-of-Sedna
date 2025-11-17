@@ -1,316 +1,191 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class FightBot : MultipartEnemy
 {
-    [SerializeField, Min(1)]
-    private float speed = 1;
-    [SerializeField, Min(1)]
-    private float viewDistance = 10;
-    [SerializeField, Min(1)]
-    private float stopMoveDistance = 10;
-    [SerializeField, Min(1)]
-    private float stopFindingDistance = 10;
-    [SerializeField, Range(1, 360)]
-    private float viewAngle = 1;
+    #region Fields
     [SerializeField]
-    private Transform target;
-    [SerializeField]
-    private LayerMask ignoreMask;
-    [SerializeField]
-    private List<BotTurret> turrets;
-    [SerializeField]
-    private NavMeshAgent agent;
-    [SerializeField]
-    private Transform viewPoint;
-    [SerializeField, Min(0)]
-    private float findingPredictionTime = 1;
+    private Transform player;
+
+    [Header("Dead")]
     [SerializeField]
     private GameObject deadExplosionPrefab;
-
-    [SerializeField]
-    private GameObject[] patternMarkers;
-    [SerializeField]
-    private Transform[] patrolPoints;
-    [SerializeField, Min(1)]
-    private float patrolStayTime = 1;
-    [SerializeField, Min(1)]
-    private float interactiveLoopTime = 1;
-    [SerializeField, Min(1)]
-    private float interactiveRange = 1;
-
     [SerializeField]
     private AudioClip deadClip;
     [SerializeField]
-    private LayerMask interactionMask;
+    private float hearingLevel = 0;
 
-    private Vector3 lastPlayerPoint;
+    [Space]
 
-    private int currentTargetPatrolPont;
-    private int patrolPointChangeMultiplier = 1;
-    private float currentPatrolStayTime;
+    [SerializeField]
+    private MovePattern movePattern;
+    [SerializeField]
+    private ViewPattern viewPattern;
+    [SerializeField]
+    private SearchPattern searchPattern;
+    [SerializeField]
+    private AttackPattern attackPattern;
+    [SerializeField]
+    private ChoseTargetPattern choseTargetPattern;
+    [SerializeField]
+    private PatrollPattern patrollPattern;
+    [SerializeField]
+    private InteractionPattern interactionPattern;
 
-    private Action currentPattern;
-    private float currentFindingTime;
-    private bool viewPlayer = false;
+    #endregion
+
+    [SerializeField]
+    private List<GameObject> markers;
+
+    private Action currentLoop;
+    private Vector3 currentTargetPoint;
 
     private void Start()
     {
-        currentTargetPatrolPont = -1;
-        agent.isStopped = true;
-        SetMarker(0);
-        currentPattern = StayPattern;
+        movePattern.agent.isStopped = true;
 
-        foreach(BotTurret turret  in turrets)
+        foreach (BotTurret turret in attackPattern.turrets)
         {
-            turret.OnDestroyPart += OnPartDestroy;
+            turret.OnDestroyPart += attackPattern.OnPartDestroy;
             turret.DamageEvent += OnGetDamage;
         }
 
         AudioPack.audioSystem.SoundEventInPoint += OnSoundEvent;
+        ToPatrolState();
     }
 
     private void Update()
     {
-        if(HP > 0)
-            currentPattern();
+        if (HP > 0)
+        {
+            currentLoop();
+            interactionPattern.CheckManualInteractive(transform);
+        }
     }
 
-    private void OnPartDestroy(EnemyPart turret)
+    private void DisableAllMarkers()
     {
-        turrets.Remove(turret as BotTurret);
+        foreach (var marker in markers)
+        {
+            marker.SetActive(false);
+        }
     }
-
     private void SetMarker(int index)
     {
-        foreach (GameObject t in patternMarkers)
-        {
-            t.SetActive(false);
-        }
-        patternMarkers[index].SetActive(true);
+        DisableAllMarkers();
+        markers[index].gameObject.SetActive(true);
     }
 
-    private void StayPattern()
+    private void ToStayState()
     {
-        if (PlayerVisible())
-        {
-            Vector3 dirToPlayer = target.position - transform.position;
-
-            if (dirToPlayer.sqrMagnitude <= viewDistance * viewDistance)
-            {
-                viewPlayer = true;
-                agent.isStopped = false;
-                SetMarker(1);
-                currentPattern = MoveToPlayerPattern;
-            }
-        }
-
-        currentPatrolStayTime += Time.deltaTime;
-        if (currentPatrolStayTime >= patrolStayTime)
-        {
-            currentTargetPatrolPont += patrolPointChangeMultiplier;
-
-            if (currentTargetPatrolPont < 0)
-            {
-                currentTargetPatrolPont = 1;
-                patrolPointChangeMultiplier = 1;
-            }
-            else if (currentTargetPatrolPont > patrolPoints.Length - 1)
-            {
-                currentTargetPatrolPont = patrolPoints.Length - 2;
-                patrolPointChangeMultiplier = -1;
-            }
-            agent.isStopped = false;
-            currentPatrolStayTime = 0;
-            currentPattern = MoveToPatrolPointPattern;
-        }
+        SetMarker(0);
+        movePattern.StopMove();
+        currentLoop = StayStateLoop;
     }
-
-    private void MoveToPatrolPointPattern()
+    private void StayStateLoop()
     {
-        if (PlayerVisible())
+        if (viewPattern.TargetIsVisible(player))
         {
-            Vector3 dirToPlayer = target.position - transform.position;
-
-            if (dirToPlayer.sqrMagnitude <= viewDistance * viewDistance)
-            {
-                viewPlayer = true;
-                agent.isStopped = false;
-                SetMarker(1);
-                currentPattern = MoveToPlayerPattern;
-            }
+            ToHuntingState();
+        }
+        if(patrollPattern.TimeToStateInPoint)
+        {
+            patrollPattern.StayInPointLoop();
         }
         else
         {
-            Transform patrolPoint = patrolPoints[currentTargetPatrolPont];
-            Vector3 dirToPoint = patrolPoint.position - transform.position;
-            agent.destination = patrolPoint.position;
-
-            if (dirToPoint.sqrMagnitude < stopMoveDistance * stopMoveDistance)
-            {
-                agent.isStopped = true;
-                SetMarker(0);
-                currentPattern = StayPattern;
-                return;
-            }
+            ToPatrolState();
         }
     }
 
-    private void MoveToPlayerPattern()
+    private void ToPatrolState()
     {
-        if (PlayerVisible())
+        SetMarker(1);
+        if (patrollPattern.ContainsPatrolPoints())
         {
-            Vector3 dirToPlayer = target.position - transform.position;
+            currentTargetPoint = patrollPattern.GetTargetPatrolPoint().position;
+            movePattern.ActivateMoveToTarget(currentTargetPoint);
+            currentLoop = PatrolStateLoop;
+        }
+        else
+        {
+            ToStayState();
+        }
+    }
+    private void PatrolStateLoop()
+    {
+        if(viewPattern.TargetIsVisible(player))
+        {
+            ToHuntingState();
+        }
+        else if(movePattern.NearWithPoint(currentTargetPoint))
+        {
+            patrollPattern.AgentInPatrolPoint();
+            ToStayState();
+        }
+        else
+        {
+            movePattern.CorrectTarget(currentTargetPoint);
+        }
+    }
 
-            if (dirToPlayer.sqrMagnitude > viewDistance * viewDistance)
+    private void ToHuntingState()
+    {
+        SetMarker(2);
+        movePattern.ActivateMoveToTarget(currentTargetPoint);
+        currentLoop = HuntingStateLoop;
+    }
+    private void HuntingStateLoop()
+    {
+        if(viewPattern.TargetIsVisible(player))
+        {
+            currentTargetPoint = player.position;
+            movePattern.CorrectTarget(currentTargetPoint);
+
+            if(attackPattern.TargetInAttackDistance(transform, currentTargetPoint))
             {
-                viewPlayer = true;
-                agent.isStopped = false;
-                SetMarker(3);
-                currentFindingTime = 0;
-                currentPattern = FindingTargetPattern;
-            }
-            else if (dirToPlayer.sqrMagnitude < stopMoveDistance * stopMoveDistance)
-            {
-                agent.isStopped = true;
-                SetMarker(2);
-                currentPattern = AttackPattern;
+                movePattern.StopMove();
+                attackPattern.UseWeapon(currentTargetPoint);
             }
             else
             {
-                agent.destination = target.position;
+                movePattern.ActivateMoveToTarget(currentTargetPoint);
             }
         }
         else
         {
-            viewPlayer = true;
-            agent.isStopped = false;
-            SetMarker(3);
-            currentFindingTime = 0;
-            currentPattern = FindingTargetPattern;
+            ToSearchState(player);
         }
     }
 
-    private void AttackPattern()
+    private void ToSearchState(Transform target)
     {
-        UseWeapon();
-
-        if (PlayerVisible())
-        {
-            Vector3 dirToPlayer = target.position - transform.position;
-
-            agent.transform.forward = Vector3.Lerp(agent.transform.forward, dirToPlayer, Time.deltaTime);
-
-            if (dirToPlayer.sqrMagnitude > stopMoveDistance * stopMoveDistance)
-            {
-                agent.isStopped = false;
-                SetMarker(1);
-                currentPattern = MoveToPlayerPattern;
-            }
-        }
-        else
-        {
-            viewPlayer = true;
-            agent.isStopped = false;
-            SetMarker(3);
-            currentFindingTime = 0;
-            currentPattern = FindingTargetPattern;
-        }
+        SetMarker(3);
+        searchPattern.UpdateLastTarget(target);
+        movePattern.ActivateMoveToTarget(searchPattern.GetLastTargetPoint());
+        currentLoop = SearchStateLoop;
     }
-
-
-    private void FindingTargetPattern()
+    private void ToSearchState(Vector3 point)
     {
-        if (viewPlayer)
-        {
-            if (currentFindingTime < findingPredictionTime)
-            {
-                currentFindingTime += Time.deltaTime;
-                lastPlayerPoint = target.position;
-            }
-            else
-            {
-                viewPlayer = false;
-            }
-        }
-
-        interactionTimer += Time.deltaTime;
-        if (interactionTimer >= interactiveLoopTime)
-        {
-            interactionTimer = 0;
-            CheckManualInteractive();
-        }
-
-        agent.destination = lastPlayerPoint;
-
-        if (PlayerVisible())
-        {
-            Vector3 dirToPlayer = target.position - transform.position;
-
-            if (dirToPlayer.sqrMagnitude <= viewDistance * viewDistance)
-            {
-                agent.isStopped = false;
-                SetMarker(1);
-                currentPattern = MoveToPlayerPattern;
-            }
-        }
-        else
-        {
-            Vector3 dirToPlayer = lastPlayerPoint - transform.position;
-
-            if (dirToPlayer.sqrMagnitude <= stopFindingDistance * stopFindingDistance)
-            {
-                agent.isStopped = true;
-                SetMarker(0);
-                currentPattern = StayPattern;
-                Debug.Log("Закончить поиск");
-            }
-        }
+        SetMarker(3);
+        searchPattern.UpdateLastTargetPoint(point);
+        movePattern.ActivateMoveToTarget(searchPattern.GetLastTargetPoint());
+        currentLoop = SearchStateLoop;
     }
-
-    private void RotateToShoot()
+    private void SearchStateLoop()
     {
-        Vector3 dir = lastPlayerPoint - agent.transform.position;
+        searchPattern.SearchLoop();
+        movePattern.CorrectTarget(searchPattern.GetLastTargetPoint());
 
-        agent.transform.forward = Vector3.MoveTowards(agent.transform.forward, dir, Time.deltaTime * 2);
-
-        if(Vector3.Angle(dir, agent.transform.forward) <= viewAngle/3)
+        if (viewPattern.TargetIsVisible(player))
         {
-            agent.isStopped = false;
-            currentPattern = FindingTargetPattern;
+            ToHuntingState();
         }
-    }
-
-    private bool PlayerVisible()
-    {
-        Vector3 dirToPlayer = target.position - viewPoint.position;
-
-        if(Vector3.Angle(transform.forward, dirToPlayer) > viewAngle/2)
-            return false;
-
-        Debug.DrawLine(viewPoint.position, target.position, Color.red);
-
-
-        if (Physics.Linecast(viewPoint.position, target.position, out RaycastHit hitInfo, ~ignoreMask))
+        else if (searchPattern.NeedStopSearch)
         {
-            if (hitInfo.collider.CompareTag("Player"))
-            {
-                lastPlayerPoint = target.position;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void UseWeapon()
-    {
-        foreach (var t in turrets)
-        {
-            t.Aim(lastPlayerPoint);
-            t.TryShoot();
+            ToPatrolState();
         }
     }
 
@@ -322,18 +197,18 @@ public class FightBot : MultipartEnemy
 
     private void OnGetDamage()
     {
-        lastPlayerPoint = target.position;
-        currentPattern = RotateToShoot;
+        searchPattern.UpdateLastTargetPoint(player.position);
+        ToSearchState(player);
     }
-
     protected override void Dead()
     {
+        DisableAllMarkers();
         AudioPack.audioSystem.SoundEventInPoint -= OnSoundEvent;
         AudioPack.audioSystem.PlaySoundInPoint(deadClip, transform.position, 50);
-        agent.isStopped = true;
-        for (int i = turrets.Count-1; i >= 0; i--)
+        movePattern.StopMove();
+        for (int i = attackPattern.turrets.Count-1; i >= 0; i--)
         {
-            BotTurret t = turrets[i];
+            BotTurret t = attackPattern.turrets[i];
             if (t != null)
             {
                 t.GetDamage(1000);
@@ -342,30 +217,332 @@ public class FightBot : MultipartEnemy
         Instantiate(deadExplosionPrefab, transform.position, Quaternion.identity);
         base.Dead();
     }
-
     private void OnSoundEvent(Vector3 point, float range)
     {
-        if(Vector3.Distance(point, transform.position) < range)
+        float enemyDistance = Vector3.Distance(point, transform.position);
+        if (range  + hearingLevel > enemyDistance)
         {
-            lastPlayerPoint = point;
-            agent.isStopped = false;
-            SetMarker(3);
-            currentFindingTime = 0;
-            currentPattern = FindingTargetPattern;
+            searchPattern.UpdateLastTargetPoint(point);
+            movePattern.agent.isStopped = false;
+            ToSearchState(point);
         }
     }
+}
 
-    float interactionTimer;
-    private void CheckManualInteractive()
+[Serializable]
+public class MovePattern
+{
+    [Min(0.01f)]
+    public float moveSpeed = 1;
+    public NavMeshAgent agent;
+
+
+    public void StopMove()
     {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, interactiveRange, interactionMask);
+        agent.isStopped = true;
+    }
+    public void ActivateMoveToTarget(Vector3 target)
+    {
+        agent.isStopped = false;
+        agent.destination = target;
+    }
+    public void CorrectTarget(Vector3 newTarget)
+    {
+        agent.destination = newTarget;
+    }
+
+    public bool NearWithPoint(Vector3 point)
+    {
+        return Vector3.SqrMagnitude(point - agent.transform.position) <= (agent.radius * agent.radius)*4;
+    }
+
+
+}
+
+[Serializable]
+public class ViewPattern
+{
+    public List<Transform> CurrentVisibleTargets { get; private set; } = new List<Transform>();
+
+    [SerializeField]
+    private Transform viewPoint;
+    [SerializeField, Min(1)]
+    private float viewDistance = 10;
+    [SerializeField, Range(1, 360)]
+    private float viewAngle = 1;
+    [SerializeField]
+    private LayerMask ignoreMask;
+
+    public bool TargetIsVisible(Transform targetTransform)
+    {
+        Vector3 target = targetTransform.position;
+
+        Vector3 dirToTarget = target - viewPoint.position;
+
+        if(DistanceCheck(dirToTarget) && AngleCheck(dirToTarget) && ObstacleCkeck(targetTransform))
+        {
+            if(!CurrentVisibleTargets.Contains(targetTransform))
+            {
+                CurrentVisibleTargets.Add(targetTransform);
+            }
+            return true;
+        }
+
+        CurrentVisibleTargets.Remove(targetTransform);
+        return false;
+    }
+
+    private bool ObstacleCkeck(Transform target)
+    {
+        if (Physics.Linecast(viewPoint.position, target.position, out RaycastHit hitInfo, ~ignoreMask))
+        {
+            if (hitInfo.collider.CompareTag(TagHolder.Player))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    private bool AngleCheck(Vector3 direction)
+    {
+        direction.y = 0;
+        return Vector3.Angle(viewPoint.forward, direction) <= viewAngle/2;
+    }
+    private bool DistanceCheck(Vector3 direction)
+    {
+        return direction.sqrMagnitude <= viewDistance * viewDistance;
+    }
+}
+
+[Serializable]
+public class ChoseTargetPattern
+{
+    [SerializeField]
+    private Transform transform;
+
+    private float attackDistance;
+
+    public void SetUp(float attackDistance)
+    {
+        this.attackDistance = attackDistance;
+    }
+
+    private List<EnemyTargetItem> targets = new List<EnemyTargetItem>();
+    public Transform GetCurrentTarget(List<Transform> allVisibleTargets)
+    {
+        targets.Clear();
+        foreach (Transform target in allVisibleTargets)
+        {
+            EnemyTargetItem targetItem = new EnemyTargetItem();
+            targetItem.Target = target;
+
+            float distance = Vector3.SqrMagnitude(target.position - transform.position);
+
+            targetItem.order = distance;
+            if(distance <= attackDistance)
+            {
+                targetItem.order /= 4;
+            }
+            if(targetItem.Target.CompareTag(TagHolder.Player))
+            {
+                targetItem.order /= 4;
+            }
+
+            targets.Add(targetItem);
+        }
+
+        targets.Sort();
+
+        return targets[0].Target;
+    }
+}
+public class EnemyTargetItem : IComparable<EnemyTargetItem>
+{
+    public Transform Target;
+    public float order;
+
+    public int CompareTo(EnemyTargetItem other)
+    {
+        if (order > other.order)
+        {
+            return -1;
+        }
+        else if (order < other.order)
+        {
+            return 1;
+        }
+        return 0;
+    }
+}
+
+[Serializable]
+public class SearchPattern
+{
+    [SerializeField, Min(1)]
+    private float searchTime = 1;
+    [SerializeField, Min(1)]
+    private float searchPredictionTime = 1;
+
+    private float currentSearchTime = 0;
+    private Transform lastTarget;
+    private Vector3 lastTargetPoint;
+
+    public bool NeedStopSearch { get; private set; }
+
+    public void UpdateLastTarget(Transform target)
+    {
+        NeedStopSearch = false;
+        lastTarget = target;
+        lastTargetPoint = target.position;
+        ResetCurrentSearchTime();
+    }
+    public void UpdateLastTargetPoint(Vector3 targetPoint)
+    {
+        NeedStopSearch = false;
+        lastTargetPoint = targetPoint;
+        ResetCurrentSearchTime();
+    }
+    public void SearchLoop()
+    {
+        if(lastTarget != null)
+        {
+            lastTargetPoint = lastTarget.position;
+        }
+
+        currentSearchTime += Time.deltaTime;
+
+        if(currentSearchTime >= searchPredictionTime)
+        {
+            lastTarget = null;
+        }
+        if (currentSearchTime >= searchTime)
+        {
+            NeedStopSearch = true;
+        }
+    }
+    public Vector3 GetLastTargetPoint()
+    { 
+        return lastTargetPoint;
+    }
+    private void ResetCurrentSearchTime()
+    {
+        currentSearchTime = 0;
+    }
+}
+
+[Serializable]
+public class PatrollPattern
+{
+    public bool TimeToStateInPoint { get; private set; } = false;
+    [SerializeField]
+    private Transform[] patrolPoints;
+    [SerializeField, Min(1)]
+    private float patrolStayTime = 1;
+    private int currentTargetPatrolPont = 0;
+    private int patrolPointChangeMultiplier = 1;
+    private float currentPatrolStayTime;
+
+    public bool ContainsPatrolPoints()
+    {
+        return patrolPoints.Length > 0;
+    }
+    public Transform GetTargetPatrolPoint()
+    {
+        return patrolPoints[currentTargetPatrolPont];
+    }
+    public void StayInPointLoop()
+    {
+        if(!TimeToStateInPoint)
+        {
+            return;
+        }
+
+        currentPatrolStayTime += Time.deltaTime;
+        if (currentPatrolStayTime >= patrolStayTime)
+        {
+            TimeToStateInPoint = false;
+            SetNextPatrolPoint();
+        }
+    }
+    public void AgentInPatrolPoint()
+    {
+        TimeToStateInPoint = true;
+    }
+
+    private void SetNextPatrolPoint()
+    {
+        currentTargetPatrolPont += patrolPointChangeMultiplier;
+
+        if (currentTargetPatrolPont < 0)
+        {
+            currentTargetPatrolPont = 1;
+            patrolPointChangeMultiplier = 1;
+        }
+        else if (currentTargetPatrolPont > patrolPoints.Length - 1)
+        {
+            currentTargetPatrolPont = patrolPoints.Length - 2;
+            patrolPointChangeMultiplier = -1;
+        }
+        currentPatrolStayTime = 0;
+    }
+}
+
+[Serializable]
+public class AttackPattern
+{
+    [Min(1)]
+    public float attackDistance = 10;
+    public List<BotTurret> turrets;
+
+    public bool TargetInAttackDistance(Transform actor, Vector3 target)
+    {
+        Vector3 dir = target - actor.position;
+        return dir.sqrMagnitude < attackDistance*attackDistance;
+    }
+    public void UseWeapon(Vector3 target)
+    {
+        foreach (var t in turrets)
+        {
+            if (t == null) continue;
+            t.Aim(target);
+            t.TryShoot();
+        }
+    }
+    public void OnPartDestroy(EnemyPart turret)
+    {
+        turrets.Remove(turret as BotTurret);
+    }
+}
+
+[Serializable]
+public class InteractionPattern
+{
+    [SerializeField, Min(1)]
+    private float interactiveLoopTime = 1;
+    [SerializeField, Min(1)]
+    private float interactionDistance = 1;
+    [SerializeField]
+    private LayerMask interactionMask;
+
+    private float interactionTimer = 0;
+
+    public void CheckManualInteractive(Transform actor)
+    {
+        interactionTimer += Time.deltaTime;
+
+        if (interactionTimer < interactiveLoopTime)
+            return;
+
+        Collider[] colliders = Physics.OverlapSphere(actor.position, interactionDistance, interactionMask);
 
         foreach (Collider collider in colliders)
         {
-            if(collider.TryGetComponent(out ManualInteractive component))
+            if (collider.TryGetComponent(out ManualInteractive component))
             {
                 component.NPC_Use();
             }
         }
+
+        interactionTimer = 0;
     }
 }

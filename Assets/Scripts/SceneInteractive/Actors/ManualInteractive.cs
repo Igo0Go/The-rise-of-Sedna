@@ -15,6 +15,8 @@ public class ManualInteractive : InteractiveObject
     [SerializeField]
     private bool npc_use_targetState = false;
     [SerializeField]
+    private bool opportunityToDestroy = false;
+    [SerializeField]
     private bool onDestroyTargetState = false;
 
     private bool isActive = false;
@@ -92,6 +94,11 @@ public class ManualInteractive : InteractiveObject
     }
     public void OnDestroyFromWeapon()
     {
+        if(!opportunityToDestroy)
+        {
+            return;
+        }
+
         if(destroyed) return;
         if(onDestroyTargetState)
         {

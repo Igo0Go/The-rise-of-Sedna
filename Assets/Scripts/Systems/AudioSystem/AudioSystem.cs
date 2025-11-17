@@ -42,6 +42,8 @@ public static class AudioPack
 [System.Serializable]
 public class FootStepSystem
 {
+    [SerializeField]
+    private Transform stepMarker;
     [SerializeField, Min(1)]
     private float stepTargetValue = 1;
 
@@ -53,6 +55,7 @@ public class FootStepSystem
     public void ResetStepValue()
     { 
         stepValue = 0;
+        stepMarker.transform.localScale = Vector3.one * 0.01f;
     }
     public void AddStepValue(float delta)
     {
@@ -69,6 +72,7 @@ public class FootStepSystem
             SoundItem soundItem = GetSoundItem(type);
             AudioPack.audioSystem.PlaySound(soundItem.clip);
             AudioPack.audioSystem.InvokeSoundEvent(player.position, soundItem.range);
+            stepMarker.transform.localScale = Vector3.one * soundItem.range / 2;
         }
     }
 

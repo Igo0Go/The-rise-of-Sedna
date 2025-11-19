@@ -42,6 +42,8 @@ public class FightBot : MultipartEnemy
     private Action currentLoop;
     private Vector3 currentTargetPoint;
 
+    List<Transform> curentVisibleTargets = new List<Transform>();
+
     private void Start()
     {
         movePattern.agent.isStopped = true;
@@ -80,16 +82,19 @@ public class FightBot : MultipartEnemy
 
     private void ToStayState()
     {
+        if (HP <= 0)
+            return;
         SetMarker(0);
         movePattern.StopMove();
         currentLoop = StayStateLoop;
     }
     private void StayStateLoop()
     {
-        if (viewPattern.TargetIsVisible(player))
+        if(TargetsInView())
         {
-            ToHuntingState();
+            return;
         }
+
         if(patrollPattern.TimeToStateInPoint)
         {
             patrollPattern.StayInPointLoop();
@@ -102,6 +107,8 @@ public class FightBot : MultipartEnemy
 
     private void ToPatrolState()
     {
+        if (HP <= 0)
+            return;
         SetMarker(1);
         if (patrollPattern.ContainsPatrolPoints())
         {
@@ -116,11 +123,12 @@ public class FightBot : MultipartEnemy
     }
     private void PatrolStateLoop()
     {
-        if(viewPattern.TargetIsVisible(player))
+        if (TargetsInView())
         {
-            ToHuntingState();
+            return;
         }
-        else if(movePattern.NearWithPoint(currentTargetPoint))
+
+        if (movePattern.NearWithPoint(currentTargetPoint))
         {
             patrollPattern.AgentInPatrolPoint();
             ToStayState();
@@ -133,18 +141,22 @@ public class FightBot : MultipartEnemy
 
     private void ToHuntingState()
     {
+        if (HP <= 0)
+            return;
         SetMarker(2);
         movePattern.ActivateMoveToTarget(currentTargetPoint);
         currentLoop = HuntingStateLoop;
     }
     private void HuntingStateLoop()
     {
-        if(viewPattern.TargetIsVisible(player))
+        if(TargetsInView())
         {
-            currentTargetPoint = player.position;
+            Transform currentTarget = choseTargetPattern.GetCurrentTarget(curentVisibleTargets);
+            searchPattern.UpdateLastTarget(currentTarget);
+            currentTargetPoint = currentTarget.position;
             movePattern.CorrectTarget(currentTargetPoint);
 
-            if(attackPattern.TargetInAttackDistance(transform, currentTargetPoint))
+            if (attackPattern.TargetInAttackDistance(transform, currentTargetPoint))
             {
                 movePattern.StopMove();
                 attackPattern.UseWeapon(currentTargetPoint);
@@ -156,12 +168,14 @@ public class FightBot : MultipartEnemy
         }
         else
         {
-            ToSearchState(player);
+            ToSearchState(searchPattern.GetLastTargetPoint());
         }
     }
 
     private void ToSearchState(Transform target)
     {
+        if (HP <= 0)
+            return;
         SetMarker(3);
         searchPattern.UpdateLastTarget(target);
         movePattern.ActivateMoveToTarget(searchPattern.GetLastTargetPoint());
@@ -169,6 +183,8 @@ public class FightBot : MultipartEnemy
     }
     private void ToSearchState(Vector3 point)
     {
+        if (HP <= 0)
+            return;
         SetMarker(3);
         searchPattern.UpdateLastTargetPoint(point);
         movePattern.ActivateMoveToTarget(searchPattern.GetLastTargetPoint());
@@ -179,9 +195,10 @@ public class FightBot : MultipartEnemy
         searchPattern.SearchLoop();
         movePattern.CorrectTarget(searchPattern.GetLastTargetPoint());
 
-        if (viewPattern.TargetIsVisible(player))
+        if(TargetsInView())
         {
             ToHuntingState();
+            return;
         }
         else if (searchPattern.NeedStopSearch)
         {
@@ -189,10 +206,36 @@ public class FightBot : MultipartEnemy
         }
     }
 
+    private bool TargetsInView()
+    {
+        curentVisibleTargets.Clear();
+
+        if (viewPattern.TargetIsVisible(player))
+        {
+            curentVisibleTargets.Add(player);
+        }
+
+        foreach (var otherTarget in choseTargetPattern.otherTargets)
+        {
+            if(otherTarget == null) continue;
+            if (viewPattern.TargetIsVisible(otherTarget))
+            {
+                curentVisibleTargets.Add(otherTarget);
+            }
+        }
+
+        if (curentVisibleTargets.Count > 0)
+        {
+            ToHuntingState();
+            return true;
+        }
+        return false;
+    }
+
     public override void GetDamage(int damage)
     {
-        base.GetDamage(damage);
         OnGetDamage();
+        base.GetDamage(damage);
     }
 
     private void OnGetDamage()
@@ -296,7 +339,8 @@ public class ViewPattern
     {
         if (Physics.Linecast(viewPoint.position, target.position, out RaycastHit hitInfo, ~ignoreMask))
         {
-            if (hitInfo.collider.CompareTag(TagHolder.Player))
+            if (hitInfo.collider.CompareTag(TagHolder.Player) || 
+                hitInfo.collider.CompareTag(TagHolder.Allies))
             {
                 return true;
             }
@@ -317,6 +361,7 @@ public class ViewPattern
 [Serializable]
 public class ChoseTargetPattern
 {
+    public List<Transform> otherTargets;
     [SerializeField]
     private Transform transform;
 

@@ -1,4 +1,3 @@
-using Unity.Mathematics;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -28,7 +27,8 @@ public class Bullet : MonoBehaviour
         if(Physics.Linecast(oldPos, transform.position, out RaycastHit hitInfo, ~ignoreMask))
         {
             if(hitInfo.collider.CompareTag(TagHolder.Enemy) || 
-                hitInfo.collider.CompareTag(TagHolder.Player))
+                hitInfo.collider.CompareTag(TagHolder.Player) ||
+                hitInfo.collider.CompareTag(TagHolder.Allies))
             {
                 if (hitInfo.collider.TryGetComponent(out EnemyBase enemy))
                 {
@@ -41,6 +41,10 @@ public class Bullet : MonoBehaviour
                 {
                     player.GetDamage(damage);
                 }
+                else if (hitInfo.collider.TryGetComponent(out BaseAlly ally))
+                {
+                    ally.GetDamage(damage);
+                }
             }
             else if(hitInfo.collider.CompareTag(TagHolder.Interactive))
             {
@@ -51,6 +55,10 @@ public class Bullet : MonoBehaviour
                 if (hitInfo.collider.TryGetComponent(out ManualInteractive interactive))
                 {
                     interactive.OnDestroyFromWeapon();
+                }
+                else if (hitInfo.collider.TryGetComponent(out DamagebleObject damageble))
+                {
+                    damageble.GetDamage(damage);
                 }
             }
             else

@@ -6,6 +6,11 @@ public class Actor : InteractiveModule
     [SerializeField]
     protected List<InteractiveModule> modules;
 
+    [Min(1)]
+    public int NpcWorkPoints;
+    [SerializeField]
+    private bool NpcTargetState = true;
+
     public override void Activate()
     {
         base.Activate();
@@ -28,6 +33,18 @@ public class Actor : InteractiveModule
         foreach (var module in modules)
         {
             module.ToDefaultState();
+        }
+    }
+
+    public void NPCAction()
+    {
+        if (NpcTargetState)
+        {
+            Activate();
+        }
+        else
+        {
+            Deactivate();
         }
     }
 

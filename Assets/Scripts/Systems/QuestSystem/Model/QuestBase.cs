@@ -19,6 +19,12 @@ public abstract class QuestBase
         get => _state;
         set
         {
+            if(_state == QuestState.complete)
+            {
+                return;
+            }
+
+
             if (_state != value)
             {
                 if(value == QuestState.active && _state != QuestState.active)

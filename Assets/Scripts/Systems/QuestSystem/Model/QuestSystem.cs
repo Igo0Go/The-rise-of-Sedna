@@ -9,17 +9,7 @@ public class QuestSystem
     private List<QuestBase> quests;
 
     public event Action newInfoInJornal;
-
-    public void SetStateForQuestById(int id, QuestState stateType)
-    {
-        QuestBase quest = GetQuestById(id);
-        quest.State = stateType;
-
-        if(stateType == QuestState.active)
-        {
-            newInfoInJornal?.Invoke();
-        }
-    }
+    public event Action<QuestBase> QuestStateChanged;
 
     public QuestBase GetQuestById(int id)
     {
@@ -32,6 +22,35 @@ public class QuestSystem
 
         return quest;
     }
+    public List<QuestBase> GetAllQuestsWithState(QuestState state)
+    {
+        return quests.FindAll(q => q.State == state);
+    }
+
+    public void SetStateForQuestById(int id, QuestState stateType)
+    {
+        QuestBase quest = GetQuestById(id);
+        quest.State = stateType;
+
+        if(stateType == QuestState.active)
+        {
+            newInfoInJornal?.Invoke();
+        }
+    }
+    public void UnblockQuestDetails(int questId, int detailsIndex)
+    {
+        QuestBase quest = GetQuestById(questId);
+
+        if (quest.details[detailsIndex].unblock)
+        {
+            return;
+        }
+        quest.dirty = true;
+        quest.details[detailsIndex].unblock = true;
+        SkillHolder.Instance.AddExperience(quest.details[detailsIndex].EXP);
+        newInfoInJornal?.Invoke();
+    }
+
 
     public void ActivationQuestTargetUsed(int targetId)
     {
@@ -44,21 +63,6 @@ public class QuestSystem
         }
     }
 
-    public List<QuestBase> GetAllQuestsWithState(QuestState state)
-    {
-        return quests.FindAll(q => q.State == state);
-    }
-
-    public void UnblockQuestDetails(int questId, int detailsIndex)
-    {
-        QuestBase quest = GetQuestById(questId);
-        quest.dirty = true;
-        quest.details[detailsIndex].unblock = true;
-        newInfoInJornal?.Invoke();
-    }
-
-    public event Action<QuestBase> QuestStateChanged;
-
     public void TryCompleteCollectingQuest(int questId)
     {
         Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
@@ -70,7 +74,6 @@ public class QuestSystem
         Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
         quest.TryCompleteQuest();
     }
-
     public void SubscribeQuestsToEnemyDeadEvent(List<EnemyBase> enemies)
     {
         List<QuestBase> huntingQuests = quests.FindAll(q => q is Quest_Hunting);
@@ -91,6 +94,50 @@ public class QuestSystem
     public QuestSystem(string questDataString)
     {
         quests = Load(questDataString);
+
+        foreach(QuestBase quest in quests)
+        {
+            quest.StateChanged += OnQuestStateChanged;
+        }
+    }
+
+    private void OnQuestStateChanged(QuestBase quest)
+    {
+        QuestStateChanged?.Invoke(quest);
+        if(quest.State == QuestState.complete)
+        {
+            CheckAllCompletedQuests();
+        }
+    }
+
+    private void CheckAllCompletedQuests()
+    {
+        for(int i = 0; i < quests.Count; i++)
+        {
+            List<QuestBase> previousQuests = new List<QuestBase> ();
+            for(int j = 0; j < quests[i].completedQuestsToStart.Count; j++)
+            {
+                previousQuests.Add(GetQuestById(quests[i].completedQuestsToStart[j]));
+            }
+
+            if(previousQuests.Count > 0)
+            {
+                bool key = true;
+                foreach(QuestBase qpreviousQuest in previousQuests)
+                {
+                    if(qpreviousQuest.State != QuestState.complete)
+                    {
+                        key = false;
+                        break;
+                    }
+                }
+
+                if(key)
+                {
+                    SetStateForQuestById(quests[i].id, QuestState.active);
+                }
+            }
+        }
     }
 
     #region Работа с файлом

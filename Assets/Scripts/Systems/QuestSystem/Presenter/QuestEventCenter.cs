@@ -23,6 +23,14 @@ public class QuestEventCenter : MonoBehaviour
             module.QuestStateChanged += OnTryQuestStateChange;
         }
 
+        QuestStateObserver[] questObservers =
+   FindObjectsByType<QuestStateObserver>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        foreach (QuestStateObserver observer in questObservers)
+        {
+            questSystem.QuestStateChanged += observer.OnQuestState;
+        }
+
         ActivationQuestTarget[] actiovationQuestTargets =
     FindObjectsByType<ActivationQuestTarget>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 

@@ -7,7 +7,7 @@ public class MedPack : InteractiveObject
 
     public override (string name, string action) GetData()
     {
-        return (data.name, data.actionDescription + "\nВосстановить " + data.hpValue + " ОЗ");
+        return (data.itemName, data.actionDescription + "\nВосстановить " + data.hpValue + " ОЗ");
     }
 
     public override void Use()

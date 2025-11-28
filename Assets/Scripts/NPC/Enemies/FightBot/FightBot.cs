@@ -14,6 +14,8 @@ public class FightBot : MultipartEnemy
     private GameObject deadExplosionPrefab;
     [SerializeField]
     private AudioClip deadClip;
+
+    [Header("HearingLevel")]
     [SerializeField]
     private float hearingLevel = 0;
 
@@ -298,8 +300,6 @@ public class MovePattern
     {
         return Vector3.SqrMagnitude(point - agent.transform.position) <= (agent.radius * agent.radius)*4;
     }
-
-
 }
 
 [Serializable]
@@ -483,6 +483,7 @@ public class PatrollPattern
     private Transform[] patrolPoints;
     [SerializeField, Min(1)]
     private float patrolStayTime = 1;
+
     private int currentTargetPatrolPont = 0;
     private int patrolPointChangeMultiplier = 1;
     private float currentPatrolStayTime;

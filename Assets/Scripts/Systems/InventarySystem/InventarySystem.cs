@@ -61,7 +61,7 @@ public class InventarySystem
             MagazinesChanged?.Invoke();
         }
 
-        LogPanel.instance.ShowStringInLog("Добавлено: " + data.name + "(" + count + ")");
+        LogPanel.instance.ShowStringInLog("Добавлено: " + data.itemName + "(" + count + ")");
     }
     public bool TrySpendItem(int itemId, int count)
     {

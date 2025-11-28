@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[CreateAssetMenu(fileName = "InventaryDB", menuName = "IgoGo_Tools/InventaryDB")]
+[CreateAssetMenu(fileName = "InventaryDB", menuName = "IgoGoTools/InventaryDB")]
 public class InventaryDB : ScriptableObject
 {
     [SerializeField]

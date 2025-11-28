@@ -75,6 +75,7 @@ public class QuestSO
     public List<QuestDetails> details;
     public QuestState state = QuestState.waitStart;
     public QuestType typeOfQuest = QuestType.Activation;
+    public List<int> questsToStart;
 
 
     [Space(20)]
@@ -115,6 +116,7 @@ public class QuestSO
                     details = this.details,
                     dirty = this.dirty,
                     activationObjectsIds = activationIds,
+                    completedQuestsToStart = questsToStart
                 };
             case QuestType.Collecting:
                 return new Quest_Collecting()
@@ -129,7 +131,8 @@ public class QuestSO
                     startObjectsCount = this.startObjectsCount,
                     startingObjectId = this.startObjectId,
                     collectedObjectId = collectedObjectId,
-                    collectedObjectsCount = this.collectedObjectsCount
+                    collectedObjectsCount = this.collectedObjectsCount,
+                    completedQuestsToStart = questsToStart
                 };
             case QuestType.Hunting:
                 return new Quest_Hunting()
@@ -142,7 +145,8 @@ public class QuestSO
                     details = this.details,
                     dirty = this.dirty,
                     targetEnemyId = this.targetEnemyId,
-                    targetsCount = targetEnemyCount
+                    targetsCount = targetEnemyCount,
+                    completedQuestsToStart = questsToStart
                 };
             default:
                 return null;
@@ -160,6 +164,7 @@ public class QuestSO
         sO.details = questBase.details;
         sO.dirty = questBase.dirty;
         sO.exp = questBase.exp;
+        sO.questsToStart = questBase.completedQuestsToStart;
 
         if(questBase is Quest_Activation activationQuest)
         {

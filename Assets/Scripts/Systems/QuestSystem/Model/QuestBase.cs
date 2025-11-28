@@ -10,9 +10,10 @@ public abstract class QuestBase
     public string description;
     public bool dirty = true;
     public int exp = 0;
+    public List<int> completedQuestsToStart;
     public List<QuestDetails> details;
 
-    public event Action<QuestBase> OnStateChanged;
+    public event Action<QuestBase> StateChanged;
 
     public QuestState State
     {
@@ -29,15 +30,15 @@ public abstract class QuestBase
             {
                 if(value == QuestState.active && _state != QuestState.active)
                 {
+                    _state = value;
                     OnActivateQuest();
                 }
                 if (value == QuestState.complete && _state != QuestState.complete)
                 {
+                    _state = value;
                     OnCompleteQuest();
                 }
-
-                _state = value;
-                OnStateChanged?.Invoke(this);
+                StateChanged?.Invoke(this);
             }
         }
     }
@@ -55,6 +56,7 @@ public abstract class QuestBase
         s += GetDetailsData() + "\n";
         s += "state: " + (int)_state + "\n";
         s += GetSpecificData() + "\n";
+        s += GetCompletedQuestsData() + "\n";
         s += "}\r\n";
         return s;
     }
@@ -79,17 +81,39 @@ public abstract class QuestBase
         details = SetDetailsData(settingsStrings[6]);
         _state = (QuestState)int.Parse(settingsStrings[7]);
         SetSpecificData(settingsStrings[8]);
+        SetCompletedQuestsData(settingsStrings[9]);
     }
     protected abstract int GetQuestTypeIndex();
     protected abstract string GetSpecificData();
     protected abstract void SetSpecificData(string inputString);
+    protected string GetCompletedQuestsData()
+    {
+        string s = "completedQuests: [";
+        foreach (int i in completedQuestsToStart)
+        {
+            s += i + ",";
+        }
+        s += "]";
+        return s;
+    }
+    protected void SetCompletedQuestsData(string inputString)
+    {
+        string[] s = { "\n", "completedQuests: ", "[", "]", "," };
+        string[] dataStrings = inputString.Split(s, System.StringSplitOptions.RemoveEmptyEntries);
+
+        completedQuestsToStart = new List<int>();
+        foreach (string i in dataStrings)
+        {
+            completedQuestsToStart.Add(int.Parse(i));
+        }
+    }
 
     protected string GetDetailsData()
     {
         string s = "details: [";
         foreach (QuestDetails item in details)
         {
-            s += "(" + item.text + "|" + (item.unblock? "1" : "0" ) + ")=-=";
+            s += "(" + item.text + "|" + (item.unblock? "1" : "0" ) + "|" + item.EXP + ")=-=";
         }
         s += "]";
         return s;
@@ -108,6 +132,7 @@ public abstract class QuestBase
             QuestDetails det = new QuestDetails();
             det.text = parts[0];
             det.unblock = parts[1] == "1";
+            det.EXP = int.Parse(parts[2]);
             details.Add(det);
         }
 
@@ -121,6 +146,7 @@ public class QuestDetails
     [TextArea(4, 8)]
     public string text;
     public bool unblock;
+    public int EXP;
 }
 
 public enum QuestState

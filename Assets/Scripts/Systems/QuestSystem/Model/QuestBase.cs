@@ -38,6 +38,10 @@ public abstract class QuestBase
                     _state = value;
                     OnCompleteQuest();
                 }
+                if(value == QuestState.faled && _state != QuestState.faled)
+                {
+                    _state = value;
+                }
                 StateChanged?.Invoke(this);
             }
         }

@@ -370,7 +370,7 @@ MonoBehaviour:
   viewPattern:
     viewPoint: {fileID: 820460081065627825}
     viewDistance: 30
-    viewAngle: 120
+    viewAngle: 180
     ignoreMask:
       serializedVersion: 2
       m_Bits: 62
@@ -383,6 +383,7 @@ MonoBehaviour:
     - {fileID: 4080724959857660789}
     - {fileID: 3449066121893860337}
   choseTargetPattern:
+    otherTargets: []
     transform: {fileID: 3267423445081182179}
   patrollPattern:
     patrolPoints:

@@ -7977,6 +7977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deadPanel: {fileID: 896770724982661900}
+  messageText: {fileID: 5082926773432868032}
 --- !u!1 &8596879032317906136
 GameObject:
   m_ObjectHideFlags: 0

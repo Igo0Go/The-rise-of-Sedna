@@ -21,6 +21,8 @@ public class ManualInteractive : InteractiveObject
 
     private bool isActive = false;
     private bool destroyed = false;
+    private bool blocked = false;
+
 
     [SerializeField]
     private List<InteractiveModule> modules;
@@ -43,11 +45,18 @@ public class ManualInteractive : InteractiveObject
 
     public override (string name, string action) GetData()
     {
+        if(blocked)
+        {
+            return (itemName, string.Empty);
+        }
+
         return (itemName, isActive? SecondUseDescription : FirstUseDescription);
     }
 
     public override void Use()
     {
+        if(blocked) return;
+
         useAction();
         onUseEvent?.Invoke();
     }
@@ -109,6 +118,10 @@ public class ManualInteractive : InteractiveObject
             DeactivateAction();
         }
         destroyed = true;
+    }
+    public void SetBlock(bool value)
+    {
+        blocked = value;
     }
 }
 

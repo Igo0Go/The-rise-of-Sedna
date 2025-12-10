@@ -23,6 +23,7 @@ public class FPC_InputManager : MonoBehaviour
     {
         controls = new FPC();
         groundMovement = controls.GroundMovement;
+
         groundMovement.HoriozontalMovement.performed += ctx => horizontalInput = ctx.ReadValue<Vector2>();
         groundMovement.View.performed += ctx => viewInput = ctx.ReadValue<Vector2>();
         groundMovement.Attack.performed += _ => fPC_WeaponSystem.MainAttack();

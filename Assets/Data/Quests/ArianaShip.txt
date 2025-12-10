@@ -70,4 +70,28 @@ state: 0
 startObjects:[0,0]collectedObjects:[4,1]
 completedQuests: [1,]
 }
+----{
+type: 2
+id: 6
+name: Первая помощь
+desc: Доставьте ампулы биогеля пострадавшим в каюту №15
+exp: 1000
+dirty: 1
+details: []
+state: 0
+startObjects:[0,2]collectedObjects:[0,2]
+completedQuests: []
+}
+----{
+type: 2
+id: 7
+name: Помощь в обороне
+desc: Доставьте плазмообоймы в каюту №13
+exp: 1000
+dirty: 1
+details: []
+state: 0
+startObjects:[3,2]collectedObjects:[3,2]
+completedQuests: []
+}
 ----

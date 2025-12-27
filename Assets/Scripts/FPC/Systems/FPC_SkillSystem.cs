@@ -87,6 +87,9 @@ public class SkillHolder
 
     public void AddExperience(int exp)
     {
+        if (exp <= 0)
+            return;
+
         CurrentExp += exp;
         AddNewExp?.Invoke(exp);
 

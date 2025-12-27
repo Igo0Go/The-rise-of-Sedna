@@ -69,14 +69,14 @@ public class QuestSO
     public string name;
     [TextArea(4, 8)]
     public string description;
-    [Min(1)]
-    public int exp;
-    private bool dirty = true;
-    public List<QuestDetails> details;
     public QuestState state = QuestState.waitStart;
     public QuestType typeOfQuest = QuestType.Activation;
+    [Min(1)]
+    public int exp;
+    public List<QuestDetails> details;
     public List<int> questsToStart;
 
+    private bool containcNewInfo = true;
 
     [Space(20)]
     [Header("Activation")]
@@ -94,7 +94,7 @@ public class QuestSO
     public int collectedObjectsCount = 1;
 
     [Space(20)]
-    [Header("Activation")]
+    [Header("Hunting")]
     [Min(1)]
     public int targetEnemyId = 1;
     [Min(1)]
@@ -114,7 +114,7 @@ public class QuestSO
                     exp = this.exp,
                     State = this.state,
                     details = this.details,
-                    dirty = this.dirty,
+                    containceNewInfo = this.containcNewInfo,
                     activationObjectsIds = activationIds,
                     completedQuestsToStart = questsToStart
                 };
@@ -127,7 +127,7 @@ public class QuestSO
                     exp = this.exp,
                     State = this.state,
                     details = this.details,
-                    dirty = this.dirty,
+                    containceNewInfo = this.containcNewInfo,
                     startObjectsCount = this.startObjectsCount,
                     startingObjectId = this.startObjectId,
                     collectedObjectId = collectedObjectId,
@@ -143,7 +143,7 @@ public class QuestSO
                     exp = this.exp,
                     State = this.state,
                     details = this.details,
-                    dirty = this.dirty,
+                    containceNewInfo = this.containcNewInfo,
                     targetEnemyId = this.targetEnemyId,
                     targetsCount = targetEnemyCount,
                     completedQuestsToStart = questsToStart
@@ -162,7 +162,7 @@ public class QuestSO
         sO.description = questBase.description;
         sO.state = questBase.State;
         sO.details = questBase.details;
-        sO.dirty = questBase.dirty;
+        sO.containcNewInfo = questBase.containceNewInfo;
         sO.exp = questBase.exp;
         sO.questsToStart = questBase.completedQuestsToStart;
 

@@ -39,7 +39,7 @@ public class FPC_InputManager : MonoBehaviour
         groundMovement.Heal.performed += _ => fPC_HealhSystem.UseMedPack();
 
 
-        QuestJornal questJornal = FindFirstObjectByType<QuestJornal>();
+        QuestJournal questJornal = FindFirstObjectByType<QuestJournal>();
         groundMovement.Jornal.performed += _ => questJornal.JornalToggle();
 
         SkillPanel skillPanel = FindFirstObjectByType<SkillPanel>();

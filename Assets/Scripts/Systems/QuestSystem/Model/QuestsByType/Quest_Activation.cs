@@ -35,7 +35,6 @@ public class Quest_Activation : QuestBase
             activationObjectsIds.Add(int.Parse(i));
         }
     }
-
     public void OnQuestTargetActivation(int targetId)
     {
         if (activationObjectsIds.Contains(targetId))

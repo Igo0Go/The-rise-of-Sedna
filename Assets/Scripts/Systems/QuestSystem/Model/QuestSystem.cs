@@ -1,16 +1,24 @@
 using System.IO;
 using System.Collections.Generic;
 using System;
-using System.Linq;
-
 public class QuestSystem
 {
-    #region Старый код
     private List<QuestBase> quests;
 
-    public event Action newInfoInJornal;
+    public event Action NewInfo;
     public event Action<QuestBase> QuestStateChanged;
 
+    public QuestSystem(string questDataString)
+    {
+        quests = Load(questDataString);
+
+        foreach (QuestBase quest in quests)
+        {
+            quest.StateChanged += OnQuestStateChanged;
+        }
+    }
+
+    #region Выборка квестов
     public QuestBase GetQuestById(int id)
     {
         QuestBase quest = quests.Find(x => x.id == id);
@@ -26,7 +34,9 @@ public class QuestSystem
     {
         return quests.FindAll(q => q.State == state);
     }
+    #endregion
 
+    #region Управление квестами
     public void SetStateForQuestById(int id, QuestState stateType)
     {
         QuestBase quest = GetQuestById(id);
@@ -34,27 +44,61 @@ public class QuestSystem
 
         if(stateType == QuestState.active)
         {
-            newInfoInJornal?.Invoke();
+            NewInfo?.Invoke();
         }
     }
     public void UnblockQuestDetails(int questId, int detailsIndex)
     {
         QuestBase quest = GetQuestById(questId);
-
-        if (quest.details[detailsIndex].unblock)
-        {
-            return;
-        }
-        quest.dirty = true;
-        quest.details[detailsIndex].unblock = true;
-        SkillHolder.Instance.AddExperience(quest.details[detailsIndex].EXP);
-        newInfoInJornal?.Invoke();
+        quest.UnblockDetailInfo(detailsIndex);
+        NewInfo?.Invoke();
     }
+    #endregion
 
+    #region Последовательность квестов
+    private void OnQuestStateChanged(QuestBase quest)
+    {
+        QuestStateChanged?.Invoke(quest);
+        if (quest.State == QuestState.complete)
+        {
+            CheckAllCompletedQuests();
+        }
+    }
+    private void CheckAllCompletedQuests()
+    {
+        for (int i = 0; i < quests.Count; i++)
+        {
+            List<QuestBase> previousQuests = new List<QuestBase>();
+            for (int j = 0; j < quests[i].completedQuestsToStart.Count; j++)
+            {
+                previousQuests.Add(GetQuestById(quests[i].completedQuestsToStart[j]));
+            }
 
+            if (previousQuests.Count > 0)
+            {
+                bool key = true;
+                foreach (QuestBase qpreviousQuest in previousQuests)
+                {
+                    if (qpreviousQuest.State != QuestState.complete)
+                    {
+                        key = false;
+                        break;
+                    }
+                }
+
+                if (key)
+                {
+                    SetStateForQuestById(quests[i].id, QuestState.active);
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region Активация
     public void ActivationQuestTargetUsed(int targetId)
     {
-        List<QuestBase> actQuests = quests.FindAll(q => q is  Quest_Activation);
+        List<QuestBase> actQuests = quests.FindAll(q => q is Quest_Activation);
 
         for (int i = 0; i < actQuests.Count; i++)
         {
@@ -62,13 +106,17 @@ public class QuestSystem
             actQuest.OnQuestTargetActivation(targetId);
         }
     }
+    #endregion
 
+    #region Сбор
     public void TryCompleteCollectingQuest(int questId)
     {
         Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
         quest.TryCompleteQuest();
     }
+    #endregion
 
+    #region Охота
     public void TryCompleteHuntingQuest(int questId)
     {
         Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
@@ -78,11 +126,11 @@ public class QuestSystem
     {
         List<QuestBase> huntingQuests = quests.FindAll(q => q is Quest_Hunting);
 
-        foreach(Quest_Hunting quest in huntingQuests)
+        foreach (Quest_Hunting quest in huntingQuests)
         {
-            foreach(EnemyBase enemy in enemies)
+            foreach (EnemyBase enemy in enemies)
             {
-                if(enemy.ID == quest.targetEnemyId)
+                if (enemy.ID == quest.targetEnemyId)
                 {
                     enemy.deadEvent.AddListener((e) => quest.OnEnemyDead());
                 }
@@ -90,55 +138,6 @@ public class QuestSystem
         }
     }
     #endregion
-
-    public QuestSystem(string questDataString)
-    {
-        quests = Load(questDataString);
-
-        foreach(QuestBase quest in quests)
-        {
-            quest.StateChanged += OnQuestStateChanged;
-        }
-    }
-
-    private void OnQuestStateChanged(QuestBase quest)
-    {
-        QuestStateChanged?.Invoke(quest);
-        if(quest.State == QuestState.complete)
-        {
-            CheckAllCompletedQuests();
-        }
-    }
-
-    private void CheckAllCompletedQuests()
-    {
-        for(int i = 0; i < quests.Count; i++)
-        {
-            List<QuestBase> previousQuests = new List<QuestBase> ();
-            for(int j = 0; j < quests[i].completedQuestsToStart.Count; j++)
-            {
-                previousQuests.Add(GetQuestById(quests[i].completedQuestsToStart[j]));
-            }
-
-            if(previousQuests.Count > 0)
-            {
-                bool key = true;
-                foreach(QuestBase qpreviousQuest in previousQuests)
-                {
-                    if(qpreviousQuest.State != QuestState.complete)
-                    {
-                        key = false;
-                        break;
-                    }
-                }
-
-                if(key)
-                {
-                    SetStateForQuestById(quests[i].id, QuestState.active);
-                }
-            }
-        }
-    }
 
     #region Работа с файлом
     public static void Save(List<QuestBase> quests, string path)
@@ -160,7 +159,7 @@ public class QuestSystem
     {
         List<QuestBase> quests = new List<QuestBase>();
 
-        string[] separators = { "{\r\n", "}\r\n", "----"};
+        string[] separators = { "{\r\n", "}\r\n", "----" };
         string[] QuestDataStrings = dataText.Split(separators,
             System.StringSplitOptions.RemoveEmptyEntries);
 
@@ -168,7 +167,7 @@ public class QuestSystem
         {
             QuestBase quest;
 
-            string[] s = { "\n", "\r", "type: ", "id: ", "name: ", "desc: ", "exp: ", "state: ", "dirty: " };
+            string[] s = { "\n", "\r", "type: ", "id: ", "name: ", "desc: ", "exp: ", "state: ", "newInfo: " };
             string[] QuestSettingsStrings = questData.Split(s, StringSplitOptions.RemoveEmptyEntries);
 
             switch (GetQuestTypeFromLoadString(QuestSettingsStrings[0]))
@@ -184,7 +183,7 @@ public class QuestSystem
                     break;
                 default:
                     quest = null;
-                    break;  
+                    break;
             }
 
             quests.Add(quest);

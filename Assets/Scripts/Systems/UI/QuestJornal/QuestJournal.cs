@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using System;
 
-public class QuestJornal : MonoBehaviour
+public class QuestJournal : MonoBehaviour
 {
     [SerializeField]
     private GameObject panel;

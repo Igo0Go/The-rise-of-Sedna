@@ -21,7 +21,7 @@ public class QuestButton : MonoBehaviour
         questNameText.text = questData.name;
         savedId = questData.id;
 
-        dirtyObject.SetActive(questData.dirty);
+        dirtyObject.SetActive(questData.containceNewInfo);
 
         button.onClick.AddListener(OnClickToButton);
     }

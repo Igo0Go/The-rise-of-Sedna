@@ -2066,8 +2066,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8097747218233162756}
-        m_TargetAssemblyTypeName: QuestJornal, Assembly-CSharp
+      - m_Target: {fileID: 6353731313927933146}
+        m_TargetAssemblyTypeName: QuestJournal, Assembly-CSharp
         m_MethodName: ShowCompleteQuests
         m_Mode: 1
         m_Arguments:
@@ -2200,8 +2200,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8097747218233162756}
-        m_TargetAssemblyTypeName: QuestJornal, Assembly-CSharp
+      - m_Target: {fileID: 6353731313927933146}
+        m_TargetAssemblyTypeName: QuestJournal, Assembly-CSharp
         m_MethodName: ClosePanel
         m_Mode: 1
         m_Arguments:
@@ -3790,8 +3790,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8097747218233162756}
-        m_TargetAssemblyTypeName: QuestJornal, Assembly-CSharp
+      - m_Target: {fileID: 6353731313927933146}
+        m_TargetAssemblyTypeName: QuestJournal, Assembly-CSharp
         m_MethodName: ShowActiveQuests
         m_Mode: 1
         m_Arguments:
@@ -4867,9 +4867,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4842722881654255494}
-  - component: {fileID: 8097747218233162756}
+  - component: {fileID: 6353731313927933146}
   m_Layer: 5
-  m_Name: grp_QuestJornal
+  m_Name: "grp_QuestJo\u0433rnal"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4895,7 +4895,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8097747218233162756
+--- !u!114 &6353731313927933146
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4904,7 +4904,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 4630929456391880438}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b556506194eff1f42ae35481bfa48c16, type: 3}
+  m_Script: {fileID: 11500000, guid: a1b27807f1ffbdd40b7d267e2a31e951, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   panel: {fileID: 1303236399642939138}
@@ -5742,8 +5742,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8097747218233162756}
-        m_TargetAssemblyTypeName: QuestJornal, Assembly-CSharp
+      - m_Target: {fileID: 6353731313927933146}
+        m_TargetAssemblyTypeName: QuestJournal, Assembly-CSharp
         m_MethodName: ShowFaledQuests
         m_Mode: 1
         m_Arguments:

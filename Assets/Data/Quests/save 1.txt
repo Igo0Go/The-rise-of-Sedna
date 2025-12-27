@@ -1,0 +1,25 @@
+{
+type: 1
+id: 0
+name: Вооружаемся!
+desc: Найдите любое оружие
+exp: 100
+newInfo: 1
+details: []
+state: 0
+activationIds: [0,]
+completedQuests: []
+}
+----{
+type: 1
+id: 1
+name: Выход
+desc: Найти выход с полигона
+exp: 500
+newInfo: 1
+details: [(Помнится, из синего сектора надо переходить в красный.|0|10)=-=(Из красного сектора нужно идти в зелёный|0|10)=-=]
+state: 0
+activationIds: [1,]
+completedQuests: [0,]
+}
+----

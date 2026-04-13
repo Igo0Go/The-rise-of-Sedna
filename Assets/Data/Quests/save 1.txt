@@ -1,25 +1,61 @@
 {
 type: 1
 id: 0
-name: Вооружаемся!
-desc: Найдите любое оружие
+name: Активация
+desc: Нажать кнопку для открытия двери
 exp: 100
 newInfo: 1
 details: []
-state: 0
+state: 1
 activationIds: [0,]
 completedQuests: []
 }
 ----{
 type: 1
 id: 1
-name: Выход
-desc: Найти выход с полигона
-exp: 500
+name: Поиск (предмет)
+desc: Найдите оружие
+exp: 100
 newInfo: 1
-details: [(Помнится, из синего сектора надо переходить в красный.|0|10)=-=(Из красного сектора нужно идти в зелёный|0|10)=-=]
+details: []
 state: 0
 activationIds: [1,]
 completedQuests: [0,]
+}
+----{
+type: 1
+id: 2
+name: Поиск (локация)
+desc: Зайдите на золотую платформу
+exp: 100
+newInfo: 1
+details: []
+state: 0
+activationIds: [2,]
+completedQuests: [1,]
+}
+----{
+type: 2
+id: 3
+name: Сбор
+desc: Найдите парольную карту и откройте дверь
+exp: 100
+newInfo: 1
+details: []
+state: 0
+startObjects:[0,0]collectedObjects:[4,1]
+completedQuests: [2,]
+}
+----{
+type: 3
+id: 4
+name: Прорыв
+desc: Победите дронов
+exp: 100
+newInfo: 1
+details: []
+state: 0
+targetInfo:[1,9]
+completedQuests: [3,]
 }
 ----

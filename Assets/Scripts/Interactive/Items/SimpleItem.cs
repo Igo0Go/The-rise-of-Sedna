@@ -12,6 +12,7 @@ public class SimpleItem : InteractiveObject
 
     public override void Use()
     {
+        onUseEvent?.Invoke();
         InventarySystem.Instance.AddToInventory(data.id, 1);
         Destroy(gameObject);
     }

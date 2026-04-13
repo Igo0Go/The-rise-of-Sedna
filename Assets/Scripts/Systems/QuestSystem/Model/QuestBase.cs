@@ -20,7 +20,7 @@ public abstract class QuestBase
         get => _state;
         set
         {
-            if(_state == QuestState.complete)
+            if(_state == QuestState.complete || _state == QuestState.faled)
             {
                 return;
             }

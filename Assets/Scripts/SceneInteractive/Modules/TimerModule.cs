@@ -1,4 +1,5 @@
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -10,6 +11,9 @@ public class TimerModule : InteractiveModule
     private bool playOnStart = false;
     [SerializeField]
     private UnityEvent actionAfterTime;
+
+    [SerializeField]
+    private bool useDebug = false;
 
     private float currentTime;
 
@@ -48,5 +52,22 @@ public class TimerModule : InteractiveModule
             yield return null;
         }
         actionAfterTime.Invoke();
+    }
+
+    private void OnDrawGizmos()
+    {
+        if(useDebug)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawSphere(transform.position, 0.3f);
+
+            int count = actionAfterTime.GetPersistentEventCount();
+
+            for (int i = 0; i < count; i++)
+            {
+                Transform target = actionAfterTime.GetPersistentTarget(i).GameObject().transform;
+                Gizmos.DrawLine(transform.position, target.position);
+            }
+        }
     }
 }

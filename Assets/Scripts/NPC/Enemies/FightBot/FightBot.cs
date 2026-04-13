@@ -48,7 +48,7 @@ public class FightBot : MultipartEnemy
 
     private void Start()
     {
-        movePattern.agent.isStopped = true;
+        movePattern.agent.isStopped = false;
 
         foreach (BotTurret turret in attackPattern.turrets)
         {
@@ -67,6 +67,23 @@ public class FightBot : MultipartEnemy
             currentLoop();
             interactionPattern.CheckManualInteractive(transform);
         }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Debug.DrawSector(transform.position, transform.rotation * Quaternion.Euler(90, 0, 90), 
+            -viewPattern.viewAngle/2, viewPattern.viewAngle / 2, viewPattern.viewDistance, Color.cyan);
+        Debug.DrawSector(transform.position, transform.rotation * Quaternion.Euler(0, -90, 0),
+    -viewPattern.viewAngle / 2, viewPattern.viewAngle / 2, viewPattern.viewDistance, Color.cyan);
+
+        Debug.DrawSector(transform.position, transform.rotation * Quaternion.Euler(90, 0, 90),
+    -viewPattern.viewAngle / 2, viewPattern.viewAngle / 2, attackPattern.attackDistance, Color.red);
+        Debug.DrawSector(transform.position, transform.rotation * Quaternion.Euler(0, -90, 0),
+    -viewPattern.viewAngle / 2, viewPattern.viewAngle / 2, attackPattern.attackDistance, Color.red);
+
+        Debug.DrawCircle(transform.position, transform.rotation * Quaternion.Euler(90, 0, 0), hearingLevel, 30, Color.yellow);
+
+        Gizmos.DrawWireSphere(searchPattern.lastTargetPoint, 1);
     }
 
     private void DisableAllMarkers()
@@ -277,25 +294,27 @@ public class FightBot : MultipartEnemy
 [Serializable]
 public class MovePattern
 {
-    [Min(0.01f)]
+    [Min(0f)]
     public float moveSpeed = 1;
     public NavMeshAgent agent;
 
-
     public void StopMove()
     {
-        agent.isStopped = true;
+        agent.speed = 0;
     }
     public void ActivateMoveToTarget(Vector3 target)
     {
         agent.isStopped = false;
+        agent.speed = moveSpeed;
         agent.destination = target;
     }
     public void CorrectTarget(Vector3 newTarget)
     {
-        agent.destination = newTarget;
+        if ((agent.destination - newTarget).magnitude >= 0.1f)
+        {
+            agent.destination = newTarget;
+        }
     }
-
     public bool NearWithPoint(Vector3 point)
     {
         return Vector3.SqrMagnitude(point - agent.transform.position) <= (agent.radius * agent.radius)*4;
@@ -310,9 +329,9 @@ public class ViewPattern
     [SerializeField]
     private Transform viewPoint;
     [SerializeField, Min(1)]
-    private float viewDistance = 10;
+    public float viewDistance = 10;
     [SerializeField, Range(1, 360)]
-    private float viewAngle = 1;
+    public float viewAngle = 1;
     [SerializeField]
     private LayerMask ignoreMask;
 
@@ -322,7 +341,7 @@ public class ViewPattern
 
         Vector3 dirToTarget = target - viewPoint.position;
 
-        if(DistanceCheck(dirToTarget) && AngleCheck(dirToTarget) && ObstacleCkeck(targetTransform))
+        if (DistanceCheck(dirToTarget) && AngleCheck(dirToTarget) && ObstacleCkeck(targetTransform))
         {
             if(!CurrentVisibleTargets.Contains(targetTransform))
             {
@@ -430,7 +449,7 @@ public class SearchPattern
 
     private float currentSearchTime = 0;
     private Transform lastTarget;
-    private Vector3 lastTargetPoint;
+    public Vector3 lastTargetPoint;
 
     public bool NeedStopSearch { get; private set; }
 

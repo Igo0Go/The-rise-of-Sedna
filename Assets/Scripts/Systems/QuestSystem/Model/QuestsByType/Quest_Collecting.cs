@@ -29,19 +29,25 @@ public class Quest_Collecting : QuestBase
         InventarySystem.Instance.
           AddToInventory(startingObjectId, startObjectsCount);
     }
+    public void TryCompleteQuest()
+    {
+        if (InventarySystem.Instance.
+            TrySpendItem(collectedObjectId, collectedObjectsCount))
+        {
+            State = QuestState.complete;
+        }
+    }
 
     protected override int GetQuestTypeIndex()
     {
         return (int)QuestType.Collecting;
     }
-
     protected override string GetSpecificData()
     {
         string s = "startObjects:[" + startingObjectId + "," + startObjectsCount +"]";
         s += "collectedObjects:[" + collectedObjectId + "," + collectedObjectsCount + "]";
         return s;
     }
-
     protected override void SetSpecificData(string inputString)
     {
         string[] s = { "\n", "collectedObjects:", "startObjects:", "[", "]", "," };
@@ -53,14 +59,5 @@ public class Quest_Collecting : QuestBase
         startObjectsCount = int.Parse(dataStrings[1]);
         collectedObjectId = int.Parse(dataStrings[2]);
         collectedObjectsCount = int.Parse(dataStrings[3]);
-    }
-
-    public void TryCompleteQuest()
-    {
-        if(InventarySystem.Instance.
-            TrySpendItem(collectedObjectId, collectedObjectsCount))
-        {
-            State = QuestState.complete;
-        }
     }
 }

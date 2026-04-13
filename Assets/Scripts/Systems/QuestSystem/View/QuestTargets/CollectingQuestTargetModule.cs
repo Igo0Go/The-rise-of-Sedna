@@ -2,10 +2,10 @@ using System;
 
 public class CollectingQuestTargetModule : QuestTarget
 {
-    public event Action<int> TryCompleteSearchQuest;
+    public event Action<int> TryCompleteCollectingQuest;
 
     public override void UseQuestTarget()
     {
-        TryCompleteSearchQuest.Invoke(ID);
+        TryCompleteCollectingQuest.Invoke(ID);
     }
 }

@@ -111,6 +111,7 @@ public class ManualInteractive : InteractiveObject
         if(destroyed) return;
         if(onDestroyTargetState)
         {
+            onUseEvent?.Invoke();
             ActivateAction();
         }
         else

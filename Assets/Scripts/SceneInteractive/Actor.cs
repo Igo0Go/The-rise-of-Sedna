@@ -10,6 +10,8 @@ public class Actor : InteractiveModule
     public int NpcWorkPoints;
     [SerializeField]
     private bool NpcTargetState = true;
+    [SerializeField]
+    private bool useDebug = false;
 
     public override void Activate()
     {
@@ -48,4 +50,19 @@ public class Actor : InteractiveModule
         }
     }
 
+    private void OnDrawGizmos()
+    {
+        if (useDebug)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(transform.position, 1);
+            foreach (var module in modules)
+            {
+                if(module == null)
+                    continue;
+
+                Gizmos.DrawLine(transform.position, module.transform.position);
+            }
+        }
+    }
 }

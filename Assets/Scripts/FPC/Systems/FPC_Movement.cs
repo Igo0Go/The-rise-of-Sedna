@@ -44,7 +44,7 @@ public class FPC_Movement : MonoBehaviour
 
     public event Action<float, float, bool> SprintStatusChanged;
 
-    private void Awake()
+    private void Start()
     {
         currentSprintTime = SkillHolder.Instance.sprintTime.currentValue;
         characterController = GetComponent<CharacterController>();

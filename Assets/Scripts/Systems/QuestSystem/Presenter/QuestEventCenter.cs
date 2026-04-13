@@ -75,7 +75,7 @@ public class QuestEventCenter : MonoBehaviour
 
         foreach (CollectingQuestTargetModule module in searchQuestTargetModules)
         {
-            module.TryCompleteSearchQuest += OnTryCompleteSearchQuest;
+            module.TryCompleteCollectingQuest += OnTryCompleteCollectingQuest;
         }
 
         #endregion
@@ -137,7 +137,7 @@ public class QuestEventCenter : MonoBehaviour
         questSystem.ActivationQuestTargetUsed(target.ID);
     }
 
-    private void OnTryCompleteSearchQuest(int id)
+    private void OnTryCompleteCollectingQuest(int id)
     {
         questSystem.TryCompleteCollectingQuest(id);
     }

@@ -363,20 +363,21 @@ MonoBehaviour:
   player: {fileID: 0}
   deadExplosionPrefab: {fileID: 8456581616506365629, guid: 121cfe29a23781b45a70ee6cba7c41f8, type: 3}
   deadClip: {fileID: 8300000, guid: 5ff823f546b52574a931e1d9b44290a6, type: 3}
-  hearingLevel: -5
+  hearingLevel: 3
   movePattern:
-    moveSpeed: 2
+    moveSpeed: 3
     agent: {fileID: 5123470033109396296}
   viewPattern:
     viewPoint: {fileID: 820460081065627825}
-    viewDistance: 30
-    viewAngle: 180
+    viewDistance: 20
+    viewAngle: 140
     ignoreMask:
       serializedVersion: 2
-      m_Bits: 62
+      m_Bits: 318
   searchPattern:
     searchTime: 20
-    searchPredictionTime: 5
+    searchPredictionTime: 1
+    lastTargetPoint: {x: 0, y: 0, z: 0}
   attackPattern:
     attackDistance: 10
     turrets:

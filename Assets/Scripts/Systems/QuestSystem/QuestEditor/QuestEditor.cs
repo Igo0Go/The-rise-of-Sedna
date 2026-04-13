@@ -12,6 +12,8 @@ public class QuestEditor : ScriptableObject
     [SerializeField]
     private List<QuestSO> quests;
 
+#if UNITY_EDITOR
+
     [ContextMenu("Сохранить")]
     public void Save()
     {
@@ -58,11 +60,14 @@ public class QuestEditor : ScriptableObject
 
         return path;
     }
+#endif
 }
 
 [System.Serializable]
 public class QuestSO
 {
+    #region Базовый квест
+
     [Header("Base")]
     public int id;
     [TextArea(2, 2)]
@@ -78,10 +83,15 @@ public class QuestSO
 
     private bool containcNewInfo = true;
 
+    #endregion
+
+    #region Активация
     [Space(20)]
     [Header("Activation")]
     public List<int> activationIds;
+    #endregion
 
+    #region Сбор
     [Space(20)]
     [Header("Collecting")]
     [Min(0)]
@@ -92,14 +102,16 @@ public class QuestSO
     public int collectedObjectId = 0;
     [Min(1)]
     public int collectedObjectsCount = 1;
+    #endregion
 
+    #region Охота
     [Space(20)]
     [Header("Hunting")]
     [Min(1)]
     public int targetEnemyId = 1;
     [Min(1)]
     public int targetEnemyCount = 1;
-
+    #endregion
 
     public QuestBase ToQuestBase()
     {

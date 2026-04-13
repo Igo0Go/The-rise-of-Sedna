@@ -117,11 +117,6 @@ public class QuestSystem
     #endregion
 
     #region Охота
-    public void TryCompleteHuntingQuest(int questId)
-    {
-        Quest_Collecting quest = quests.Find(q => q.id == questId) as Quest_Collecting;
-        quest.TryCompleteQuest();
-    }
     public void SubscribeQuestsToEnemyDeadEvent(List<EnemyBase> enemies)
     {
         List<QuestBase> huntingQuests = quests.FindAll(q => q is Quest_Hunting);
